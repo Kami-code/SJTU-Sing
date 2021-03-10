@@ -9,6 +9,7 @@ class Index extends Component {
     state = {  }
 
     goSingPage=()=>{
+        
         this.props.navigation.navigate("SingPage");
     }
     goInfoPage=()=>{
