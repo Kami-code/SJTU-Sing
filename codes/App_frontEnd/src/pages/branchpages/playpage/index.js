@@ -8,10 +8,7 @@ class Index extends Component {
         return (  
             <View>
                 <Text> 作品播放页面</Text>
-                <Video
-    source={{uri: "require:(\"../../../src/images/Lovestory.mp4\")"}}  
-    poster={"url"}
-/>
+                
             </View>
         );
     }

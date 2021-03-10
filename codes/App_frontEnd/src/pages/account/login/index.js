@@ -9,8 +9,9 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input} from 'react-native-elements';
 
 import Button  from "../../../components/Button";
-
+import Toast from "../../../utils/Toast";
 import {CodeField,Cursor} from 'react-native-confirmation-code-field';
+
 
 // console.log("调试");
 class Index extends Component{
@@ -27,7 +28,17 @@ class Index extends Component{
         //倒计时文本显示
         btmText:"重新获取",
         //正在倒计时
-        isCounting:false
+        isCounting:false,
+        //是新用户吗
+        isNew: true
+    }
+    constructor (){
+        super();
+        Toast.showLoading("请求中");
+
+        setTimeout(() => {
+            Toast.hideLoading();
+        }, 1000);
     }
     //登录框手机号码输入,把phoneNumber弄成状态量
     phoneNumberChangeText=(phoneNumber)=>{
@@ -90,8 +101,17 @@ class Index extends Component{
             1.新用户 跳转 填写个人信息
             2.老用户 跳转 首页
         */
-
-        this.props.navigation.navigate("MainPage");
+        const { codeText, phoneNumber, isNew} =this.state;
+        if (codeText.length!=6) {
+            Toast.message("验证码错误",2000,"center");
+            return;
+        }
+        if (!isNew){
+            this.props.navigation.navigate("MainPage");
+        }
+        else{
+            this.props.navigation.navigate("InfoPage");
+        }
     }
 
 
