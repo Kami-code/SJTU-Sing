@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 
-import {View,Text,Image,StatusBar} from 'react-native';
+import {View,Text,Image,StatusBar,StyleSheet} from 'react-native';
 import { color } from 'react-native-reanimated';
 import {pxToDp} from "../../../utils/stylesKits";
 import validator from "../../../utils/validator";
@@ -9,6 +9,8 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input} from 'react-native-elements';
 
 import Button  from "../../../components/Button";
+
+import {CodeField,Cursor} from 'react-native-confirmation-code-field';
 
 // console.log("调试");
 class Index extends Component{
@@ -20,7 +22,12 @@ class Index extends Component{
         phoneValid:true,
         //是否显示登录页面
         showLogin:true,
-
+        //验证码输入值
+        codeText:"",
+        //倒计时文本显示
+        btmText:"重新获取",
+        //正在倒计时
+        isCounting:false
     }
     //登录框手机号码输入,把phoneNumber弄成状态量
     phoneNumberChangeText=(phoneNumber)=>{
@@ -49,16 +56,44 @@ class Index extends Component{
         // if (res.code=="10000"){
         //     //请求成功
             this.setState({showLogin:false});
+            //开始倒计时
+            isCounting =true;
+            this.countDown();
+            
         // }else{
 
         // }
 
     }
 
+    //开始倒计时
+    countDown=()=>{
+        this.setState({isCounting: true });
+        let seconds = 5;
+        this.setState({ btnText: `重新获取（${seconds}s）` });
+        let timeId = setInterval(() =>{
+            seconds --;
+            this.setState({ btnText: `重新获取（${seconds}s）` });
+            if (seconds ===0){
+                clearInterval(timeId);
+                this.setState({ btnText:"重新获取",isCounting: false });
+            }
+        },1000);
+    }
+
     //提交验证码后进入主界面
     enterMainPage=()=>{
-       this.props.navigation.navigate("MainPage");
+        /*
+        1.验证码长度合法
+        2.手机号和验证码一起发送到后台
+        3.后台返回 包含是否新用户
+            1.新用户 跳转 填写个人信息
+            2.老用户 跳转 首页
+        */
+
+        this.props.navigation.navigate("MainPage");
     }
+
 
     //登陆页面渲染
     renderLogin=()=>{
@@ -98,16 +133,45 @@ class Index extends Component{
 
     //验证码填写页面渲染
     renderCode=()=>{
-        const {phoneNumber,phoneValid,showLogin} =this.state;
+        const {phoneNumber,phoneValid,showLogin, codeText,btnText,isCounting} =this.state;
         return <View>
             <View><Text style={{fontSize:pxToDp(30),color:"#666",fontWeight:"bold"}}>请输入6位验证码</Text></View>
             <View style={{marginTop:pxToDp(20)}}><Text style={{color:"#777"}}>已发送至：+86 {phoneNumber}</Text></View>
-            <View style={{marginTop:pxToDp(30)}}><Button style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>重新获取验证码（60s）</Button></View>
+            
+            <View>
+                <CodeField
+                // value:初始值
+                value={codeText}
+                onChangeText={this.onCodeChangeText}
+                cellCount={6}
+                rootStyle={styles.codeFieldRoot}
+                //数字键盘
+                keyboardType="number-pad"
+                textContentType="oneTimeCode"
+                renderCell={({index, symbol, isFocused}) => (
+                  <Text
+                    key={index}
+                    style={[styles.cell, isFocused && styles.focusCell]}>
+                    {symbol || (isFocused ? <Cursor /> : null)}
+                  </Text>
+                )}
+                />
+            </View>
+            
+            <View style={{marginTop:pxToDp(30)}}>
+                <Button onPress={this.phoneNumberSubmitEditing} style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>{btnText}</Button>
+            </View>
             <View style={{marginTop:pxToDp(30)}}>
                 <Button onPress={this.enterMainPage} style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>提交</Button>
             </View>
         </View> 
     }
+
+    //验证码输入改变
+    onCodeChangeText=(codeText)=>{
+        this.setState({codeText});
+    }     
+
     render(){
         const {phoneNumber,phoneValid,showLogin} =this.state;
         return(
@@ -133,4 +197,26 @@ class Index extends Component{
         );
     }
 }
+
+const styles = StyleSheet.create({
+    root: {flex: 1, padding: 20},
+    title: {textAlign: 'center', fontSize: 30},
+    codeFieldRoot: {marginTop: 20},
+    cell: {
+      width: 40,
+      height: 40,
+      lineHeight: 38,
+      fontSize: 24,
+      borderBottomWidth: 3,
+      borderColor: '#00000030',
+      textAlign: 'center',
+      color: '#F33'
+    },
+  //   选中之后的效果
+    focusCell: {
+      borderColor: '#F33',
+    },
+  });
+
+
 export default Index;

@@ -8,6 +8,7 @@ import SingPage from "./pages/branchpages/singpage";
 import InfoPage from "./pages/branchpages/infopage";
 import PlayPage from "./pages/branchpages/playpage";
 import SelectPage from "./pages/branchpages/selectpage";
+import DemoPage from "./pages/demopage";
 
 function HomeScreen({navigation}) {
   return (
@@ -41,8 +42,9 @@ function Nav() {
         <Stack.Screen name="InfoPage" component={InfoPage} />
         <Stack.Screen name="PlayPage" component={PlayPage} />
         <Stack.Screen name="SelectPage" component={SelectPage} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Details" component={DetailsScreen} />
+
+        <Stack.Screen name="DemoPage" component={DemoPage} />
+
       </Stack.Navigator>
     </NavigationContainer>
   );
