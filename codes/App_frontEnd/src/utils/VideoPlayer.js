@@ -130,8 +130,9 @@ export default class VideoScreen extends Component {
                     <Video
                         ref="video"
                         /* For ExoPlayer */
-                        source={require('./image/LoveStory.mp4')}
+                        source={require('../images/Lovestory.mp4')}
                         style={styles.fullScreen}//组件样式
+                        style={{width:332, height:240}}//组件样式
                         rate={this.state.rate}//播放速率
                         paused={this.state.paused}//暂停
                         volume={this.state.volume}//调节音量
@@ -191,8 +192,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     fullScreen: {
-        height: 340,
-        wight:210,
         position: 'absolute',
         top: 0,
         left: 0,
