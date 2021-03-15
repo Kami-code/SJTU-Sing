@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input} from 'react-native-elements';
 
 import Button  from "../../../components/Button";
-import Toast from "../../../utils/Toast";
+import Toast from "../../../utils/toast";
 import {CodeField,Cursor} from 'react-native-confirmation-code-field';
 
 
@@ -54,7 +54,7 @@ class Index extends Component{
         2. 若通过，将号码发至后台
         3. 切换至验证码填写
     */
-   
+
         const {phoneNumber} =this.state;
         const phoneValid = validator.validatePhone(phoneNumber);
         if(!phoneValid){
@@ -68,9 +68,9 @@ class Index extends Component{
         //     //请求成功
             this.setState({showLogin:false});
             //开始倒计时
-            isCounting =true;
+            this.setState({isCounting:true});
             this.countDown();
-            
+
         // }else{
 
         // }
@@ -123,8 +123,8 @@ class Index extends Component{
         <View><Text style={{fontSize:pxToDp(30),color:"#888",fontWeight:"bold"}}>手机号登陆注册</Text></View>
         {/* input （使用ui框架：react-native-elements）*/}
         <View style={{marginTop:pxToDp(40)}}>
-            <Input 
-                placeholder ='请输入手机号码' 
+            <Input
+                placeholder ='请输入手机号码'
                 // maxLenth 用于限制输入长度
                 maxLength= {11}
                 // keyboardType 默认数字键盘，优化体验
@@ -145,7 +145,7 @@ class Index extends Component{
         {/* 按钮 */}
         <View>
             <View style ={{width:"80%",height:pxToDp(40),alignSelf:"center"}}>
-               <Button onPress={this.phoneNumberSubmitEditing} style={{borderRadius:pxToDp(20)}}>获取验证码</Button> 
+               <Button onPress={this.phoneNumberSubmitEditing} style={{borderRadius:pxToDp(20)}}>获取验证码</Button>
             </View>
         </View>
     </View>
@@ -157,7 +157,7 @@ class Index extends Component{
         return <View>
             <View><Text style={{fontSize:pxToDp(30),color:"#666",fontWeight:"bold"}}>请输入6位验证码</Text></View>
             <View style={{marginTop:pxToDp(20)}}><Text style={{color:"#777"}}>已发送至：+86 {phoneNumber}</Text></View>
-            
+
             <View>
                 <CodeField
                 // value:初始值
@@ -177,20 +177,20 @@ class Index extends Component{
                 )}
                 />
             </View>
-            
+
             <View style={{marginTop:pxToDp(30)}}>
                 <Button onPress={this.phoneNumberSubmitEditing} style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>{btnText}</Button>
             </View>
             <View style={{marginTop:pxToDp(30)}}>
                 <Button onPress={this.enterMainPage} style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>提交</Button>
             </View>
-        </View> 
+        </View>
     }
 
     //验证码输入改变
     onCodeChangeText=(codeText)=>{
         this.setState({codeText});
-    }     
+    }
 
     render(){
         const {phoneNumber,phoneValid,showLogin} =this.state;
