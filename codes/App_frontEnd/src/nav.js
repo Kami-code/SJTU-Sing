@@ -9,7 +9,7 @@ import InfoPage from "./pages/branchpages/infopage";
 import PlayPage from "./pages/branchpages/playpage";
 import SelectPage from "./pages/branchpages/selectpage";
 import DemoPage from "./pages/demopage";
-
+import Layout from "./components/Layout";
 function HomeScreen({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -35,7 +35,7 @@ const Stack = createStackNavigator();
 function Nav() {
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName="Login">     
+      <Stack.Navigator headerMode="none" initialRouteName="MainPage">     
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="MainPage" component={MainPage} />
         <Stack.Screen name="SingPage" component={SingPage} />
