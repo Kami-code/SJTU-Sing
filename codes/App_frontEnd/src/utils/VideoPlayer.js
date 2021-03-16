@@ -8,10 +8,12 @@ import {
     TouchableOpacity,
     View,
     Button,
-    BackHandler
+    BackHandler,
+    ImageBackground
 } from 'react-native';
 
 import Video from 'react-native-video';
+import { pxToDp } from './stylesKits';
 
 function formatTime(second) {
     let h = 0, i = 0, s = parseInt(second);
@@ -33,6 +35,10 @@ export default class VideoScreen extends Component {
     static navigationOptions = {
         header: null
     };
+
+    // constructor(){
+    //     const a = renderResizeModeControl();
+    // }
 
     state = {
         rate: 1,
@@ -123,16 +129,18 @@ export default class VideoScreen extends Component {
 
         return (
             <View style={styles.container}>
-                <Text>fuck my ass</Text>
+                {/* <ImageBackground style={{width:"100%",height:"100%"}} source={require("../images/background2.jpg")}> */}
                 <TouchableOpacity
+                    
                     style={styles.fullScreen}
                     onPress={() => this.setState({paused: !this.state.paused})}>
+                        
                     <Video
                         ref="video"
                         /* For ExoPlayer */
                         source={require('../images/Lovestory.mp4')}
                         style={styles.fullScreen}//组件样式
-                        style={{width:332, height:240}}//组件样式
+                        // style={{width:"100%", height:"100%"}}//组件样式
                         rate={this.state.rate}//播放速率
                         paused={this.state.paused}//暂停
                         volume={this.state.volume}//调节音量
@@ -145,9 +153,9 @@ export default class VideoScreen extends Component {
                         onAudioFocusChanged={this.onAudioFocusChanged}//音频焦点丢失时的回调 - 如果焦点丢失则暂停
                         repeat={false}//确定在到达结尾时是否重复播放视频。
                     />
+                    
                 </TouchableOpacity>
-
-                <Text>fuck my1 ass</Text>
+                {/* </ImageBackground> */}
                 <View style={styles.textStyle}>
                     <Text style={styles.volumeControl}>
                         {formatTime(this.state.duration - this.state.currentTime)}
@@ -177,6 +185,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
+        //背景颜色
         backgroundColor: 'black',
     },
     textStyle: {
@@ -202,14 +211,15 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         borderRadius: 5,
         position: 'absolute',
-        bottom: 20,
+        bottom: pxToDp(200),
         left: 20,
         right: 20,
     },
     progress: {
+        // height: pxToDp(200),
         flex: 1,
         flexDirection: 'row',
-        borderRadius: 3,
+        borderRadius: 10 ,
         overflow: 'hidden',
     },
     innerProgressCompleted: {

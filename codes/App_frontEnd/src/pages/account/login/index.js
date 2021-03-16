@@ -9,7 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {Input} from 'react-native-elements';
 
 import Button  from "../../../components/Button";
-import Toast from "../../../utils/toast";
+import Toast from "../../../utils/Toast";
 import {CodeField,Cursor} from 'react-native-confirmation-code-field';
 
 
