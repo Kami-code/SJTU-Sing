@@ -131,16 +131,15 @@ export default class VideoScreen extends Component {
             <View style={styles.container}>
                 {/* <ImageBackground style={{width:"100%",height:"100%"}} source={require("../images/background2.jpg")}> */}
                 <TouchableOpacity
-                    
+
                     style={styles.fullScreen}
                     onPress={() => this.setState({paused: !this.state.paused})}>
-                        
+
                     <Video
                         ref="video"
                         /* For ExoPlayer */
                         source={require('../images/Lovestory.mp4')}
                         style={styles.fullScreen}//组件样式
-                        // style={{width:"100%", height:"100%"}}//组件样式
                         rate={this.state.rate}//播放速率
                         paused={this.state.paused}//暂停
                         volume={this.state.volume}//调节音量
@@ -153,7 +152,7 @@ export default class VideoScreen extends Component {
                         onAudioFocusChanged={this.onAudioFocusChanged}//音频焦点丢失时的回调 - 如果焦点丢失则暂停
                         repeat={false}//确定在到达结尾时是否重复播放视频。
                     />
-                    
+
                 </TouchableOpacity>
                 {/* </ImageBackground> */}
                 <View style={styles.textStyle}>
