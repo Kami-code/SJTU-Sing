@@ -16,9 +16,10 @@ class App extends Component {
     render() {
         return (
             <View>
-                <View style={{width:"60%",height:"40%",flexDirection:"row"}}>
-                    <MusicPlayer/>
-                </View>
+                {/*<Text>fuck my ass</Text>*/}
+                {/*<View style={{width:"60%",height:"40%",flexDirection:"row"}}>*/}
+                <MusicPlayer/>
+                {/*</View>*/}
             </View>
           );
     }
