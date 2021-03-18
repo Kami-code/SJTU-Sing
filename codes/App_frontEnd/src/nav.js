@@ -10,6 +10,8 @@ import PlayPage from "./pages/branchpages/playpage";
 import SelectPage from "./pages/branchpages/selectpage";
 import DemoPage from "./pages/demopage";
 import Layout from "./components/Layout";
+import Tabbar from "./tabbar";
+
 function HomeScreen({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -35,13 +37,15 @@ const Stack = createStackNavigator();
 function Nav() {
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName="DemoPage">
+      <Stack.Navigator headerMode="none" initialRouteName="Tabbar">
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="MainPage" component={MainPage} />
         <Stack.Screen name="SingPage" component={SingPage} />
         <Stack.Screen name="InfoPage" component={InfoPage} />
         <Stack.Screen name="PlayPage" component={PlayPage} />
         <Stack.Screen name="SelectPage" component={SelectPage} />
+
+        <Stack.Screen name="Tabbar" component={Tabbar} />
 
         <Stack.Screen name="DemoPage" component={DemoPage} />
 
