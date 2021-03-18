@@ -14,7 +14,7 @@ import {
 let { width, height } = Dimensions.get('window');
 import Video from 'react-native-video'
 let lyrObj = []   // 存放歌词
-import sky_LRC from '../images/sky'
+import SONGS from '../images/song'
 
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
@@ -25,7 +25,7 @@ export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            songs: [],   //数据源
+            songs: SONGS,   //数据源
             pic_small: '',    //小图
             pic_big: '',      //大图
             file_duration: 0,    //歌曲长度
@@ -143,16 +143,16 @@ export default class MusicPlayer extends Component {
 
     loadSongInfo = (index) => {
         //加载歌曲
+        let local_song = this.state.songs[index];
         this.setState({
-            // songs: songList,   //设置数数据源
-            pic_small: "https://bkimg.cdn.bcebos.com/pic/b64543a98226cffc755c1897ba014a90f603eaa5?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U3Mg==,g_7,xp_5,yp_5/format,f_auto", //小图
-            pic_big: 'https://bkimg.cdn.bcebos.com/pic/b64543a98226cffc755c1897ba014a90f603eaa5?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U3Mg==,g_7,xp_5,yp_5/format,f_auto',  //大图
-            title: "天亮了",     //歌曲名
-            author: "韩红",   //歌手
-            file_link: "https://mp3.jiuku.9ku.com/hot/2010/05-27/355593.mp3",   //播放链接
-            file_duration: 172 //歌曲长度
+            pic_small: local_song.pic_small, //小图
+            pic_big: local_song.pic_big,  //大图
+            title: local_song.title,     //歌曲名
+            author: local_song.author,   //歌手
+            file_link: local_song.file_link,   //播放链接
+            file_duration: local_song.file_duration //歌曲长度
         })
-        let lry = sky_LRC.lrcContent
+        let lry = local_song.lrcContent
         let lryAry = lry.split('\n')   //按照换行符切数组
         lryAry.forEach(function (val, index) {
             let obj = {}   //用于存放时间
@@ -245,7 +245,7 @@ export default class MusicPlayer extends Component {
 
     render() {
         //如果未加载出来数据 就一直转菊花
-        if (this.state.songs.length > 0) {
+        if (this.state.songs.length <= 0) {
             return (
                 <ActivityIndicator
                     animating={this.state.animating}
@@ -259,8 +259,8 @@ export default class MusicPlayer extends Component {
                     <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
                     <View>
                     <Video
-                        //source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
-                        source={require('../images/sky.mp3')}
+                        source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
+                        //source={require('../images/sky.mp3')}
                         ref='video'                           // Store reference
                         rate={1.0}                     // 0 is paused, 1 is normal.
                         volume={1.0}                   // 0 is muted, 1 is normal.
@@ -268,6 +268,7 @@ export default class MusicPlayer extends Component {
                         paused={this.state.pause}                 // Pauses playback entirely.
                         onProgress={(e) => this.onProgress(e)}
                         onLoad={(e) => this.onLoad(e)}
+                        onEnd={() => this.nextAction(this.state.currentIndex + 1)}
                     />
                     </View>
                     <View style={styles.playingInfo}>
@@ -327,7 +328,7 @@ export default class MusicPlayer extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#00F',
+        backgroundColor: '#CCC',
     },
     image: {
         flex: 1

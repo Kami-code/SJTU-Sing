@@ -5,6 +5,8 @@ import {pxToDp} from "../../../utils/stylesKits";
 import Button_Icon1 from "../../../components/Button_Icon/Button1"; 
 import Button_Icon2 from "../../../components/Button_Icon/Button2"; 
 import Button_Icon3 from "../../../components/Button_Icon/Button3"; 
+import MusicPlayer from "../../../utils/MusicPlayer";
+
 import { ImageBackground } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 
@@ -28,9 +30,9 @@ class Index extends Component {
         return ( 
             <View style={styles.flexFrame}>
                 
-                <ImageBackground style={{width:"100%",height:"100%",flexDirection:"column"}} source={require("../../../images/background2.jpg")}>
+                {/* <ImageBackground style={{width:"100%",height:"100%",flexDirection:"column"}} source={require("../../../images/background2.jpg")}> */}
                     
-                    <View style={styles.flexTopContainer}>
+                    {/* <View style={styles.flexTopContainer}>
                         <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                         <View style={styles.cellfixedTop}>
                         </View>
@@ -40,9 +42,11 @@ class Index extends Component {
                         <View style={styles.cellfixedTop}>
                             <Image source={require("../../../images/icon_more.jpg")} style={styles.icon_more}></Image>
                         </View>
+                    </View> */}
+                    <View style={styles.flexTopContainer}>
+                        <MusicPlayer></MusicPlayer>
                     </View>
-                    <ScrollView></ScrollView>
-                    <View style={styles.flexMidContainer}>
+                    {/* <View style={styles.flexMidContainer}>
                         <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                         <View style={styles.cellfixedMid}>
                             <Image source={require("../../../images/icon_next.png")} style={styles.control}></Image>
@@ -53,8 +57,8 @@ class Index extends Component {
                         <View style={styles.cellfixedMid}>
                             <Image source={require("../../../images/icon_last.png")} style={styles.control}></Image>
                         </View>
-                    </View>
-                    <View style={styles.flexContainer}>
+                    </View> */}
+                    <View style={styles.flexContainer,{zIndex:2}}>
                         <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                         <View style={styles.cellfixed}>
                             <Button_Icon2 onPress={this.goSelectPage} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon2>
@@ -66,7 +70,7 @@ class Index extends Component {
                             <Button_Icon3 onPress={this.goPlayPage} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon3>
                         </View>
                     </View>
-                </ImageBackground>
+                {/* </ImageBackground> */}
             </View>
             
 
@@ -110,7 +114,7 @@ styles = {
         flex: 1,
         // 容器需要添加direction才能变成让子元素flex
         flexDirection: 'row',
-        marginTop:pxToDp(80),
+        marginTop:pxToDp(400),
         // backgroundColor: '#aaaaaa',
     },
     flexFrame:{
