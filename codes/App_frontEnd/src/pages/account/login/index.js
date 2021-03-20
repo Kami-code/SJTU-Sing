@@ -107,10 +107,10 @@ class Index extends Component{
             return;
         }
         if (!isNew){
-            this.props.navigation.navigate("MainPage");
+            this.props.navigation.navigate("Tabbar");
         }
         else{
-            this.props.navigation.navigate("InfoPage");
+            this.props.navigation.navigate("Tabbar");
         }
     }
 
