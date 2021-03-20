@@ -18,6 +18,7 @@
     "react-native-confirmation-code-field": "^6.5.1",
     "react-native-elements": "^3.2.0",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-image-header-scroll-view": "^1.0.0",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-reanimated": "^1.13.2",
     "react-native-safe-area-context": "^3.1.9",
