@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'center',
         //背景颜色
-        backgroundColor: 'black',
+        backgroundColor: 'transparent',
     },
     textStyle: {
         paddingLeft: 10,
@@ -203,14 +203,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 0,
         left: 0,
-        bottom: 0,
+        bottom: pxToDp(200),
         right: 0,
     },
     controls: {
         backgroundColor: 'transparent',
         borderRadius: 5,
         position: 'absolute',
-        bottom: pxToDp(200),
+        bottom: pxToDp(400),
         left: 20,
         right: 20,
     },

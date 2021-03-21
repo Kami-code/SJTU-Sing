@@ -4,6 +4,8 @@ import Svg from 'react-native-svg-uri';
 import TabNavigator from 'react-native-tab-navigator';
 import {svg_bubble, svg_huatong,svg_letter,svg_search,svg_shezhi,svg_touxiang,svg_touxiang_small,svg_yinfu} from './res/fonts/iconSvg';
 import SingPage from './pages/branchpages/singpage';
+import NewsPage from './pages/branchpages/newspage';
+import MePage from './pages/branchpages/mepage';
 import MainPage from './pages/mainpage';
 import MusicPlayer from './utils/MusicPlayer'
 class Index extends Component {
@@ -21,12 +23,14 @@ class Index extends Component {
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'bubble'}
                         title="动态"
-                        renderIcon={() => <Svg width="25" height = "25"  fill ="#bbf" svgXmlData={svg_bubble} />}
+                        renderIcon={() => <Svg width="25" height = "25"  fill ="#77a" svgXmlData={svg_bubble} />}
                         // renderSelectedIcon={() => <Svg width="20" height = "20" svgXmlData={svg_shezhi} />}
                         // renderBadge={() => <CustomBadgeView />}
                         onPress={() => this.setState({ selectedTab: 'bubble' })}>
                         {/* {profileView} */}
-                        <Text>动态</Text>
+                        <View style={{flex:1,flexDirection:'column'}}>
+                            <NewsPage />
+                        </View>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'search'}
@@ -71,7 +75,9 @@ class Index extends Component {
                         // renderBadge={() => <CustomBadgeView />}
                         onPress={() => this.setState({ selectedTab: 'myinfo' })}>
                         {/* {profileView} */}
-                        <Text>我的</Text>
+                        <View style={{flex:1,flexDirection:'column'}} >
+                            <MePage/>
+                        </View>
                     </TabNavigator.Item>
                 </TabNavigator>
             </View>

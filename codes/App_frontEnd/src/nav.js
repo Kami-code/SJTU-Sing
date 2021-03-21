@@ -5,13 +5,17 @@ import {createStackNavigator} from '@react-navigation/stack';
 import Login from "./pages/account/login";
 import MainPage from "./pages/mainpage";
 import SingPage from "./pages/branchpages/singpage";
+import CompletePage from "./pages/branchpages/singpage/completepage";
 import InfoPage from "./pages/branchpages/infopage";
 import PlayPage from "./pages/branchpages/playpage";
 import SelectPage from "./pages/branchpages/selectpage";
-import DemoPage from "./pages/demopage";
+import NewsPage from "./pages/branchpages/newspage";
+import NewsDetailPage from "./pages/branchpages/newspage/detailpage";
+import MePage from "./pages/branchpages/mepage";
+import WorksPage from "./pages/branchpages/mepage/workspage";
+// import DemoPage from "./pages/demopage";
 import Layout from "./components/Layout";
 import Tabbar from "./tabbar";
-
 function HomeScreen({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -41,13 +45,18 @@ function Nav() {
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="MainPage" component={MainPage} />
         <Stack.Screen name="SingPage" component={SingPage} />
+        <Stack.Screen name="CompletePage" component={CompletePage} />
         <Stack.Screen name="InfoPage" component={InfoPage} />
         <Stack.Screen name="PlayPage" component={PlayPage} />
+        <Stack.Screen name="NewsPage" component={NewsPage} />
+        <Stack.Screen name="NewsDetailPage" component={NewsDetailPage} />
         <Stack.Screen name="SelectPage" component={SelectPage} />
+        <Stack.Screen name="MePage" component={MePage} />
+        <Stack.Screen name="WorksPage" component={WorksPage} />
 
         <Stack.Screen name="Tabbar" component={Tabbar} />
 
-        <Stack.Screen name="DemoPage" component={DemoPage} />
+        {/* <Stack.Screen name="DemoPage" component={DemoPage} /> */}
 
       </Stack.Navigator>
     </NavigationContainer>
