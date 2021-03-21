@@ -5,37 +5,55 @@ import {pxToDp} from "../../../utils/stylesKits";
 import MusicPlayer from "../../../utils/MusicPlayer";
 import Singrefer from "./components/singrefer";
 import HeaderImageScrollView from 'react-native-image-header-scroll-view';
-import { ImageBackground } from 'react-native';
+import { ImageBackground ,TouchableOpacity} from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-
+import Svg from 'react-native-svg-uri';
+import {origin,adjust,restart,finish} from '../../../res/fonts/iconSvg';
+import CompletePage from './completepage';
+import {NavigationContext} from "@react-navigation/native";
 class Index extends Component {
+    static contextType = NavigationContext;
     state = {  }
+    goPage = ()=>{
+        // this.context = this.props.navigation
+        this.context.navigate("CompletePage");
+    }
     render() { 
         return ( 
             <View style={styles.flexFrame}>
                 <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                 <MusicPlayer></MusicPlayer>
                 {/* <Singrefer></Singrefer> */}
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around',alignContent:"center" ,paddingBottom:pxToDp(50)}}>
+                    <TouchableOpacity style={{alignItems:"center"}}>
+                        <View style={styles.button}>
+                            <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
+                        </View>
+                        <Text style={styles.buttontext}>原唱</Text>
+                    </TouchableOpacity>
 
+                    <TouchableOpacity style={{alignItems:"center"}}>
+                        <View style={styles.button}>
+                            <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
+                        </View>
+                        <Text style={styles.buttontext}>返听调音</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{alignItems:"center"}}>
+                        <View style={styles.button}>
+                            <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
+                        </View>
+                        <Text style={styles.buttontext}>重录</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.goPage("CompletePage")}>
+                        <View style={styles.button}>
+                            <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
+                        </View>
+                        <Text style={styles.buttontext}>完成</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-
-        // <HeaderImageScrollView
-        //     maxHeight={130}
-        //     minHeight={44}
-        //     headerImage={require("./images/background1.jpg")}
-        //     renderForeground={() => (
-        //     <View style={{ height: 130, justifyContent: "center", alignItems: "center" }} >
-        //         {/* <TouchableOpacity onPress={() => console.log("tap!!")}>
-        //         <Text style={{ backgroundColor: "transparent" }}>Tap Me!</Text>
-        //         </TouchableOpacity> */}
-        //     </View>
-        //     )}
-        // >
-        // <View style={{ height: 1000 }}>
-        // {/* 用来放首页剩下的部分 */}
-        //         {/* <MusicPlayer></MusicPlayer> */}
-        // </View>
-        // </HeaderImageScrollView>
         );
     }
 }
@@ -44,6 +62,19 @@ export default Index;
 
 
 styles = {
+    buttontext:{
+        fontSize:pxToDp(14),
+        marginTop:(4),
+        color:"#4444889a"
+    },
+    button:{
+        height:pxToDp(60),
+        width:pxToDp(60),
+        borderRadius:40,
+        backgroundColor:"#ddddee",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     flexContainer: {
         flex: 1,
         // 容器需要添加direction才能变成让子元素flex
@@ -54,8 +85,8 @@ styles = {
     flexFrame:{
         flex: 1,
         // 容器需要添加direction才能变成让子元素flex
-        flexDirection: 'column',
-        backgroundColor: '#ddddee',
+        // flexDirection: 'column',
+        backgroundColor: 'transparent',
     },
     cell: {
         flex: 1,

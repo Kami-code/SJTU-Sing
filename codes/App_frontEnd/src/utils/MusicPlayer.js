@@ -125,7 +125,7 @@ export default class MusicPlayer extends Component {
                         <Text style={{ color: '#5555ff',fontSize:16 }}> {item} </Text>
                     </View>
                 );
-                this.scrollView.scrollTo({ x: 0, y: (25 * i), animated: false });
+                this.scrollView.scrollTo({ x: 0, y: (32 * i), animated: false });
             }
             else {
                 //所有歌词
@@ -315,13 +315,13 @@ export default class MusicPlayer extends Component {
                     <View style={{ height: 220,alignItems: 'center' ,marginTop:20}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
-                                    snapToInterval = {30}
+                                    snapToInterval = {15}
                         >
                             {this.renderItem()}
                         </ScrollView>
                     </View>
                     {/* 额外添加按钮 */}
-                    <View style={{ flexDirection: 'row',marginTop:pxToDp(30), justifyContent: 'space-around' }}>
+                    {/* <View style={{ flexDirection: 'row',marginTop:pxToDp(30), justifyContent: 'space-around' }}>
 
                         <TouchableOpacity style={{alignItems:"center"}}>
                             <View style={styles.button}>
@@ -350,7 +350,7 @@ export default class MusicPlayer extends Component {
                             </View>
                             <Text style={styles.buttontext}>完成</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                 </View>
             )
         }

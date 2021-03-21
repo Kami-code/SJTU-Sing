@@ -12,6 +12,7 @@ class Index extends Component {
                 {/* <Text> 作品播放页面</Text> */}
                 <View style={{height:"100%",weight:"100%"}} >
                     <VideoScreen/>
+                    
                 </View>
                 
             </View>
