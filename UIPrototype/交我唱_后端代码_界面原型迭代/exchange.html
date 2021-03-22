@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src='ajax.js'></script>
+    <script>
+       var account={account:"xxx",password:"abcd",mode:1};
+        window.onload=function(){
+            var oBtn=document.getElementById("btn1");
+            oBtn.onclick=function(){
+                //ajax函数调用样例
+                $ajax({
+                    method:"get",//传输方式，get或post
+                    url:"http://121.4.86.24/exchange.php",//对应服务器端源文件
+                    data:account,//主要传输的对象
+                    success:function(result){
+                        //传输成功后执行的函数
+                        alert(result);
+                        //var obj=JSON.parse(result);
+                        //alert(obj.response);
+                     },
+                    error:function(msg){
+                        //传输失败后执行的函数
+                    }
+                })
+            }
+        }
+    </script>
+</head>
+<body>
+    <button id='btn1'>下载数据</button>
+</body>
+</html>
