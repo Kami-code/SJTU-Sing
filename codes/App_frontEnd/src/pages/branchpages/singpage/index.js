@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View,Text,Image,StatusBar} from 'react-native';
+import {View,Text,Image,StatusBar,StyleSheet} from 'react-native';
 
 import {pxToDp} from "../../../utils/stylesKits";
 import MusicPlayer from "../../../utils/MusicPlayer";
@@ -24,7 +24,7 @@ class Index extends Component {
                 <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                 <MusicPlayer></MusicPlayer>
                 {/* <Singrefer></Singrefer> */}
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around',alignContent:"center" ,paddingBottom:pxToDp(50)}}>
+                {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around',alignContent:"center" ,paddingBottom:pxToDp(50)}}>
                     <TouchableOpacity style={{alignItems:"center"}}>
                         <View style={styles.button}>
                             <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
@@ -52,7 +52,7 @@ class Index extends Component {
                         </View>
                         <Text style={styles.buttontext}>完成</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
             </View>
         );
     }
@@ -61,7 +61,7 @@ class Index extends Component {
 export default Index;
 
 
-styles = {
+const styles = StyleSheet.create({
     buttontext:{
         fontSize:pxToDp(14),
         marginTop:(4),
@@ -146,4 +146,4 @@ styles = {
         width: 110,
         // backgroundColor: '#fefefe'
     },
-}
+});

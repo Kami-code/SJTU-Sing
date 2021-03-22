@@ -6,6 +6,8 @@ import {svg_bubble, svg_huatong,svg_letter,svg_search,svg_shezhi,svg_touxiang,sv
 import SingPage from './pages/branchpages/singpage';
 import NewsPage from './pages/branchpages/newspage';
 import MePage from './pages/branchpages/mepage';
+import MessagePage from './pages/branchpages/messagepage';
+import FindPage from './pages/branchpages/findpage';
 import MainPage from './pages/mainpage';
 import MusicPlayer from './utils/MusicPlayer'
 class Index extends Component {
@@ -40,7 +42,9 @@ class Index extends Component {
                         // renderBadge={() => <CustomBadgeView />}
                         onPress={() => this.setState({ selectedTab: 'search' })}>
                         {/* {profileView} */}
-                        <Text>发现</Text>
+                        <View style={{flex:1,flexDirection:'column'}} >
+                            <FindPage/>
+                        </View>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'home'}
@@ -65,7 +69,9 @@ class Index extends Component {
                         // renderBadge={() => <CustomBadgeView />}
                         onPress={() => this.setState({ selectedTab: 'message' })}>
                         {/* {profileView} */}
-                        <Text> 2222</Text>
+                        <View style={{flex:1,flexDirection:'column'}} >
+                            <MessagePage/>
+                        </View>
                     </TabNavigator.Item>
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'myinfo'}

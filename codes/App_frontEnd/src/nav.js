@@ -13,6 +13,8 @@ import NewsPage from "./pages/branchpages/newspage";
 import NewsDetailPage from "./pages/branchpages/newspage/detailpage";
 import MePage from "./pages/branchpages/mepage";
 import WorksPage from "./pages/branchpages/mepage/workspage";
+import MessagePage from "./pages/branchpages/messagepage";
+import FindPage from './pages/branchpages/findpage';
 // import DemoPage from "./pages/demopage";
 import Layout from "./components/Layout";
 import Tabbar from "./tabbar";
@@ -41,7 +43,7 @@ const Stack = createStackNavigator();
 function Nav() {
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName="Tabbar">
+      <Stack.Navigator headerMode="none" initialRouteName="Login">
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="MainPage" component={MainPage} />
         <Stack.Screen name="SingPage" component={SingPage} />
@@ -53,6 +55,8 @@ function Nav() {
         <Stack.Screen name="SelectPage" component={SelectPage} />
         <Stack.Screen name="MePage" component={MePage} />
         <Stack.Screen name="WorksPage" component={WorksPage} />
+        <Stack.Screen name="MessagePage" component={MessagePage} />
+        <Stack.Screen name="FindPage" component={FindPage} />
 
         <Stack.Screen name="Tabbar" component={Tabbar} />
 

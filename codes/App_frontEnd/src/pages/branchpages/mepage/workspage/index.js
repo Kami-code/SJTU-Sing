@@ -8,9 +8,17 @@ import { pxToDp } from '../../../../utils/stylesKits';
 import Svg from "react-native-svg-uri";
 import {heart,origin} from '../../../../res/fonts/iconSvg';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+
+import SONGS from '../../../../images/song';
 class Index extends Component {
     static contextType =NavigationContext;
-    state = {  }
+    constructor(props) {
+        super(props);
+        this.state={
+            songs: SONGS,
+            pic_big: '', 
+        }
+    }
     render () {
         return(
             <View style={styles.container}>
@@ -23,16 +31,15 @@ class Index extends Component {
                 </View>
                 {/* 内容 */}
                 <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={require('../images/Lovestory.jpg')} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30)}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> LoveStory </Text>
+                    <Image source={{ uri: this.state.songs[0].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
+                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
+                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[0].title } </Text>
                         <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.3.23 </Text>
                     </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center"}}>
+                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center",width:pxToDp(60)}}>
                         <Svg width="40" height="40" fill ="#fff"  svgXmlData={heart} />
                         <Text >9.1k</Text>
                     </View>
-                
                 </TouchableOpacity>
 
                 {/* 标题 */}
@@ -44,34 +51,34 @@ class Index extends Component {
 
                 </View>
                 <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={require('../images/Lovestory.jpg')} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30)}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> LoveStory </Text>
+                    <Image source={{ uri: this.state.songs[1].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
+                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
+                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[1].title } </Text>
                         <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.3.23 </Text>
                     </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center"}}>
+                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center",width:pxToDp(60)}}>
                         <Svg width="40" height="40" fill ="#fff"  svgXmlData={heart} />
                         <Text >9.1k</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={require('../images/Lovestory.jpg')} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30)}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> LoveStory </Text>
-                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.3.23 </Text>
+                    <Image source={{ uri: this.state.songs[2].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
+                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
+                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[2].title } </Text>
+                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.9.10 </Text>
                     </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center"}}>
+                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center",width:pxToDp(60)}}>
                         <Svg width="40" height="40" fill ="#fff"  svgXmlData={heart} />
                         <Text >0.1k</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={require('../images/Lovestory.jpg')} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30)}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> LoveStory </Text>
-                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.3.23 </Text>
+                    <Image source={{ uri: this.state.songs[3].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
+                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
+                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[3].title } </Text>
+                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.7.3 </Text>
                     </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center"}}>
+                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center",width:pxToDp(60)}}>
                         <Svg width="40" height="40" fill ="#fff"  svgXmlData={heart} />
                         <Text >2.1k</Text>
                     </View>

@@ -20,9 +20,9 @@ class Index extends Component {
                     <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                     <ImageBackground 
                         source={require("../../../images/background_blue.jpg")}
-                        style={{height:pxToDp(100),flexDirection:"column",alignItems:'center',justifyContent:"center"}}
+                        style={{height:pxToDp(80),flexDirection:"row",alignItems:'center',justifyContent:"center"}}
                     >
-                        <Text style={{color:"#fff",fontSize:pxToDp(24),fontWeight:'bold'}}> 我的 </Text>
+                        <Text style={{color:"#fff",fontSize:pxToDp(24),paddingTop:pxToDp(12),fontWeight:'bold'}}> 我的 </Text>
                         
                     </ImageBackground>
                     <View style={{height:"18%",paddingTop:pxToDp(12),flexDirection:"row",alignItems:'center',justifyContent:'space-around',backgroundColor:"#aabbffa9"}}>
@@ -33,7 +33,7 @@ class Index extends Component {
                         <View style={{height:"100%",paddingTop:pxToDp(20),flexDirection:"column"}}>
                             <Text style={{color:"#fff",fontSize:pxToDp(24),fontWeight:'bold'}}> 川普 </Text>
                             <Text style={{color:"#fff",fontSize:pxToDp(16)}}> 男 广东 22岁</Text>
-                            <Text style={{color:"#fff",fontSize:pxToDp(16)}}> Fack News!!</Text>
+                            <Text style={{color:"#fff",fontSize:pxToDp(16)}}> Fake News!!</Text>
                         </View>
                         <TouchableOpacity style ={{borderColor:"#000"}}>
                             <Text>+ 添加账号 </Text>
@@ -100,4 +100,4 @@ const styles = StyleSheet.create({
         flexDirection:"column",
         backgroundColor: "#ddddee"
     },
-})
+});

@@ -13,7 +13,7 @@ class Index extends Component {
       //从外部传递style属性,父组件中传递事件属性
       <TouchableOpacity onPress={this.props.onPress} style ={{width:"100%",height:"100%",...this.props.style,overflow:"hidden"}}>
         {/* start和and构成矢量决定渐变方向 */}
-        <LinearGradient start={{x:0,y:0}} end={{x:1,y:0}} colors={['#FF0000', '#7093DB']} style={styles.linearGradient}>
+        <LinearGradient start={{x:0,y:0}} end={{x:1,y:0}} colors={['#0266AB', '#7093DB']} style={styles.linearGradient}>
           <Text style={{...styles.buttonText,...this.props.textStyle}}>
           {this.props.children}
           </Text>

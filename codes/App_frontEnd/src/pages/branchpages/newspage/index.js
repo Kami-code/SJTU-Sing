@@ -6,9 +6,30 @@ import TopNav from '../../../components/Topnav';
 import {NavigationContext} from "@react-navigation/native";
 import {pxToDp} from '../../../utils/stylesKits';
 
+import SONGS from '../../../images/song';
+
 class Index extends Component {
     static contextType = NavigationContext;
-    state = {  }
+    constructor(props) {
+        super(props);
+        this.state={
+            songs: SONGS,
+            pic_big: '', 
+            cards:[],
+            count:0,
+        }
+        // let songs_pic_big_list = this.state.songs.map((song)=>{
+        //     return song.pic_big;
+        // });
+        // let a = songs_pic_big_list.map((pic_big)=>{
+        //     return (
+        //         <TouchableOpacity style={styles.card}  onPress ={()=>this.goPage("NewsDetailPage")}>
+        //         {/* <Text style={styles.text}>{card}</Text> */}
+        //         <Image source={{ uri: pic_big}} style={{height:"100%",width:"100%"}}></Image>
+        //         </TouchableOpacity>
+        //     );
+        // });
+    }
     goPage = ()=>{
         //newspage页面不足以调用
         console.log(this.props.navigation);
@@ -23,13 +44,17 @@ class Index extends Component {
 
                 {/* <Text>显示了吗</Text> */}
                 <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
+                {/* {a} */}
                 <Swiper
                     cards={['DO', 'MORE', 'OF', 'WHAT', 'MAKES', 'YOU', 'HAPPY']}
                     renderCard={(card) => {
+                        // this.setState({
+                        //     count:(this.state.count+1) %4
+                        // });
                         return (
                             <TouchableOpacity style={styles.card}  onPress ={()=>this.goPage("NewsDetailPage")}>
                                 {/* <Text style={styles.text}>{card}</Text> */}
-                                <Image source={require("./images/Lovestory.jpg")}></Image>
+                                <Image source={{ uri: this.state.songs[3].pic_big }} style={{height:"100%",width:"100%"}}></Image>
                             </TouchableOpacity>
                         )
                     }}
@@ -51,25 +76,26 @@ class Index extends Component {
                         >
                             <Text style={{color:"#fff",fontSize:pxToDp(24),fontWeight:'bold'}}> 动态 </Text>
                         </ImageBackground>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-around',alignItems:'center' ,paddingTop:pxToDp(12) }}>
-                            <TouchableOpacity style={styles.button}>
-                                <Text style={styles.buttontext}>全部</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.button}>
-                                <Text style={styles.buttontext}>热门</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.button}>
-                                <Text style={styles.buttontext}>好友</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={styles.button}>
-                                <Text style={styles.buttontext}>教唱</Text>
-                            </TouchableOpacity>
-                        </View>
+                        
                     </View>
                 </Swiper>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-around',alignItems:'center' ,paddingTop:pxToDp(95) }}>
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.buttontext}>全部</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.buttontext}>热门</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.buttontext}>好友</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.button}>
+                        <Text style={styles.buttontext}>教唱</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         );
         
