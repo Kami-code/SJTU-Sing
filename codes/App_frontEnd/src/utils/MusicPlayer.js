@@ -19,11 +19,13 @@ import Svg from 'react-native-svg-uri';
 import {origin,adjust,restart,finish} from '../res/fonts/iconSvg';
 import {pxToDp} from '../utils/stylesKits';
 
+import {NavigationContext} from "@react-navigation/native";
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
 
 
 export default class MusicPlayer extends Component {
+    static contextType = NavigationContext;
 
     constructor(props) {
         super(props);
@@ -246,6 +248,11 @@ export default class MusicPlayer extends Component {
         this.loadSongInfo(0)   //预先加载第一首
     }
 
+    goPage = ()=>{
+        // this.context = this.props.navigation
+        this.context.navigate("CompletePage");
+    }
+
     render() {
         //如果未加载出来数据 就一直转菊花
         if (this.state.songs.length <= 0) {
@@ -321,7 +328,7 @@ export default class MusicPlayer extends Component {
                         </ScrollView>
                     </View>
                     {/* 额外添加按钮 */}
-                    {/* <View style={{ flexDirection: 'row',marginTop:pxToDp(30), justifyContent: 'space-around' }}>
+                    <View style={{ flexDirection: 'row',marginTop:pxToDp(30), justifyContent: 'space-around' }}>
 
                         <TouchableOpacity style={{alignItems:"center"}}>
                             <View style={styles.button}>
@@ -344,13 +351,13 @@ export default class MusicPlayer extends Component {
                             <Text style={styles.buttontext}>重录</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{alignItems:"center"}}>
+                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.goPage("CompletePage")}>
                             <View style={styles.button}>
                                 <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
                             </View>
                             <Text style={styles.buttontext}>完成</Text>
                         </TouchableOpacity>
-                    </View> */}
+                    </View>
                 </View>
             )
         }

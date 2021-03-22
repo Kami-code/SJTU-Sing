@@ -203,7 +203,7 @@ class Index extends Component{
 
                 {/* 1.0 background */}
                     {/* 图片设置中，直接用数字单位为dp 想要适配屏幕，要px -> dp转化单位 */}
-                <Image style={{width:"100%",height:200}} source={require("../../../images/Trump.jpg")}></Image>
+                <Image style={{width:"100%",height:200}} source={require("../../../images/background2.jpg")}></Image>
                 {/* 1.0 background END */}
 
                 {/* 2.0 content */}
