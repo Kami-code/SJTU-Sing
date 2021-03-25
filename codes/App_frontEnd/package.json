@@ -13,10 +13,14 @@
     "@react-native-community/masked-view": "^0.1.10",
     "@react-navigation/native": "^5.9.3",
     "@react-navigation/stack": "^5.14.3",
+    "add": "^2.0.6",
+    "bundle": "^2.1.0",
     "react": "16.13.1",
     "react-native": "0.63.4",
     "react-native-confirmation-code-field": "^6.5.1",
     "react-native-elements": "^3.2.0",
+    "react-native-ffmpeg": "^0.5.1",
+    "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-reanimated": "^1.13.2",
@@ -25,7 +29,8 @@
     "react-native-tab-navigator": "^0.3.4",
     "react-native-vector-icons": "^8.1.0",
     "react-native-video": "^5.1.1",
-    "teaset": "^0.7.5"
+    "teaset": "^0.7.5",
+    "yarn": "^1.22.10"
   },
   "devDependencies": {
     "@babel/core": "^7.8.4",
