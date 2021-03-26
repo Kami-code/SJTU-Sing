@@ -51,9 +51,9 @@ class Index extends Component {
     render() {
         return (
             <View style={styles.flexFrame}>
-                <ImageBackground style={{width:"100%",height:"100%",flexDirection:"row"}} source={require("../../images/background2.jpg")}>
+                {/* <ImageBackground style={{width:"100%",height:"100%",flexDirection:"row"}} source={require("../../images/background2.jpg")}> */}
                     <View style={styles.flexContainer}>
-                        <Text>fuck ms</Text>
+                        {/* <Text>fuck ms</Text> */}
                         <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                         <View style={styles.cellfixed}>
                             <Button_Icon2 onPress={this.goSelectPage} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon2>
@@ -62,12 +62,12 @@ class Index extends Component {
                             <Button_Icon1 onPress={this.goSingPage} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon1>
                         </View>
                         <View st2yle={styles.cellfixed}>
-                            <Button_Icon3 onPress={this.getMoviesFromApi} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon3>
+                            <Button_Icon3 onPress={this.goPlayPage} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon3>
                         </View>
-                        <Text>{this.state.age}</Text>
+                        {/* <Text>{this.state.age}</Text> */}
                     </View>
 
-                </ImageBackground>
+                {/* </ImageBackground> */}
             </View>
 
         );

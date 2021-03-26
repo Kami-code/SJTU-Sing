@@ -12,15 +12,20 @@ import {
 } from 'react-native'
 
 let { width, height } = Dimensions.get('window');
-import Video from 'react-native-video'
+import Video from 'react-native-video';
 let lyrObj = []   // 存放歌词
-import SONGS from '../images/song'
+import SONGS from '../images/song';
+import Svg from 'react-native-svg-uri';
+import {origin,adjust,restart,finish} from '../res/fonts/iconSvg';
+import {pxToDp} from '../utils/stylesKits';
 
+import {NavigationContext} from "@react-navigation/native";
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
 
 
 export default class MusicPlayer extends Component {
+    static contextType = NavigationContext;
 
     constructor(props) {
         super(props);
@@ -119,16 +124,16 @@ export default class MusicPlayer extends Component {
                 itemAry.push(
                     <View key={i + 2} style={styles.itemStyle}>
 
-                        <Text style={{ color: 'blue' }}> {item} </Text>
+                        <Text style={{ color: '#5555ff',fontSize:16 }}> {item} </Text>
                     </View>
                 );
-                this.scrollView.scrollTo({ x: 0, y: (25 * i), animated: false });
+                this.scrollView.scrollTo({ x: 0, y: (32 * i), animated: false });
             }
             else {
                 //所有歌词
                 itemAry.push(
                     <View key={i + 2} style={styles.itemStyle}>
-                        <Text style={{ color: 'red'}}> {item} </Text>
+                        <Text style={{ color: '#ff55559a',fontSize:16 }}> {item} </Text>
                     </View>
                 )
             }
@@ -243,6 +248,11 @@ export default class MusicPlayer extends Component {
         this.loadSongInfo(0)   //预先加载第一首
     }
 
+    goPage = ()=>{
+        // this.context = this.props.navigation
+        this.context.navigate("CompletePage");
+    }
+
     render() {
         //如果未加载出来数据 就一直转菊花
         if (this.state.songs.length <= 0) {
@@ -293,7 +303,7 @@ export default class MusicPlayer extends Component {
                             this.refs.video.seek(value)
                         }}
                     />
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around',marginTop: pxToDp(12) }}>
 
                         <TouchableOpacity onPress={() => this.prevAction(this.state.currentIndex - 1)}>
                             <Image source={require('./image/上一首.png')} style={{ width: 30, height: 30 }} />
@@ -308,16 +318,46 @@ export default class MusicPlayer extends Component {
                         </TouchableOpacity>
                     </View>
 
-
-                    <View style={{ height: 125, alignItems: 'center' ,marginTop:50}}>
-                        <ScrollView style={{ position: 'relative' }}
+                        {/* 歌词界面设置 */}
+                    <View style={{ height: 220,alignItems: 'center' ,marginTop:20}}>
+                        <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
-                                    snapToInterval = {30}
+                                    snapToInterval = {15}
                         >
                             {this.renderItem()}
                         </ScrollView>
                     </View>
+                    {/* 额外添加按钮 */}
+                    <View style={{ flexDirection: 'row',marginTop:pxToDp(30), justifyContent: 'space-around' }}>
 
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
+                            </View>
+                            <Text style={styles.buttontext}>原唱</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
+                            </View>
+                            <Text style={styles.buttontext}>返听调音</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
+                            </View>
+                            <Text style={styles.buttontext}>重录</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.goPage("CompletePage")}>
+                            <View style={styles.button}>
+                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
+                            </View>
+                            <Text style={styles.buttontext}>完成</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             )
         }
@@ -326,9 +366,22 @@ export default class MusicPlayer extends Component {
 }
 
 const styles = StyleSheet.create({
+    buttontext:{
+        fontSize:pxToDp(14),
+        marginTop:(4),
+        color:"#4444889a"
+    },
+    button:{
+        height:pxToDp(60),
+        width:pxToDp(60),
+        borderRadius:40,
+        backgroundColor:"#ddddee",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     container: {
         flex: 1,
-        backgroundColor: '#00F',
+        backgroundColor: 'transparent',
     },
     image: {
         flex: 1
@@ -361,7 +414,7 @@ const styles = StyleSheet.create({
         paddingBottom: 50
     },
     itemStyle: {
-        height: 25,
+        height: 35,
         alignItems: 'center'
     }
 })
