@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ec1f4ce9-f239-4aaf-96a5-3ab53e1fed26" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/App_frontEnd/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/App_frontEnd/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App_frontEnd/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/App_frontEnd/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App_frontEnd/android/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/App_frontEnd/android/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App_frontEnd/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/App_frontEnd/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App_frontEnd/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/App_frontEnd/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/App_frontEnd/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/App_frontEnd/yarn.lock" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1q1mMM2JQT7UhCnfGWBubqCZwbq" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/App_frontEnd/android/build.gradle" />
+    <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ec1f4ce9-f239-4aaf-96a5-3ab53e1fed26" name="Default Changelist" comment="" />
+      <created>1616255422006</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1616255422006</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="416" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1616255591014">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="416" y="195" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1080/-2560.296.1280.800@0.0.1920.1080" timestamp="1616255591014" />
+    <state x="871" y="156" key="FileChooserDialogImpl" timestamp="1616255693400">
+      <screen x="0" y="0" width="1920" height="1080" />
+    </state>
+    <state x="871" y="156" key="FileChooserDialogImpl/0.0.1920.1080/-2560.296.1280.800@0.0.1920.1080" timestamp="1616255693400" />
+  </component>
+</project>
