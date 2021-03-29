@@ -16,7 +16,7 @@ class Index extends Component {
     constructor(props) {
         super(props);
         this.state = { age:'1111' };
-        this.getMoviesFromApi = this.getMoviesFromApi.bind(this);
+        //this.  = this.getMoviesFromApi.bind(this);
     }
 
 
