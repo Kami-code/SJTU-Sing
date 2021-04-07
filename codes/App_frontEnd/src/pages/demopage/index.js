@@ -1,7 +1,7 @@
 import { LogLevel, RNFFmpeg, RNFFprobe } from 'react-native-ffmpeg';
 import RNFS from 'react-native-fs';
-import {convertFile,mergeAudio} from '../../utils/ffmpeg-api'
-import NoiseExample from '../../utils/native'
+import {encode,decode,mergeAudio,noiseSuppress} from '../../utils/audio-api'
+//import RNNoise from '../../utils/native'
 
 import React,{Component} from 'react';
 import {View,Text,Image,StatusBar} from 'react-native';
@@ -15,21 +15,6 @@ import { ImageBackground } from 'react-native';
 import MusicPlayer from '../../utils/MusicPlayer';
 
 
-//  const ffmpegWatermarkCommand = '-i ' + RNFS.ExternalStorageDirectoryPath+ '/test/wx_camera_1582897957311.mp4 '+RNFS.ExternalStorageDirectoryPath+'/test/test1.wav ';
-//  RNFFmpeg.execute(ffmpegWatermarkCommand).then(result => console.log(`FFmpeg process exited with rc=${result}.`));
-
-// convertFile('/test/1.mp3','/test/1.wav')
-// convertFile('/test/2.mp3','/test/2.wav')
-//mergeAudio('/test/2_vocals.mp3','/test/test_music.mp3','/test/merge3.mp3')
-
-// RNFFmpeg.execute('-y -i '+RNFS.ExternalStorageDirectoryPath+'/test/noise.m4a -acodec pcm_s16le -f s16le -ac 2 -ar 48000 '+RNFS.ExternalStorageDirectoryPath+'/test/noise.pcm').then(
-//     noiseExample.noise_suppress(RNFS.ExternalStorageDirectoryPath+ '/test/noise.pcm',RNFS.ExternalStorageDirectoryPath+ '/test/noise_canceled.pcm')
-// )
-
-NoiseExample.noise_suppress(RNFS.ExternalStorageDirectoryPath+ '/test/noise.pcm',RNFS.ExternalStorageDirectoryPath+ '/test/noise_canceled.pcm')
-
-
-
 class Index extends Component {
 
     constructor(props) {
@@ -40,20 +25,19 @@ class Index extends Component {
 
 
     goSingPage=()=>{
-        // console.log('waaa');
-        //NoiseExample.noise_suppress(RNFS.ExternalStorageDirectoryPath+ '/test/noise.pcm',RNFS.ExternalStorageDirectoryPath+ '/test/noise_canceled.pcm')
-        RNFFmpeg.execute('-y -f s16le -ac 2 -ar 48000 -acodec pcm_s16le -i '+RNFS.ExternalStorageDirectoryPath+'/test/noise_canceled.pcm '+RNFS.ExternalStorageDirectoryPath+'/test/noise_mp3.mp3')
         
+        decode('/test/noise.m4a','/test/noise.pcm','/test/noise_canceled.pcm','/test/noise_canceled.mp3',1)
+        
+
     }
     goInfoPage=()=>{
-        // NoiseExample.noise_suppress(RNFS.ExternalStorageDirectoryPath+ '/test/noise.pcm',RNFS.ExternalStorageDirectoryPath+ '/test/noise_canceled.pcm').then(console.log('waaa'))
+
     }
     goPlayPage=()=>{
-        // NoiseExample.noise_suppress(RNFS.ExternalStorageDirectoryPath+ '/test/noise.pcm',RNFS.ExternalStorageDirectoryPath+ '/test/noise_canceled.pcm').then(console.log('waaa'))
+
     }
     goSelectPage=()=>{
 
-        // NoiseExample.noise_suppress(RNFS.ExternalStorageDirectoryPath+ '/test/noise.pcm',RNFS.ExternalStorageDirectoryPath+ '/test/noise_canceled.pcm').then(console.log('waaa'))
     }
 
     async getMoviesFromApi() {

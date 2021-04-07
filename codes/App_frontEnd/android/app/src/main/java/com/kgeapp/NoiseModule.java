@@ -30,7 +30,7 @@ public class NoiseModule extends ReactContextBaseJavaModule {
 
     @Override
     public String getName() {
-        return "NoiseExample";
+        return "RNNoise";
     }
 
     @ReactMethod
