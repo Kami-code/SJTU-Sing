@@ -9,7 +9,9 @@ import Button_Icon3 from "../../components/Button_Icon/Button3";
 import { ImageBackground } from 'react-native';
 import MusicPlayer from '../../utils/MusicPlayer';
 
-
+//
+//  本页面已废弃 2021-4-9
+//
 
 class Index extends Component {
 

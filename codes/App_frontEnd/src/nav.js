@@ -18,6 +18,9 @@ import FindPage from './pages/branchpages/findpage';
 import DemoPage from "./pages/demopage";
 import Layout from "./components/Layout";
 import Tabbar from "./tabbar";
+
+import Recorder from "./components/Recorder";
+
 function HomeScreen({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -43,7 +46,8 @@ const Stack = createStackNavigator();
 function Nav() {
   return (
     <NavigationContainer>
-      <Stack.Navigator headerMode="none" initialRouteName="DemoPage">
+      {/* 录音模块放在 ./components/Recorder 中，含保存方法*/}
+      <Stack.Navigator headerMode="none" initialRouteName="Recorder">
         <Stack.Screen name="Login" component={Login} />
         <Stack.Screen name="MainPage" component={MainPage} />
         <Stack.Screen name="SingPage" component={SingPage} />
@@ -61,6 +65,7 @@ function Nav() {
         <Stack.Screen name="Tabbar" component={Tabbar} />
 
         <Stack.Screen name="DemoPage" component={DemoPage} />
+        <Stack.Screen name="Recorder" component={Recorder} />
 
       </Stack.Navigator>
     </NavigationContainer>

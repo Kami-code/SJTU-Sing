@@ -27,7 +27,6 @@ class Index extends Component {
     goSingPage=()=>{
         
         decode('/test/noise.m4a','/test/noise.pcm','/test/noise_canceled.pcm','/test/noise_canceled.mp3',1)
-        
 
     }
     goInfoPage=()=>{
