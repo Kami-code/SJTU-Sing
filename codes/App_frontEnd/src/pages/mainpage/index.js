@@ -36,11 +36,13 @@ class Index extends Component {
         this.props.navigation.navigate("SelectPage");
     }
 
+
+
     async getMoviesFromApi() {
         try {
             // 注意这里的await语句，其所在的函数必须有async关键字声明
             let response = await fetch(
-                'http://121.4.86.24/getList.php',
+                'http://121.4.86.24:8080/greeting?name=111',
             );
             let responseJson = await response.json();
             this.setState({

@@ -3,6 +3,8 @@ import { View, Text, StyleSheet } from 'react-native';
  
 import Sound from 'react-native-sound';
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
+
+import MusicPlayer from '../../utils/MusicPlayer';
  
 // 使用前需安装依赖、link依赖、获取录音权限（前两项已配置，可能遇到需要手动在手机设置中授权的情况）
 // 本组件包括录音、保存、播放功能， 保存为.aac格式（应该能够选择），并可直接生成base64编码
@@ -21,6 +23,8 @@ export default class App extends Component {
       pause: false, //录音是否暂停
       stop: false, //录音是否停止
       currentTime: 0, //录音时长
+      id:0,
+      content:"",
     };
   }
  
@@ -142,16 +146,34 @@ export default class App extends Component {
       })
     })
   }
-  
+
+  // _upload =
+  _upload = async ()=> {
+    try {
+      // 注意这里的await语句，其所在的函数必须有async关键字声明
+      let response = await fetch(
+          'http://121.4.86.24:8080/greeting?name=111',
+      );
+      let responseJson = await response.json();
+      this.setState({
+          id: responseJson.id,
+          content: responseJson.content,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
   render() {
-    let { recording, pause, currentTime } = this.state
+    let { recording, pause, currentTime ,content,id} = this.state
     return (
       <View style={styles.container}>
+        <MusicPlayer/>
         <Text style={styles.text} onPress={this._record}> Record(开始录音) </Text>
         <Text style={styles.text} onPress={this._pause}> Pause(暂停录音) </Text>
         <Text style={styles.text} onPress={this._resume}> Resume(恢复录音) </Text>
         <Text style={styles.text} onPress={this._stop}> Stop(停止录音) </Text>
         <Text style={styles.text} onPress={this._play}> Play(播放录音) </Text>
+        <Text style={styles.text} onPress={this._upload}> upload(上传录音) </Text>
         <Text style={styles.text}>
           {
             recording ? '正在录音' : 
@@ -159,6 +181,8 @@ export default class App extends Component {
           }
         </Text>
         <Text style={styles.text}>时长: {currentTime}</Text>
+        <Text style={styles.text}>返回ID: {id}</Text>
+        <Text style={styles.text}>返回内容: {content}</Text>
       </View>
     );
   }

@@ -6,6 +6,7 @@ import Login from "./pages/account/login";
 import MainPage from "./pages/mainpage";
 import SingPage from "./pages/branchpages/singpage";
 import CompletePage from "./pages/branchpages/singpage/completepage";
+import ChoosePage from "./pages/branchpages/singpage/choosepage";
 import InfoPage from "./pages/branchpages/infopage";
 import PlayPage from "./pages/branchpages/playpage";
 import SelectPage from "./pages/branchpages/selectpage";
@@ -49,9 +50,12 @@ function Nav() {
       {/* 录音模块放在 ./components/Recorder 中，含保存方法*/}
       <Stack.Navigator headerMode="none" initialRouteName="Recorder">
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="MainPage" component={MainPage} />
+        {/* <Stack.Screen name="MainPage" component={MainPage} /> */}
+
         <Stack.Screen name="SingPage" component={SingPage} />
         <Stack.Screen name="CompletePage" component={CompletePage} />
+        <Stack.Screen name="ChoosePage" component={ChoosePage} />
+
         <Stack.Screen name="InfoPage" component={InfoPage} />
         <Stack.Screen name="PlayPage" component={PlayPage} />
         <Stack.Screen name="NewsPage" component={NewsPage} />
