@@ -8,7 +8,8 @@ import {
     Slider,
     TouchableOpacity,
     ScrollView,
-    ActivityIndicator
+    ActivityIndicator,
+    DeviceEventEmitter
 } from 'react-native'
 
 let { width, height } = Dimensions.get('window');
@@ -22,7 +23,6 @@ import {pxToDp} from '../utils/stylesKits';
 import {NavigationContext} from "@react-navigation/native";
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
-
 
 export default class MusicPlayer extends Component {
     static contextType = NavigationContext;
@@ -128,6 +128,7 @@ export default class MusicPlayer extends Component {
                     </View>
                 );
                 this.scrollView.scrollTo({ x: 0, y: (32 * i), animated: false });
+                DeviceEventEmitter.emit('segmentation');
             }
             else {
                 //所有歌词

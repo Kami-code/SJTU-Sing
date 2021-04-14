@@ -1,7 +1,9 @@
 import React from 'react';
 import {RNFFmpeg, RNFFmpegConfig, RNFFprobe, LogLevel} from 'react-native-ffmpeg';
 import RNFS from 'react-native-fs';
-import RNNoise from './native'
+import RNNoise from './rnnoise';
+import AECM from './aecm';
+import Sox from './sox'
 
 function ffprint(text) {
     console.log(text.endsWith('\n') ? text.replace('\n', '') : text);
@@ -60,9 +62,12 @@ export function encode(f_in,f_out,channel){//channel = 1 or 2
 }
 
 export function noiseSuppress(f_in,f_out){
-    RNNoise.noise_suppress(RNFS.ExternalStorageDirectoryPath+ f_in,RNFS.ExternalStorageDirectoryPath+ f_out)
+    RNNoise.noise_suppress(RNFS.ExternalStorageDirectoryPath+ f_in,RNFS.ExternalStorageDirectoryPath+ f_out);
 }
 
+export function aecm(f_near, f_far, f_out){
+    AECM.aec(RNFS.ExternalStorageDirectoryPath+ f_near,RNFS.ExternalStorageDirectoryPath+ f_far,RNFS.ExternalStorageDirectoryPath+ f_out);
+}
 
 
 

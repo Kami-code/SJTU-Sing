@@ -55,16 +55,16 @@ export default class App extends Component {
    */
   prepareRecordingPath = (path) => {
     const option = {
-      SampleRate: 44100.0, //采样率
-      Channels: 2, //通道
+      SampleRate: 48000.0, //采样率
+      Channels: 1, //通道
       AudioQuality: 'High', //音质
-      AudioEncoding: 'aac', //音频编码
-      OutputFormat: 'mpeg_4', //输出格式
+      AudioEncoding: 'wav', //音频编码
+      // OutputFormat: 'wav', //输出格式
       MeteringEnabled: false, //是否计量
       MeasurementMode: false, //测量模式
-      AudioEncodingBitRate: 32000, //音频编码比特率
+      // AudioEncodingBitRate: 32000, //音频编码比特率
       IncludeBase64: true, //是否是base64格式
-      AudioSource: 0, //音频源
+      // AudioSource: 0, //音频源
     }
     AudioRecorder.prepareRecordingAtPath(path,option)
   }

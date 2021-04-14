@@ -1,6 +1,6 @@
 import { LogLevel, RNFFmpeg, RNFFprobe } from 'react-native-ffmpeg';
 import RNFS from 'react-native-fs';
-import {encode,decode,mergeAudio,noiseSuppress} from '../../utils/audio-api'
+import {encode,decode,mergeAudio,noiseSuppress,aecm} from '../../utils/audio-api'
 //import RNNoise from '../../utils/native'
 
 import React,{Component} from 'react';
@@ -26,11 +26,11 @@ class Index extends Component {
 
     goSingPage=()=>{
         
-        decode('/test/noise.m4a','/test/noise.pcm','/test/noise_canceled.pcm','/test/noise_canceled.mp3',1)
-
+        // decode('/test/noise.m4a','/test/noise.pcm','/test/noise_canceled.pcm','/test/noise_canceled.mp3',1)
+        // aecm()
     }
     goInfoPage=()=>{
-
+        aecm();
     }
     goPlayPage=()=>{
 

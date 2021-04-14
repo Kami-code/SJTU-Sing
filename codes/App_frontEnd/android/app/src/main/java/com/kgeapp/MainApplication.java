@@ -27,7 +27,9 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
           //packages.add(new MainReactPackage());
-          packages.add(new NSPackage());
+          // packages.add(new NSPackage());
+          // packages.add(new AECPackage());
+          packages.add(new NativePackage());
           return packages;
         }
 
