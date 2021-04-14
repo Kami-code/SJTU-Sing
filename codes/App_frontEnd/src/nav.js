@@ -6,6 +6,7 @@ import Login from "./pages/account/login";
 import MainPage from "./pages/mainpage";
 import SingPage from "./pages/branchpages/singpage";
 import CompletePage from "./pages/branchpages/singpage/completepage";
+import ChoosePage from "./pages/branchpages/singpage/choosepage";
 import InfoPage from "./pages/branchpages/infopage";
 import PlayPage from "./pages/branchpages/playpage";
 import SelectPage from "./pages/branchpages/selectpage";
@@ -19,7 +20,8 @@ import DemoPage from "./pages/demopage";
 import Layout from "./components/Layout";
 import Tabbar from "./tabbar";
 
-import Recorder from "./components/Recorder";
+import Recorder1 from "./components/Recorder2.0/Recorder_1";
+import Recorder2 from "./components/Recorder2.0/Recorder_2";
 
 function HomeScreen({navigation}) {
   return (
@@ -47,11 +49,14 @@ function Nav() {
   return (
     <NavigationContainer>
       {/* 录音模块放在 ./components/Recorder 中，含保存方法*/}
-      <Stack.Navigator headerMode="none" initialRouteName="Recorder">
+      <Stack.Navigator headerMode="none" initialRouteName="Recorder2">
         <Stack.Screen name="Login" component={Login} />
-        <Stack.Screen name="MainPage" component={MainPage} />
+        {/* <Stack.Screen name="MainPage" component={MainPage} /> */}
+
         <Stack.Screen name="SingPage" component={SingPage} />
         <Stack.Screen name="CompletePage" component={CompletePage} />
+        <Stack.Screen name="ChoosePage" component={ChoosePage} />
+
         <Stack.Screen name="InfoPage" component={InfoPage} />
         <Stack.Screen name="PlayPage" component={PlayPage} />
         <Stack.Screen name="NewsPage" component={NewsPage} />
@@ -65,7 +70,8 @@ function Nav() {
         <Stack.Screen name="Tabbar" component={Tabbar} />
 
         <Stack.Screen name="DemoPage" component={DemoPage} />
-        <Stack.Screen name="Recorder" component={Recorder} />
+        <Stack.Screen name="Recorder1" component={Recorder1} />
+        <Stack.Screen name="Recorder2" component={Recorder2} />
 
       </Stack.Navigator>
     </NavigationContainer>

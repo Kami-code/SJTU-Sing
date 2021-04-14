@@ -12,7 +12,7 @@ import MainPage from './pages/mainpage';
 import MusicPlayer from './utils/MusicPlayer'
 class Index extends Component {
     state = {  
-        selectedTab:"bubble"
+        selectedTab:"home"
     }
     render() { 
         return ( 

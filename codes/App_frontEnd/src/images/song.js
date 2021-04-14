@@ -1,5 +1,7 @@
 const SONGS = [
     {
+        date: "2022-10-6",
+        love: "26.3k",
         pic_small: "https://bkimg.cdn.bcebos.com/pic/72f082025aafa40f4bfb30fea62d144f78f0f736b3f5?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto", //小图
         pic_big: 'https://bkimg.cdn.bcebos.com/pic/72f082025aafa40f4bfb30fea62d144f78f0f736b3f5?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto',  //大图
         title: "可可托海的牧羊人",     //歌曲名
@@ -57,6 +59,8 @@ const SONGS = [
             "[05:06.32]再没有一个美丽的姑娘让我难忘记"
     },
     {
+        date: "2021-12-5",
+        love: "26.6k",
         pic_small: "https://bkimg.cdn.bcebos.com/pic/94cad1c8a786c9177f3e29ad9d7467cf3bc79f3df944?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UxODA=,g_7,xp_5,yp_5/format,f_auto", //小图
         pic_big: 'https://bkimg.cdn.bcebos.com/pic/94cad1c8a786c9177f3e29ad9d7467cf3bc79f3df944?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UxODA=,g_7,xp_5,yp_5/format,f_auto',  //大图
         title: "Mojito",     //歌曲名
@@ -104,6 +108,8 @@ const SONGS = [
             "[02:52.46]这是世上最美丽的那双人舞"
     },
     {
+        date: "2021-9-5",
+        love: "12.4k",
         pic_small: "https://bkimg.cdn.bcebos.com/pic/d788d43f8794a4c200e480bf0cf41bd5ac6e395a?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto", //小图
         pic_big: 'https://bkimg.cdn.bcebos.com/pic/d788d43f8794a4c200e480bf0cf41bd5ac6e395a?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto',  //大图
         title: "Love Story",     //歌曲名
@@ -181,6 +187,8 @@ const SONGS = [
             "[03:55.80]"
     },
     {
+        date: "2021-11-22",
+        love: "34.2k",
         pic_small: "https://bkimg.cdn.bcebos.com/pic/2f738bd4b31c8701c88b25fc2f7f9e2f0708ffef?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U4MA==,g_7,xp_5,yp_5/format,f_auto", //小图
         pic_big: 'https://bkimg.cdn.bcebos.com/pic/2f738bd4b31c8701c88b25fc2f7f9e2f0708ffef?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U4MA==,g_7,xp_5,yp_5/format,f_auto',  //大图
         title: "我好像在哪见过你",     //歌曲名
@@ -264,6 +272,8 @@ const SONGS = [
 
 const template =
     {
+        date:"",
+        love:"",
         pic_small: "", //小图
         pic_big: '',  //大图
         title: "",     //歌曲名
