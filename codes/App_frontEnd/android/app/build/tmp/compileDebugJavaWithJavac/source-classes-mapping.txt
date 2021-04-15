@@ -1,0 +1,32 @@
+com/kgeapp/ReactNativeFlipper.java
+ com.kgeapp.ReactNativeFlipper
+ com.kgeapp.ReactNativeFlipper$1
+ com.kgeapp.ReactNativeFlipper$2
+ com.kgeapp.ReactNativeFlipper$2$1
+com/kgeapp/AECPackage.java
+ com.kgeapp.AECPackage
+com/kgeapp/aecm/AECM.java
+ com.kgeapp.aecm.jni.AECM
+com/kgeapp/SoxModule.java
+ com.kgeapp.SoxModule
+com/kgeapp/NSPackage.java
+ com.kgeapp.NSPackage
+com/kgeapp/sox/sox.java
+ com.kgeapp.sox.jni.sox
+com/kgeapp/AecmModule.java
+ com.kgeapp.AecmModule
+com/facebook/react/PackageList.java
+ com.facebook.react.PackageList
+com/kgeapp/rnnoise/RNNoise.java
+ com.kgeapp.rnnoise.RNNoise
+com/kgeapp/NoiseModule.java
+ com.kgeapp.NoiseModule
+com/kgeapp/BuildConfig.java
+ com.kgeapp.BuildConfig
+com/kgeapp/MainActivity.java
+ com.kgeapp.MainActivity
+com/kgeapp/MainApplication.java
+ com.kgeapp.MainApplication
+ com.kgeapp.MainApplication$1
+com/kgeapp/NativePackage.java
+ com.kgeapp.NativePackage
