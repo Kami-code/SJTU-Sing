@@ -23,6 +23,7 @@ import Tabbar from "./tabbar";
 import Recorder1 from "./components/Recorder2.0/Recorder_1";
 import Recorder2 from "./components/Recorder2.0/Recorder_2";
 
+
 function HomeScreen({navigation}) {
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -49,7 +50,7 @@ function Nav() {
   return (
     <NavigationContainer>
       {/* 录音模块放在 ./components/Recorder 中，含保存方法*/}
-      <Stack.Navigator headerMode="none" initialRouteName="Recorder2">
+      <Stack.Navigator headerMode="none" initialRouteName="DemoPage">
         <Stack.Screen name="Login" component={Login} />
         {/* <Stack.Screen name="MainPage" component={MainPage} /> */}
 
@@ -72,6 +73,7 @@ function Nav() {
         <Stack.Screen name="DemoPage" component={DemoPage} />
         <Stack.Screen name="Recorder1" component={Recorder1} />
         <Stack.Screen name="Recorder2" component={Recorder2} />
+
 
       </Stack.Navigator>
     </NavigationContainer>
