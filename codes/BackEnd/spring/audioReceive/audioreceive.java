@@ -18,7 +18,7 @@ public class audioreceive {
     ) throws IOException {
         System.out.println("POST Entered");
         InputStream in = videoData.getInputStream();
-        writeToLocal("E://my.mp3", in);
+        writeToLocal("/root/audioData/my.mp3", in);
         System.out.println("File Written");
 
         return "True";
