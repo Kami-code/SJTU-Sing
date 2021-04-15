@@ -69,5 +69,24 @@ export function aecm(f_near, f_far, f_out){
     AECM.aec(RNFS.ExternalStorageDirectoryPath+ f_near,RNFS.ExternalStorageDirectoryPath+ f_far,RNFS.ExternalStorageDirectoryPath+ f_out);
 }
 
+export function sox_test(infile,outfile){
+    console.log(RNFS.ExternalStorageDirectoryPath+infile);
+    if(Sox.init(RNFS.ExternalStorageDirectoryPath+infile,RNFS.ExternalStorageDirectoryPath+outfile)){
+        console.log("init failed");
+    }
+    else{
+        console.log("init success"); 
+       } 
+    
+    if(Sox.add_effect("echo",{})==1){
+        console.log("echo failed");
+    }
+    else{
+        console.log("echo success");
+    }
+    Sox.add_effect("chorus",{});
+    Sox.flow();
+    
+}
 
 

@@ -38,14 +38,15 @@ public class SoxModule extends ReactContextBaseJavaModule {
     
 
     @ReactMethod
-    public void sox_init(String inFile, String outFile) {
+    public int init(String inFile, String outFile) {
         sox_object = new sox(inFile,outFile);
-        sox_object.init(sox_object.getInfile(),sox_object.getOutfile());
+        if(sox_object.init(sox_object.getInfile(),sox_object.getOutfile())==1){return 1;}
         System.out.println("call Java");
+        return 0;
     }
 
     @ReactMethod
-    public void add_effect(String effect, ReadableMap args) {
+    public int add_effect(String effect, ReadableMap args) {
         switch(effect){
             case "vol" :
                 int volume = args.getInt("volume");
@@ -81,18 +82,20 @@ public class SoxModule extends ReactContextBaseJavaModule {
                 sox_object.addLowPassEffect(frequency3,bandWidth3);
                 break; 
             case "echo" :
-                sox_object.addEchoEffect();
+                if(sox_object.addEchoEffect()==1){return 1;}
                 break; 
             case "chorus" :
                 sox_object.addChorusEffect();
                 break; 
             
             default : 
-            
+                return 1;
         }
+        return 0;
     }
     @ReactMethod
-    public void sox_flow(){
-        sox_object.flowEffects();
+    public int flow(){
+        if(sox_object.flowEffects()==1){return 1;}
+        return 0;
     } 
 }

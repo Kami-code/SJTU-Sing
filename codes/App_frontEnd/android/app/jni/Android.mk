@@ -195,21 +195,11 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/Sox/sox.cpp\
 
 
 
-
-
-
-
-
-# 遍历目录及子目录的函数
-# LOCAL_SRC_FILES := $(</span>wildcard <span class="variable" style="color:rgb(0,128,128)">$(LOCAL_PATH)/sox/*.c) \
-#     $(LOCAL_PATH)/Sox/sox.cpp\
-
-
-
-
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/Sox/\
     $(LOCAL_PATH)/Sox/src/\
     $(LOCAL_PATH)/Sox/android/armv7a/include/\
+
+LOCAL_LDLIBS := -L$(SYSROOT)/usr/lib -llog
 
 
 
