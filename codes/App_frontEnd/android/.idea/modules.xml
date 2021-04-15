@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/kgeApp.iml" filepath="$PROJECT_DIR$/.idea/modules/kgeApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/kgeApp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/kgeApp.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-2000997746/kgeApp.react-native-community_masked-view.iml" filepath="$PROJECT_DIR$/.idea/modules/-2000997746/kgeApp.react-native-community_masked-view.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/479880034/kgeApp.react-native-ffmpeg.iml" filepath="$PROJECT_DIR$/.idea/modules/479880034/kgeApp.react-native-ffmpeg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1366177289/kgeApp.react-native-gesture-handler.iml" filepath="$PROJECT_DIR$/.idea/modules/1366177289/kgeApp.react-native-gesture-handler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1986128411/kgeApp.react-native-linear-gradient.iml" filepath="$PROJECT_DIR$/.idea/modules/1986128411/kgeApp.react-native-linear-gradient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1636632179/kgeApp.react-native-reanimated.iml" filepath="$PROJECT_DIR$/.idea/modules/1636632179/kgeApp.react-native-reanimated.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-712249294/kgeApp.react-native-safe-area-context.iml" filepath="$PROJECT_DIR$/.idea/modules/-712249294/kgeApp.react-native-safe-area-context.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-604338486/kgeApp.react-native-screens.iml" filepath="$PROJECT_DIR$/.idea/modules/-604338486/kgeApp.react-native-screens.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-757217683/kgeApp.react-native-vector-icons.iml" filepath="$PROJECT_DIR$/.idea/modules/-757217683/kgeApp.react-native-vector-icons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/-917768578/kgeApp.react-native-video.iml" filepath="$PROJECT_DIR$/.idea/modules/-917768578/kgeApp.react-native-video.iml" />
+    </modules>
+  </component>
+</project>
