@@ -1,7 +1,6 @@
-package com.example.demo.greeting;
+package com.example.audio.greeting;
 
 public class Greeting {
-
     private final long id;
     private final String content;
 
