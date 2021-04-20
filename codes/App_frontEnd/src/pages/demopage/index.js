@@ -1,10 +1,10 @@
 import { LogLevel, RNFFmpeg, RNFFprobe } from 'react-native-ffmpeg';
 import RNFS from 'react-native-fs';
-import {encode,decode,mergeAudio,noiseSuppress,aecm, sox_test} from '../../utils/audio-api'
+import {encode,decode,mergeAudio,noiseSuppress,aecm, sox_test, toSingleChannel} from '../../utils/audio-api'
 //import RNNoise from '../../utils/native'
 
 import React,{Component} from 'react';
-import {View,Text,Image,StatusBar} from 'react-native';
+import {View,Text,Image,StatusBar,DeviceEventEmitter} from 'react-native';
 
 import {pxToDp} from "../../utils/stylesKits";
 import Button  from "../../components/Button";
@@ -22,22 +22,38 @@ class Index extends Component {
         this.state = { age:'1111' };
         //this.  = this.getMoviesFromApi.bind(this);
     }
-
+    componentDidMount(){  
+        DeviceEventEmitter.addListener('AndroidToRNMessage',this.handleAndroidMessage);  
+      }  
+      
+    //   componentWillunMount(){  
+    //      DeviceEventEmitter.remove('AndroidToRNMessage',this.handleAndroidMessage);  
+    //   }  
+      handleAndroidMessage=(msg)=>{  
+        //RN端获得native端传递的数据  
+        console.log(msg);  
+     }  
 
     goSingPage=()=>{
         
         // decode('/test/noise.m4a','/test/noise.pcm','/test/noise_canceled.pcm','/test/noise_canceled.mp3',1)
         // aecm()
-        sox_test("/test/1.wav","/test/13.wav")
+        //sox_test("/test/1.wav","/test/13.wav")
+        //decode("/test/1.mp3","/test/1.wav",1,16000);
+        //decode("/test/1_music.mp3","/test/1_music.wav",1,16000);
+
+        // toSingleChannel("/test/1.wav","/test/1_s.wav");
+        // toSingleChannel("/test/1_music.wav","/test/1_music_s.wav");
+        aecm("/test/1.wav","/test/1_music.wav","/test/1_aecm.wav");
     }
     goInfoPage=()=>{
-        sox_test("/test/1.wav","/test/13.wav")
+        //sox_test("/test/1.wav","/test/13.wav")
     }
     goPlayPage=()=>{
-        sox_test("/test/1.wav","/test/13.wav")
+        //sox_test("/test/1.wav","/test/13.wav")
     }
     goSelectPage=()=>{
-        sox_test("/test/1.wav","/test/13.wav")
+       // sox_test("/test/1.wav","/test/13.wav")
     }
 
     async getMoviesFromApi() {
@@ -61,15 +77,11 @@ class Index extends Component {
                     <View style={styles.flexContainer}>
                         {/* <Text>fuck ms</Text> */}
                         <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
-                        <View style={styles.cellfixed}>
-                            <Button_Icon2 onPress={this.goSelectPage} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon2>
-                        </View>
+                        
                         <View style={styles.cell}>
                             <Button_Icon1 onPress={this.goSingPage} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon1>
                         </View>
-                        <View st2yle={styles.cellfixed}>
-                            <Button_Icon3 onPress={this.goPlayPage} style={{borderRadius:pxToDp(20),alignSelf:"center"}}></Button_Icon3>
-                        </View>
+                       
                         {/* <Text>{this.state.age}</Text> */}
                     </View>
 

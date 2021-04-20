@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.modules.core.DeviceEventManagerModule; 
 import com.kgeapp.aecm.jni.AECM;
 
 //import java.util.Map;
@@ -15,7 +16,7 @@ import com.kgeapp.aecm.jni.AECM;
 public class AecmModule extends ReactContextBaseJavaModule {
     static{
         System.loadLibrary("aecm");
-    }
+    } 
 
     private static ReactApplicationContext reactContext;
 
@@ -35,7 +36,16 @@ public class AecmModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void aec(String nearFile, String farFile, String outFile) {
         AECM aec_object = new AECM(nearFile,farFile,outFile);
-        aec_object.runAECM(aec_object.getNearFile(),aec_object.getFarFile(),aec_object.getOutFile());
-        System.out.println("call Java");
+        int result = aec_object.runAECM(aec_object.getNearFile(),aec_object.getFarFile(),aec_object.getOutFile());
+        sendMsgToRn(nearFile);
+        sendMsgToRn(farFile);
+        sendMsgToRn(outFile);
+        sendMsgToRn(Integer.toString(result));
     }
+
+    public void sendMsgToRn(String msg){  
+        //将消息msg发送给RN侧  
+        reactContext.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class).emit("AndroidToRNMessage",msg);  
+  
+    }  
 }

@@ -12,7 +12,7 @@ extern "C" {
  * Method:    runAECM
  * Signature: (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_kgeapp_aecm_jni_AECM_runAECM
+JNIEXPORT jint JNICALL Java_com_kgeapp_aecm_jni_AECM_runAECM
   (JNIEnv *, jobject, jstring, jstring, jstring);
 
 #ifdef __cplusplus
