@@ -35,5 +35,5 @@ public class AECM {
         this.outFile = outFile;
     }
 
-    public native void runAECM(String nearFile, String farFile, String outFile);
+    public native int runAECM(String nearFile, String farFile, String outFile);
 }

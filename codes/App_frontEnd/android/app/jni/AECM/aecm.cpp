@@ -34,7 +34,7 @@ int16_t *wavRead_int16(char *filename, uint32_t *sampleRate, uint64_t *totalSamp
     return buffer;
 }
 
-void wavWrite_int16(char *filename, int16_t *buffer, size_t sampleRate, size_t totalSampleCount) {
+int wavWrite_int16(char *filename, int16_t *buffer, size_t sampleRate, size_t totalSampleCount) {
     drwav wav;
     drwav_data_format format = {};
     format.container = drwav_container_riff;     // <-- drwav_container_riff = normal WAV files, drwav_container_w64 = Sony Wave64.
@@ -46,39 +46,39 @@ void wavWrite_int16(char *filename, int16_t *buffer, size_t sampleRate, size_t t
     drwav_uint64 framesWritten = drwav_write_pcm_frames(&wav, totalSampleCount, buffer);
     drwav_uninit(&wav);
     if (framesWritten != totalSampleCount) {
-        fprintf(stderr, "ERROR\n");
-        exit(1);
+        return 1;
     }
+    return 0;
 }
 
 int aecProcess(int16_t *far_frame, int16_t *near_frame, uint32_t sampleRate, size_t samplesCount, int16_t nMode,
                int16_t msInSndCardBuf) {
-    if (near_frame == nullptr) return -1;
-    if (far_frame == nullptr) return -1;
-    if (samplesCount == 0) return -1;
+    if (near_frame == nullptr) return 11;
+    if (far_frame == nullptr) return 12;
+    if (samplesCount == 0) return 13;
     AecmConfig config;
     config.cngMode = AecmTrue;
     config.echoMode = nMode;// 0, 1, 2, 3 (default), 4
     size_t samples = MIN(160, sampleRate / 100);
     if (samples == 0)
-        return -1;
+        return 14;
     const int maxSamples = 160;
     int16_t *near_input = near_frame;
     int16_t *far_input = far_frame;
     size_t nCount = (samplesCount / samples);
     void *aecmInst = WebRtcAecm_Create();
-    if (aecmInst == NULL) return -1;
+    if (aecmInst == NULL) return 15;
     int status = WebRtcAecm_Init(aecmInst, sampleRate);//8000 or 16000 Sample rate
     if (status != 0) {
         printf("WebRtcAecm_Init fail\n");
         WebRtcAecm_Free(aecmInst);
-        return -1;
+        return 16;
     }
     status = WebRtcAecm_set_config(aecmInst, config);
     if (status != 0) {
         printf("WebRtcAecm_set_config fail\n");
         WebRtcAecm_Free(aecmInst);
-        return -1;
+        return 17;
     }
 
     int16_t out_buffer[maxSamples];
@@ -86,24 +86,24 @@ int aecProcess(int16_t *far_frame, int16_t *near_frame, uint32_t sampleRate, siz
         if (WebRtcAecm_BufferFarend(aecmInst, far_input, samples) != 0) {
             printf("WebRtcAecm_BufferFarend() failed.");
             WebRtcAecm_Free(aecmInst);
-            return -1;
+            return 18;
         }
         int nRet = WebRtcAecm_Process(aecmInst, near_input, NULL, out_buffer, samples, msInSndCardBuf);
 
         if (nRet != 0) {
             printf("failed in WebRtcAecm_Process\n");
             WebRtcAecm_Free(aecmInst);
-            return -1;
+            return 19;
         }
         memcpy(near_input, out_buffer, samples * sizeof(int16_t));
         near_input += samples;
         far_input += samples;
     }
     WebRtcAecm_Free(aecmInst);
-    return 1;
+    return 0;
 }
 
-void AECM(char *near_file, char *far_file, char *out_file) {
+int AECM(char *near_file, char *far_file, char *out_file) {
     //音频采样率
     uint32_t sampleRate = 0;
     uint64_t inSampleCount = 0;
@@ -114,23 +114,27 @@ void AECM(char *near_file, char *far_file, char *out_file) {
     if ((near_frame == nullptr || far_frame == nullptr)) {
         if (near_frame) free(near_frame);
         if (far_frame) free(far_frame);
-        return;
+        return 1;
     }
     //如果加载成功
     int16_t echoMode = 3;// 0, 1, 2, 3 (default), 4
     int16_t msInSndCardBuf = 40;
     double startTime = now();
-    aecProcess(far_frame, near_frame, sampleRate, inSampleCount, echoMode, msInSndCardBuf);
+    int return_num = 0;
+    if((return_num=aecProcess(far_frame, near_frame, sampleRate, inSampleCount, echoMode, msInSndCardBuf))>0){
+        return return_num;
+    };
     double elapsed_time = calcElapsed(startTime, now());
     printf("time interval: %d ms\n ", (int) (elapsed_time * 1000));
     wavWrite_int16(out_file, near_frame, sampleRate, inSampleCount);
     free(near_frame);
     free(far_frame);
+    return 0;
 }
 
-JNIEXPORT void JNICALL Java_com_kgeapp_aecm_jni_AECM_runAECM(JNIEnv * env, jobject obj, jstring nearFile, jstring farFile, jstring outFile){
+JNIEXPORT jint JNICALL Java_com_kgeapp_aecm_jni_AECM_runAECM(JNIEnv * env, jobject obj, jstring nearFile, jstring farFile, jstring outFile){
     jclass CLASS = env->GetObjectClass(obj);
-
+    //return 0;
     const char *NearFile = env->GetStringUTFChars(nearFile, JNI_FALSE);
     const char *FarFile = env->GetStringUTFChars(farFile, JNI_FALSE);
     const char *OutFile = env->GetStringUTFChars(outFile, JNI_FALSE);
@@ -145,9 +149,8 @@ JNIEXPORT void JNICALL Java_com_kgeapp_aecm_jni_AECM_runAECM(JNIEnv * env, jobje
 
     printf("WebRTC Acoustic Echo Canceller for Mobile\n");
 
-    AECM(near_file, far_file, out_file);
-    printf("press any key to exit. \n");
-    return;
+    
+    return AECM(near_file, far_file, out_file);
 };
 
 

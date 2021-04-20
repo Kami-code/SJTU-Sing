@@ -33,7 +33,7 @@ export function executeFFmpegCancel() {
     RNFFmpeg.cancel();
 }
 
-export function decode(f_in,f_decode,f_noise,f_out,channel){//channel = 1 or 2
+export function noiseSuppress_mp3(f_in,f_decode,f_noise,f_out,channel){//channel = 1 or 2
     ffmpegCommand = '-y -i ' + RNFS.ExternalStorageDirectoryPath+ f_in + ' -acodec pcm_s16le -f s16le -ac '+channel+' -ar 48000 ' + RNFS.ExternalStorageDirectoryPath+f_decode
     executeFFmpegAsync(ffmpegCommand, completedExecution => {
         if (completedExecution.returnCode === 0) {
@@ -44,6 +44,30 @@ export function decode(f_in,f_decode,f_noise,f_out,channel){//channel = 1 or 2
         noiseSuppress(f_decode,f_noise)
         encode(f_noise,f_out,channel)
         ffprint(RNFS.CachesDirectoryPath);
+    }
+    ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
+}
+
+export function decode(f_in,f_out,channel,sampleRate){//channel = 1 or 2 sampleRate = 16000 or 48000
+    ffmpegCommand = '-y -i ' + RNFS.ExternalStorageDirectoryPath+ f_in + ' -acodec pcm_s16le -ac '+channel+' -ar '+sampleRate + ' ' + RNFS.ExternalStorageDirectoryPath+f_out;
+    executeFFmpegAsync(ffmpegCommand, completedExecution => {
+        if (completedExecution.returnCode === 0) {
+            ffprint("Decode completed successfully.");
+        } else {
+            ffprint(`Decode failed with rc=${completedExecution.returnCode}.`);
+        }
+    }
+    ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
+}
+
+export function toSingleChannel(f_in,f_out){//channel = 1 or 2
+    ffmpegCommand = '-y -i ' + RNFS.ExternalStorageDirectoryPath+ f_in + ' -ac 1 -ar 48000 ' + RNFS.ExternalStorageDirectoryPath+f_out;
+    executeFFmpegAsync(ffmpegCommand, completedExecution => {
+        if (completedExecution.returnCode === 0) {
+            ffprint("Decode completed successfully.");
+        } else {
+            ffprint(`Decode failed with rc=${completedExecution.returnCode}.`);
+        }
     }
     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
 }
@@ -67,6 +91,7 @@ export function noiseSuppress(f_in,f_out){
 
 export function aecm(f_near, f_far, f_out){
     AECM.aec(RNFS.ExternalStorageDirectoryPath+ f_near,RNFS.ExternalStorageDirectoryPath+ f_far,RNFS.ExternalStorageDirectoryPath+ f_out);
+
 }
 
 export function sox_test(infile,outfile){
