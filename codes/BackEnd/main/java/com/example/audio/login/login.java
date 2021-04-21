@@ -1,7 +1,6 @@
 package com.example.audio.login;
 
 import com.example.audio.greeting.Greeting;
-import com.example.audio.jsonReceive.jsonController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +12,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 public class login {
-    private static Logger login = LoggerFactory.getLogger(jsonController.class);
+    private static Logger login = LoggerFactory.getLogger(login.class);
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public String greeting(@RequestParam(value = "name", defaultValue = "defaultname") String name, @RequestParam(value = "id", defaultValue = "defaultid") String id) {
 

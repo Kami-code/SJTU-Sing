@@ -1,6 +1,5 @@
 package com.example.audio.audioResponse;
 
-import com.example.audio.jsonReceive.jsonController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -19,7 +18,7 @@ import java.net.URLEncoder;
 @RestController
 public class audioResponse {
 
-    private static Logger download = LoggerFactory.getLogger(jsonController.class);
+    private static Logger download = LoggerFactory.getLogger(audioResponse.class);
     @RequestMapping(value = "/download", method = RequestMethod.POST)
     public ResponseEntity<InputStreamResource> downloadFile() throws IOException {
         String filePath = "./audioData/noise_mp3.mp3";

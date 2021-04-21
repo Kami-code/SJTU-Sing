@@ -1,6 +1,5 @@
 package com.example.audio.audioReceive;
 
-import com.example.audio.jsonReceive.jsonController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +12,7 @@ import java.io.InputStream;
 
 @RestController
 public class audioreceive {
-    private static Logger getAudio = LoggerFactory.getLogger(jsonController.class);
+    private static final Logger getAudio = LoggerFactory.getLogger(audioreceive.class);
     @RequestMapping(value = "/video", method = RequestMethod.POST)
     public String postVideo(
             @RequestParam("file") MultipartFile videoData
