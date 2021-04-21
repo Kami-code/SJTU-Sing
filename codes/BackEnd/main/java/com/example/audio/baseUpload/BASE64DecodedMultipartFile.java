@@ -17,16 +17,19 @@ public class BASE64DecodedMultipartFile implements MultipartFile {
 
     @Override
     public String getName() {
+        // TODO - implementation depends on your requirements
         return System.currentTimeMillis() + Math.random() + "." + header.split("/")[1];
     }
 
     @Override
     public String getOriginalFilename() {
-        return System.currentTimeMillis() + (int) Math.random() * 10000 + "." + header.split("/")[1];
+        // TODO - implementation depends on your requirements
+        return System.currentTimeMillis() + (int)Math.random() * 10000 + "." + header.split("/")[1];
     }
 
     @Override
     public String getContentType() {
+        // TODO - implementation depends on your requirements
         return header.split(":")[1];
     }
 
@@ -63,16 +66,16 @@ public class BASE64DecodedMultipartFile implements MultipartFile {
             byte[] b = new byte[0];
             b = decoder.decodeBuffer(baseStrs[1]);
 
-            for (int i = 0; i < b.length; ++i) {
+            for(int i = 0; i < b.length; ++i) {
                 if (b[i] < 0) {
                     b[i] += 256;
                 }
             }
+
             return new BASE64DecodedMultipartFile(b, baseStrs[0]);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
     }
-
 }
