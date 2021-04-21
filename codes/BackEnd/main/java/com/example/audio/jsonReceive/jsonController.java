@@ -10,11 +10,13 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 
-@RestController
-public class jsonController {
-    private static Logger logger = LoggerFactory.getLogger(jsonController.class);
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
-    public String getUser(@RequestBody ) {
+//@RestController
+//public class jsonController {
+//    private static Logger logger = LoggerFactory.getLogger(jsonController.class);
+//    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+//    public String getUser(@RequestBody ) {
+//    }
+
         /*@RequestBody JSONObject o
           @RequestParameter("name") String name,@RequestParameter("sex") String sex //非json字符串接收方式 eg:get方式;post:form-data or application/x-www-form-urlencoded
           @RequestBody UserIn user //定义一个实体类接收*/
@@ -23,7 +25,7 @@ public class jsonController {
 //        logger.info("login:"+name+id+"\n");
 //
 //        return name + ";" + id;
-    }
+
 
 //    public static class User {
 //        private String name;
@@ -54,7 +56,7 @@ public class jsonController {
 //        }
 //    }
 
-    }
+//    }
 
 //    @ResponseBody
 //    @RequestMapping(value = "/json", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
