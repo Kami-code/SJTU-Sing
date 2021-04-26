@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button,DeviceEventEmitter } from 'react-native';
 import { Buffer } from 'buffer';
 import Permissions from 'react-native-permissions';
 import Video from 'react-native-video';
@@ -10,25 +10,47 @@ export default class App extends Component {
     audioFile: '',
     recording: false,
     paused: true,
-    loaded: false
+    loaded: false,
+    chunk: null,
+    frag: false
   };
+
 
   async componentDidMount() {
     await this.checkPermission();
-
     const options = {
-      sampleRate: 16000,
+      sampleRate: 48000,
       channels: 1,
       bitsPerSample: 16,
       wavFile: 'test.wav'
     };
 
+    this.listener =DeviceEventEmitter.addListener('fetchChunk',()=>{
+      if(this.state.recording == true){
+        DeviceEventEmitter.emit('returnChunk',this.state.chunk);
+        this.state.frag = false;
+        console.log(this.state.chunk.toString('base64'));
+        console.log(this.state.chunk.byteLength)
+      }
+
+      //  use param do something
+      });
+
     AudioRecord.init(options);
+    
 
     AudioRecord.on('data', data => {
-      const chunk = Buffer.from(data, 'base64');
-      console.log('chunk size', chunk.byteLength);
+      // const chunk = Buffer.from(data, 'base64');
+      // console.log('chunk size', chunk.byteLength);
       // do something with audio chunk
+
+      if(this.state.frag==false){
+        this.state.chunk = Buffer.from(data, 'base64');
+        this.state.frag=true;
+      }else{
+        this.state.chunk = Buffer.concat([this.state.chunk, Buffer.from(data,'base64')]);
+      }
+
     });
   }
 

@@ -44,7 +44,8 @@ export default class MusicPlayer extends Component {
             currentTime: 0.0,   //当前时间
             duration: 0.0,     //歌曲时间
             currentIndex: 0,    //当前第几首
-            isplayBtn: require('./image/播放.png')  //播放/暂停按钮背景图
+            isplayBtn: require('./image/播放.png'),  //播放/暂停按钮背景图
+            currentLine: 0
         }
     }
     //上一曲
@@ -93,6 +94,12 @@ export default class MusicPlayer extends Component {
             sliderValue: val,
             currentTime: data.currentTime
         })
+        
+        if (this.state.currentTime.toFixed(2) > lyrObj[this.state.currentLine+1].total){
+            DeviceEventEmitter.emit('fetchChunk');
+            this.state.currentLine = this.state.currentLine + 1;
+        }
+        
     }
     //把秒数转换为时间类型
     formatTime(time) {
@@ -128,7 +135,7 @@ export default class MusicPlayer extends Component {
                     </View>
                 );
                 this.scrollView.scrollTo({ x: 0, y: (32 * i), animated: false });
-                DeviceEventEmitter.emit('segmentation');
+                
             }
             else {
                 //所有歌词
@@ -245,9 +252,9 @@ export default class MusicPlayer extends Component {
     }
 
 
-    // componentWillMount() {
-    //     this.loadSongInfo(0)   //预先加载第一首
-    // }
+    componentWillMount() {
+        this.loadSongInfo(0)   //预先加载第一首
+    }
 
     goPage = ()=>{
         // this.context = this.props.navigation
