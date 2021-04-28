@@ -3,8 +3,9 @@ import {RNFFmpeg, RNFFmpegConfig, RNFFprobe, LogLevel} from 'react-native-ffmpeg
 import RNFS from 'react-native-fs';
 import RNNoise from './rnnoise';
 import AECM from './aecm';
-import Sox from './sox'
-
+import Sox from './sox';
+import SaveAudio from './saveAudio';
+RNFS.ExternalStorageDirectoryPath
 function ffprint(text) {
     console.log(text.endsWith('\n') ? text.replace('\n', '') : text);
 }
@@ -30,6 +31,26 @@ export function toSingleChannel(f_in,f_out){//channel = 1 or 2
         }
     }
     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
+}
+
+function readFile(fileName) {
+    return new Promise((resolve, reject) => {
+      fs.readFile(fileName, (err, data) => {
+        if(err) {
+          reject(err)
+        }
+        resolve(data.toString())
+      })
+    })
+  }
+
+export async function savePcm(path,array){
+    try {
+        let msg = await SaveAudio.save(RNFS.ExternalStorageDirectoryPath+path,array);
+        console.log(msg);
+    }catch (e) {
+        console.error(e);
+    }
 }
 
 //audio.wav music.wav output.xxx
@@ -165,12 +186,3 @@ export function noiseSuppress_mp3(f_in,f_decode,f_noise,f_out,channel){//channel
     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
 }
 
-export function writeFile(path,content){
-    RNFS.writeFile(RNFS.ExternalStorageDirectoryPath+path,content)
-    .then((success)=>{
-        console.log('FILE WRITTEN'+' '+path);
-    })
-    .catch((err)=>{
-        console.log(err.message);
-    });
-}

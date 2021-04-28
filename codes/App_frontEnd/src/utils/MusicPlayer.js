@@ -11,6 +11,7 @@ import {
     ActivityIndicator,
     DeviceEventEmitter
 } from 'react-native'
+import Recorder_2 from '../components/Recorder2.0/Recorder_2'
 
 let { width, height } = Dimensions.get('window');
 import Video from 'react-native-video';
@@ -40,12 +41,14 @@ export default class MusicPlayer extends Component {
             file_link: '',   //歌曲播放链接
             songLyr: [],     //当前歌词
             sliderValue: 0,    //Slide的value
-            pause: false,       //歌曲播放/暂停
+            pause: true,       //歌曲播放/暂停
             currentTime: 0.0,   //当前时间
             duration: 0.0,     //歌曲时间
             currentIndex: 0,    //当前第几首
-            isplayBtn: require('./image/播放.png'),  //播放/暂停按钮背景图
-            currentLine: 0
+            isplayBtn: require('./image/暂停.png'),  //播放/暂停按钮背景图
+            currentLine: 0, //当前第几行
+            firstPlay: true,
+            fragNum: 0
         }
     }
     //上一曲
@@ -79,11 +82,14 @@ export default class MusicPlayer extends Component {
         if (this.state.pause === true) {
             this.setState({
                 isplayBtn: require('./image/播放.png')
-            })
+            });
+            DeviceEventEmitter.emit('RecordStart');
+            
         } else {
             this.setState({
                 isplayBtn: require('./image/暂停.png')
-            })
+            });
+            DeviceEventEmitter.emit('RecordPause');
         }
 
     }
@@ -94,9 +100,12 @@ export default class MusicPlayer extends Component {
             sliderValue: val,
             currentTime: data.currentTime
         })
-        
-        if (this.state.currentTime.toFixed(2) > lyrObj[this.state.currentLine+1].total){
-            DeviceEventEmitter.emit('fetchChunk');
+        let shift = 0.75;
+        if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-shift)){
+            if(this.state.currentTime.toFixed(2)>2){
+                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
+                this.state.fragNum = this.state.fragNum + 1;
+            }
             this.state.currentLine = this.state.currentLine + 1;
         }
         
@@ -274,6 +283,7 @@ export default class MusicPlayer extends Component {
             //数据加载出来
             return (
                 <View style={styles.container}>
+                    {/* <Recorder_2></Recorder_2> */}
                     <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
                     <View>
                     <Video
