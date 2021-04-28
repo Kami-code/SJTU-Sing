@@ -24,6 +24,8 @@ public class NativePackage implements ReactPackage {
         modules.add(new SoxModule(reactContext));
         modules.add(new NoiseModule(reactContext));
         modules.add(new AecmModule(reactContext));
+        modules.add(new SaveAudioModule(reactContext));
+        modules.add(new AudioRecordModule(reactContext));
 
         return modules;
     }

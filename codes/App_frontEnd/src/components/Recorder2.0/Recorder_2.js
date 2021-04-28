@@ -3,7 +3,9 @@ import { StyleSheet, View, Button,DeviceEventEmitter } from 'react-native';
 import { Buffer } from 'buffer';
 import Permissions from 'react-native-permissions';
 import Video from 'react-native-video';
-import AudioRecord from 'react-native-audio-record';
+//import AudioRecord from 'react-native-audio-record';
+import {savePcm} from '../../utils/audio-api';
+import AudioRecord from '../../utils/audioRecord'
 
 export default class App extends Component {
   state = {
@@ -25,13 +27,21 @@ export default class App extends Component {
       wavFile: 'test.wav'
     };
 
-    this.listener =DeviceEventEmitter.addListener('fetchChunk',()=>{
-      if(this.state.recording == true){
-        DeviceEventEmitter.emit('returnChunk',this.state.chunk);
-        this.state.frag = false;
-        console.log(this.state.chunk.toString('base64'));
-        console.log(this.state.chunk.byteLength)
-      }
+    this.pauseListener =DeviceEventEmitter.addListener('RecordPause',()=>{
+        this.pause();
+    });
+
+
+    this.startListener =DeviceEventEmitter.addListener('RecordStart',()=>{
+      this.start();
+    });
+
+      this.listener =DeviceEventEmitter.addListener('fetchChunk',async (line)=>{
+        if(this.state.recording == true){
+          //DeviceEventEmitter.emit('returnChunk',this.state.chunk);
+          this.state.frag = false;
+          await savePcm('/test/record'+line+'.wav',this.state.chunk);
+        }
 
       //  use param do something
       });
@@ -39,19 +49,18 @@ export default class App extends Component {
     AudioRecord.init(options);
     
 
-    AudioRecord.on('data', data => {
-      // const chunk = Buffer.from(data, 'base64');
-      // console.log('chunk size', chunk.byteLength);
-      // do something with audio chunk
 
+    this.dataListener =DeviceEventEmitter.addListener('data',(data)=>{
       if(this.state.frag==false){
-        this.state.chunk = Buffer.from(data, 'base64');
-        this.state.frag=true;
-      }else{
-        this.state.chunk = Buffer.concat([this.state.chunk, Buffer.from(data,'base64')]);
-      }
-
+            // this.state.chunk = Buffer.from(data, 'base64');
+            this.state.frag=true;
+            this.state.chunk = data;
+          }else{
+            //this.state.chunk = Buffer.concat([this.state.chunk, Buffer.from(data,'base64')]);
+            this.state.chunk = this.state.chunk + data;
+          }
     });
+
   }
 
   checkPermission = async () => {
@@ -84,14 +93,12 @@ export default class App extends Component {
     }, 1000);
   };
 
-  play = () => {
-    if (!this.state.loaded) this.player.seek(0);
-    this.setState({ paused: false, loaded: true });
-  };
 
   pause = () => {
-    this.setState({ paused: true });
+    this.setState({recording: false });
+    let audioFile = AudioRecord.stop();
   };
+
 
   onLoad = data => {
     console.log('onLoad', data);
@@ -115,13 +122,13 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.row}>
-          <Button onPress={this.start} title="Record" disabled={recording} />
-          <Button onPress={this.stop} title="Stop" disabled={!recording} />
-          {paused ? (
+          {/* <Button onPress={this.start} title="Record" disabled={recording} />
+          <Button onPress={this.stop} title="Stop" disabled={!recording} />  */}
+          {/* {paused ? (
             <Button onPress={this.play} title="Play" disabled={!audioFile} />
           ) : (
             <Button onPress={this.pause} title="Pause" disabled={!audioFile} />
-          )}
+          )} */}
         </View>
         {!!audioFile && (
           <Video
