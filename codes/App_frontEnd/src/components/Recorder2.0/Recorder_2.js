@@ -4,16 +4,20 @@ import { Buffer } from 'buffer';
 import Permissions from 'react-native-permissions';
 import Video from 'react-native-video';
 //import AudioRecord from 'react-native-audio-record';
-import {savePcm} from '../../utils/audio-api';
+import {saveAudio} from '../../utils/audio-api';
 import AudioRecord from '../../utils/audioRecord'
 
 export default class App extends Component {
+  constructor(props) {
+    super(props);
+    this.data = new Array();
+  }
   state = {
     audioFile: '',
     recording: false,
     paused: true,
     loaded: false,
-    chunk: null,
+    chunk: '',
     frag: false
   };
 
@@ -27,8 +31,15 @@ export default class App extends Component {
       wavFile: 'test.wav'
     };
 
-    this.pauseListener =DeviceEventEmitter.addListener('RecordPause',()=>{
-        this.pause();
+    this.pauseListener =DeviceEventEmitter.addListener('RecordPause',(flag)=>{
+        if(this.state.recording==true){
+          this.pause();
+          console.log("record paused");
+        }
+        if (flag==1){
+          this.state.frag = false;
+          console.log("clear chunk")
+        }
     });
 
 
@@ -36,11 +47,22 @@ export default class App extends Component {
       this.start();
     });
 
+    this.finishListener =DeviceEventEmitter.addListener('RecordFinish',async()=>{
+      this.state.recording = false;
+      let song = '';
+      for(let i = 0;i<this.data.length;++i){
+        song = song + this.data[i];
+      }
+      await saveAudio('/test/record.wav',song);
+      DeviceEventEmitter.emit('audioSaved');
+    });
+
       this.listener =DeviceEventEmitter.addListener('fetchChunk',async (line)=>{
         if(this.state.recording == true){
           //DeviceEventEmitter.emit('returnChunk',this.state.chunk);
+          this.data[line]=this.state.chunk;
           this.state.frag = false;
-          await savePcm('/test/record'+line+'.wav',this.state.chunk);
+          await saveAudio('/test/record'+line+'.wav',this.state.chunk);
         }
 
       //  use param do something
@@ -100,60 +122,12 @@ export default class App extends Component {
   };
 
 
-  onLoad = data => {
-    console.log('onLoad', data);
-  };
-
-  onProgress = data => {
-    console.log('progress', data);
-  };
-
-  onEnd = () => {
-    console.log('finished playback');
-    this.setState({ paused: true, loaded: false });
-  };
-
-  onError = error => {
-    console.log('error', error);
-  };
-
   render() {
     const { recording, audioFile, paused } = this.state;
     return (
-      <View style={styles.container}>
-        <View style={styles.row}>
-          {/* <Button onPress={this.start} title="Record" disabled={recording} />
-          <Button onPress={this.stop} title="Stop" disabled={!recording} />  */}
-          {/* {paused ? (
-            <Button onPress={this.play} title="Play" disabled={!audioFile} />
-          ) : (
-            <Button onPress={this.pause} title="Pause" disabled={!audioFile} />
-          )} */}
-        </View>
-        {!!audioFile && (
-          <Video
-            ref={ref => (this.player = ref)}
-            source={{ uri: audioFile }}
-            paused={paused}
-            ignoreSilentSwitch={'ignore'}
-            onLoad={this.onLoad}
-            onProgress={this.onProgress}
-            onEnd={this.onEnd}
-            onError={this.onError}
-          />
-        )}
+      <View >
       </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center'
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly'
-  }
-});

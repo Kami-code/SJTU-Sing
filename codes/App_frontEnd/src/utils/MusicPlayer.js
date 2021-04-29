@@ -30,6 +30,7 @@ export default class MusicPlayer extends Component {
 
     constructor(props) {
         super(props);
+        this._timer=null;
         this.state = {
             songs: SONGS,   //数据源
             pic_small: '',    //小图
@@ -48,20 +49,46 @@ export default class MusicPlayer extends Component {
             isplayBtn: require('./image/暂停.png'),  //播放/暂停按钮背景图
             currentLine: 0, //当前第几行
             firstPlay: true,
-            fragNum: 0
+            fragNum: 0,
+            recordShift:0.75
         }
     }
-    //上一曲
+    //重唱上一句话
     prevAction = (index) => {
-        lyrObj = [];
-        if (index === -1) {
-            index = this.state.songs.length - 1 // 如果是第一首就回到最后一首歌
+        if(this.state.fragNum>0){       
+            DeviceEventEmitter.emit('RecordPause',1);        
+            if(lyrObj[this.state.currentLine-1].total-this.state.recordShift>5){
+                this.state.currentTime = lyrObj[this.state.currentLine-1].total-this.state.recordShift-5;
+                this._timer=setInterval(()=>{
+                    DeviceEventEmitter.emit('RecordStart');
+                    clearInterval(this._timer); 
+                },5000);
+            }else{
+                this.state.currentTime = 0;
+                DeviceEventEmitter.emit('RecordStart');
+            }
+            // if(this.state.pause===true){
+            //     this.state.pause=false;
+            // }
+            this.refs.video.seek(this.state.currentTime);
+            this.state.sliderValue = this.state.currentTime;
+            this.state.currentLine = this.state.currentLine - 1;
+            this.state.fragNum = this.state.fragNum - 1;
         }
-        this.setState({
-            currentIndex: index  //更新数据
-        })
-        this.loadSongInfo(index)  //加载数据
     }
+
+    restart = () => {
+        DeviceEventEmitter.emit('RecordPause',1); 
+        this.setState({
+            currentTime: 0, 
+            sliderValue: 0,
+            currentLine: 0,
+            fragNum: 0
+        })
+        this.refs.video.seek(0);
+        DeviceEventEmitter.emit('RecordStart');
+    }
+
     //下一曲
     nextAction = (index) => {
         lyrObj = [];
@@ -89,7 +116,7 @@ export default class MusicPlayer extends Component {
             this.setState({
                 isplayBtn: require('./image/暂停.png')
             });
-            DeviceEventEmitter.emit('RecordPause');
+            DeviceEventEmitter.emit('RecordPause',0);
         }
 
     }
@@ -101,7 +128,7 @@ export default class MusicPlayer extends Component {
             currentTime: data.currentTime
         })
         let shift = 0.75;
-        if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-shift)){
+        if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
             if(this.state.currentTime.toFixed(2)>2){
                 DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
                 this.state.fragNum = this.state.fragNum + 1;
@@ -135,7 +162,7 @@ export default class MusicPlayer extends Component {
                 );
 
             }
-            if (this.state.currentTime.toFixed(2) > lyrObj[i].total) {
+            if (i==this.state.currentLine) {
                 //正在唱的歌词
                 itemAry.push(
                     <View key={i + 2} style={styles.itemStyle}>
@@ -143,7 +170,7 @@ export default class MusicPlayer extends Component {
                         <Text style={{ color: '#5555ff',fontSize:16 }}> {item} </Text>
                     </View>
                 );
-                this.scrollView.scrollTo({ x: 0, y: (32 * i), animated: false });
+                if(this.state.currentTime > 0){this.scrollView.scrollTo({ x: 0, y: (32 * i), animated: true })};
                 
             }
             else {
@@ -203,71 +230,28 @@ export default class MusicPlayer extends Component {
                 lyrObj.push(obj)
             }
         })
-        // fetch('http://rapapi.org/mockjsdata/16978/rn_songList')
-        //     .then((response) => response.json())
-        //     .then((responseJson) => {
-        //         let songList = responseJson.song_list //取出json中的歌曲数组
-        //         this.setState({
-        //             songs: songList,   //设置数数据源
-        //             pic_small: songList[index].pic_small, //小图
-        //             pic_big: songList[index].pic_big,  //大图
-        //             title: songList[index].title,     //歌曲名
-        //             author: songList[index].author,   //歌手
-        //             file_link: songList[index].file_link,   //播放链接
-        //             file_duration: songList[index].file_duration //歌曲长度
-        //         })
-        //
-        //
-        //
-        //         //加载歌词
-        //         let songid = this.state.songs[index].song_id
-        //         let url = 'http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=' + songid
-        //         fetch(url)
-        //             .then((response) => response.json())
-        //             .then((responseJson) => {
-        //
-        //                 let lry = responseJson.lrcContent
-        //                 let lryAry = lry.split('\n')   //按照换行符切数组
-        //                 lryAry.forEach(function (val, index) {
-        //                     let obj = {}   //用于存放时间
-        //                     val = val.replace(/(^\s*)|(\s*$)/g, '')    //正则,去除前后空格
-        //                     let indeofLastTime = val.indexOf(']')  // ]的下标
-        //                     let timeStr = val.substring(1, indeofLastTime) //把时间切出来 0:04.19
-        //                     let minSec = ''
-        //                     let timeMsIndex = timeStr.indexOf('.')  // .的下标
-        //                     if (timeMsIndex !== -1) {
-        //                         //存在毫秒 0:04.19
-        //                         minSec = timeStr.substring(1, val.indexOf('.'))  // 0:04.
-        //                         obj.ms = parseInt(timeStr.substring(timeMsIndex + 1, indeofLastTime))  //毫秒值 19
-        //                     } else {
-        //                         //不存在毫秒 0:04
-        //                         minSec = timeStr
-        //                         obj.ms = 0
-        //                     }
-        //                     let curTime = minSec.split(':')  // [0,04]
-        //                     obj.min = parseInt(curTime[0])   //分钟 0
-        //                     obj.sec = parseInt(curTime[1])   //秒钟 04
-        //                     obj.txt = val.substring(indeofLastTime + 1, val.length) //歌词文本: 留下唇印的嘴
-        //                     obj.txt = obj.txt.replace(/(^\s*)|(\s*$)/g, '')
-        //                     obj.dis = false
-        //                     obj.total = obj.min * 60 + obj.sec + obj.ms / 100   //总时间
-        //                     if (obj.txt.length > 0) {
-        //                         lyrObj.push(obj)
-        //                     }
-        //                 })
-        //             })
-        //
-        //     })
+
     }
 
 
     componentWillMount() {
         this.loadSongInfo(0)   //预先加载第一首
+        
+    }
+    async componentDidMount() {
+        this.finishListener = DeviceEventEmitter.addListener('audioSaved',()=>{
+            this.context.navigate("CompletePage");
+        });
     }
 
-    goPage = ()=>{
+    finish = ()=>{
         // this.context = this.props.navigation
-        this.context.navigate("CompletePage");
+        //this.context.navigate("CompletePage");
+        DeviceEventEmitter.emit("RecordFinish");
+        if(this.state.pause==false){
+            this.playAction();
+        }
+
     }
 
     render() {
@@ -317,7 +301,7 @@ export default class MusicPlayer extends Component {
                             })
                         }
                         }
-                        onSlidingComplete={(value) => {
+                        onSlidingComplete={(value) => {                                
                             this.refs.video.seek(value)
                         }}
                     />
@@ -362,14 +346,14 @@ export default class MusicPlayer extends Component {
                             <Text style={styles.buttontext}>返听调音</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{alignItems:"center"}}>
+                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.restart()}>
                             <View style={styles.button}>
                                 <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
                             </View>
                             <Text style={styles.buttontext}>重录</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.goPage("CompletePage")}>
+                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.finish()}>
                             <View style={styles.button}>
                                 <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
                             </View>
