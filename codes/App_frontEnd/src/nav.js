@@ -19,6 +19,7 @@ import FindPage from './pages/branchpages/findpage';
 import DemoPage from "./pages/demopage";
 import Layout from "./components/Layout";
 import Tabbar from "./tabbar";
+import MusicPlayer from "./utils/MusicPlayer";
 
 import Recorder1 from "./components/Recorder2.0/Recorder_1";
 import Recorder2 from "./components/Recorder2.0/Recorder_2";
@@ -50,7 +51,7 @@ function Nav() {
   return (
     <NavigationContainer>
       {/* 录音模块放在 ./components/Recorder 中，含保存方法*/}
-      <Stack.Navigator headerMode="none" initialRouteName="DemoPage">
+      <Stack.Navigator headerMode="none" initialRouteName="SingPage">
         <Stack.Screen name="Login" component={Login} />
         {/* <Stack.Screen name="MainPage" component={MainPage} /> */}
 
@@ -73,6 +74,7 @@ function Nav() {
         <Stack.Screen name="DemoPage" component={DemoPage} />
         <Stack.Screen name="Recorder1" component={Recorder1} />
         <Stack.Screen name="Recorder2" component={Recorder2} />
+        <Stack.Screen name="MusicPlayer" component={MusicPlayer} />
 
 
       </Stack.Navigator>
