@@ -49,7 +49,7 @@ public class AudioRecordModule extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void init(ReadableMap options) {
-        sampleRateInHz = 44100;
+        sampleRateInHz = 48000;
         if (options.hasKey("sampleRate")) {
             sampleRateInHz = options.getInt("sampleRate");
         }
