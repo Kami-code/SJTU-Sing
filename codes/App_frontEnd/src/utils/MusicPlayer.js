@@ -245,9 +245,9 @@ export default class MusicPlayer extends Component {
     }
 
 
-    // componentWillMount() {
-    //     this.loadSongInfo(0)   //预先加载第一首
-    // }
+    componentWillMount() {
+        this.loadSongInfo(0)   //预先加载第一首
+    }
 
     goPage = ()=>{
         // this.context = this.props.navigation

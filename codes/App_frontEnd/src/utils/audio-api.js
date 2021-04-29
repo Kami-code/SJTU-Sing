@@ -17,6 +17,7 @@ export async function executeFFmpegAsync(command, callback) {
     return await RNFFmpeg.executeAsync(command, callback);
 }
 
+//人声背景合成
 export function mergeAudio(f_in_1, f_in_2, f_out){
     command = '-y -i '+RNFS.ExternalStorageDirectoryPath+f_in_1+' -i '+RNFS.ExternalStorageDirectoryPath+f_in_2+' -filter_complex amix=inputs=2:duration=longest '+RNFS.ExternalStorageDirectoryPath+f_out
     executeFFmpegAsync(ffmpegCommand, completedExecution => {
@@ -33,6 +34,7 @@ export function executeFFmpegCancel() {
     RNFFmpeg.cancel();
 }
 
+//直接消除MP3噪音
 export function noiseSuppress_mp3(f_in,f_decode,f_noise,f_out,channel){//channel = 1 or 2
     ffmpegCommand = '-y -i ' + RNFS.ExternalStorageDirectoryPath+ f_in + ' -acodec pcm_s16le -f s16le -ac '+channel+' -ar 48000 ' + RNFS.ExternalStorageDirectoryPath+f_decode
     executeFFmpegAsync(ffmpegCommand, completedExecution => {
@@ -48,6 +50,8 @@ export function noiseSuppress_mp3(f_in,f_decode,f_noise,f_out,channel){//channel
     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
 }
 
+
+//任意格式转pca
 export function decode(f_in,f_out,channel,sampleRate){//channel = 1 or 2 sampleRate = 16000 or 48000
     ffmpegCommand = '-y -i ' + RNFS.ExternalStorageDirectoryPath+ f_in + ' -acodec pcm_s16le -ac '+channel+' -ar '+sampleRate + ' ' + RNFS.ExternalStorageDirectoryPath+f_out;
     executeFFmpegAsync(ffmpegCommand, completedExecution => {
@@ -60,6 +64,7 @@ export function decode(f_in,f_out,channel,sampleRate){//channel = 1 or 2 sampleR
     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
 }
 
+//
 export function toSingleChannel(f_in,f_out){//channel = 1 or 2
     ffmpegCommand = '-y -i ' + RNFS.ExternalStorageDirectoryPath+ f_in + ' -ac 1 -ar 48000 ' + RNFS.ExternalStorageDirectoryPath+f_out;
     executeFFmpegAsync(ffmpegCommand, completedExecution => {
@@ -72,6 +77,7 @@ export function toSingleChannel(f_in,f_out){//channel = 1 or 2
     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
 }
 
+//pca转其他(文件名)
 export function encode(f_in,f_out,channel){//channel = 1 or 2
     ffmpegCommand = '-y -f s16le -ac '+channel+' -ar 48000 -acodec pcm_s16le -i '+RNFS.ExternalStorageDirectoryPath+f_in+' '+RNFS.ExternalStorageDirectoryPath+f_out
     executeFFmpegAsync(ffmpegCommand, completedExecution => {
@@ -84,11 +90,12 @@ export function encode(f_in,f_out,channel){//channel = 1 or 2
     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
 
 }
-
+//wav噪声消除，采样48000，16位
 export function noiseSuppress(f_in,f_out){
     RNNoise.noise_suppress(RNFS.ExternalStorageDirectoryPath+ f_in,RNFS.ExternalStorageDirectoryPath+ f_out);
 }
 
+//回声
 export function aecm(f_near, f_far, f_out){
     AECM.aec(RNFS.ExternalStorageDirectoryPath+ f_near,RNFS.ExternalStorageDirectoryPath+ f_far,RNFS.ExternalStorageDirectoryPath+ f_out);
 
@@ -103,6 +110,7 @@ export function sox_test(infile,outfile){
         console.log("init success"); 
        } 
     
+    //效果名，参数数组
     if(Sox.add_effect("echo",{})==1){
         console.log("echo failed");
     }
@@ -110,6 +118,7 @@ export function sox_test(infile,outfile){
         console.log("echo success");
     }
     Sox.add_effect("chorus",{});
+    //flow导出文件
     Sox.flow();
     
 }
