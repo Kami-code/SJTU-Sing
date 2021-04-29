@@ -73,7 +73,6 @@ class Index extends Component {
     render() {
         return (
             <View style={styles.flexFrame}>
-                <MusicPlayer/>
                 {/* <ImageBackground style={{width:"100%",height:"100%",flexDirection:"row"}} source={require("../../images/background2.jpg")}> */}
                     <View style={styles.flexContainer}>
                         {/* <Text>fuck ms</Text> */}

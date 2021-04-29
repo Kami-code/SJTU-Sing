@@ -61,6 +61,7 @@ class Index extends Component {
                     <View style={{height:"16%",paddingTop:pxToDp(12),flexDirection:"row",alignItems:'center',justifyContent:'space-around',backgroundColor:"#aabbffa9"}}>
                         <Button onPress={this.goWorksPage} style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>我的作品</Button>
                     </View>
+
             </View>
             
             // <HeaderImageScrollView
@@ -69,6 +70,7 @@ class Index extends Component {
             // headerImage={require("../../../images/background_blue.jpg")}
             // renderForeground={() => (
             //     <View style={{ height: 130, justifyContent: "center", alignItems: "center" }} >
+
             //     </View>
             // )}
             // >

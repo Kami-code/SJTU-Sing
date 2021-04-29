@@ -4,8 +4,6 @@ import Svg from 'react-native-svg-uri';
 import TabNavigator from 'react-native-tab-navigator';
 import {svg_bubble, svg_huatong,svg_letter,svg_search,svg_shezhi,svg_touxiang,svg_touxiang_small,svg_yinfu} from './res/fonts/iconSvg';
 import SingPage from './pages/branchpages/singpage';
-import ChoosePage from './pages/branchpages/singpage/choosepage';
-
 import NewsPage from './pages/branchpages/newspage';
 import MePage from './pages/branchpages/mepage';
 import MessagePage from './pages/branchpages/messagepage';
@@ -58,7 +56,7 @@ class Index extends Component {
                         <View style={{flex:1,flexDirection:'column'}} >
                             {/* <Text> 111</Text> */}
                             {/* < MusicPlayer></MusicPlayer> */}
-                            <ChoosePage/>
+                            <SingPage/>
                         </View>
                         
                         {/* <Text> 1111</Text> */}
