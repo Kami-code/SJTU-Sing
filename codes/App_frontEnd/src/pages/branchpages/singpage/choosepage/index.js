@@ -14,58 +14,41 @@ import SearchInput from '../../../../components/searchinput';
 import {pxToDp} from '../../../../utils/stylesKits';
 import SONGS from '../../../../images/song';
 
-import Svg from 'react-native-svg-uri';
-import {heart} from '../../../../res/fonts/iconSvg';
 import { ScrollView } from 'react-native-gesture-handler';
+import {NavigationContext} from "@react-navigation/native";
 
-// import {SongList} from './components/SongList';
-
-function RenderRecommendSongs({song}){
-    return (
-        <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={{ uri: song.pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30)}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {song.title} </Text>
-                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> {song.date} </Text>
-                    </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center"}}>
-                        <Svg width="40" height="40" fill ="#ff8866"  svgXmlData={heart} />
-                        <Text >{song.love}</Text>
-                    </View>
-        </TouchableOpacity>
-    );
-}
-
-    // const SongList = (props) =>{
-    //     const List = props.songs.map((song) =>{
-    //         return(
-    //             <RenderRecommendSongs song = {song}/>
-    //         )
-    //     });
-
-    //     return (
-    //         {List}
-    //     );
-    // }
+import SongList from './components/SongList';
 
 class Index extends Component {
+    static contextType = NavigationContext;
     constructor(props) {
         super(props);
         this.state={
             txt: "",
             songs: SONGS,
             pic_big: '', 
+            my_id: 666,
+            showSearchResult: false
         }
     }
 
+    chosen(id) {
+        this.setState({my_id:id});
+    }
     
+    onSearch(){
+        // this.setState({
+        //     showSearchResult: true
+        // }
+        // )
+    }
 
-	render(){
-		return(
+    renderChoosePage=()=>{
+        return(
 			<View style={styles.container}>
                 <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                 
-				<SearchInput onChangeText={txt=>this.setState({txt})} value={this.state.txt} style={{marginTop:pxToDp(10)}}/>
+				<SearchInput onChangeText={txt=>this.setState({txt})} onSearch={this.onSearch()} value={this.state.txt} style={{marginTop:pxToDp(50)}}/>
                 <View>
                     <Image source={{ uri: this.state.songs[0].pic_big }} style={{ width: "100%", height: pxToDp(200),borderRadius:pxToDp(20),marginTop:pxToDp(30) }} />
                 </View>
@@ -76,12 +59,29 @@ class Index extends Component {
                 </View>
                 <ScrollView>
                     {this.state.songs.map((item)=>{
-                    return (
-                        <RenderRecommendSongs song = {item}/>
-                    );
-                    })
-                }
+                        return (
+                            <SongList song = {item}/>
+                        );
+                        })
+                    }
                 </ScrollView>
+			</View>
+		);
+    }
+
+    renderSearchResult=()=>{
+        return(
+            <View>
+                <Text> 搜出来这些</Text>
+            </View>
+        )
+    }
+
+
+	render(){
+		return(
+			<View style={styles.container}>
+                {this.state.showSearchResult ? this.renderSearchResult() : this.renderChoosePage()}
 			</View>
 		);
 	}
@@ -95,4 +95,15 @@ const styles= StyleSheet.create({
         flexDirection:"column",
         backgroundColor: "#ddddee"
     },
+    button_text: {
+        color:'#fffe',
+        fontSize:pxToDp(16),
+        borderWidth:pxToDp(1),
+        borderRadius:pxToDp(15),
+        borderTopColor:"#2244cc",
+        backgroundColor:"#4444889a",
+        margin :pxToDp(2),
+        padding:pxToDp(1),
+
+    }
 });
