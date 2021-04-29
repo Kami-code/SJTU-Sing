@@ -3,6 +3,7 @@ import {View,Text,Image,StatusBar,StyleSheet} from 'react-native';
 
 import {pxToDp} from "../../../utils/stylesKits";
 import MusicPlayer from "../../../utils/MusicPlayer";
+import Recorder_2 from "../../../components/Recorder2.0/Recorder_2";
 import Singrefer from "./components/singrefer";
 import Svg from 'react-native-svg-uri';
 import {origin,adjust,restart,finish} from '../../../res/fonts/iconSvg';
@@ -27,6 +28,7 @@ class Index extends Component {
                 <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                 <TopNav title ={"K歌"}/>
                 <MusicPlayer></MusicPlayer>
+                <Recorder_2></Recorder_2>
                 {/* <Singrefer></Singrefer> */}
                 {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around',alignContent:"center" ,paddingBottom:pxToDp(50)}}>
                     <TouchableOpacity style={{alignItems:"center"}}>

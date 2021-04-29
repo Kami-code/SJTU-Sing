@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import { StyleSheet, View, Button,DeviceEventEmitter } from 'react-native';
 import { Buffer } from 'buffer';
 import Permissions from 'react-native-permissions';
 import Video from 'react-native-video';
+<<<<<<< HEAD
 import AudioRecord from 'react-native-audio-record';
 import RNFetchBlob from 'react-native-fetch-blob';
 
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
+=======
+//import AudioRecord from 'react-native-audio-record';
+import {savePcm} from '../../utils/audio-api';
+import AudioRecord from '../../utils/audioRecord'
+>>>>>>> 7377d1ac677483a74af58a6cc945485b9ef27ab2
 
 export default class App extends Component {
   state = {
@@ -14,26 +20,58 @@ export default class App extends Component {
     recording: false,
     paused: true,
     loaded: false,
+<<<<<<< HEAD
     downloadPath: AudioUtils.DocumentDirectoryPath + '/download.wav',
+=======
+    chunk: null,
+    frag: false
+>>>>>>> 7377d1ac677483a74af58a6cc945485b9ef27ab2
   };
+
 
   async componentDidMount() {
     await this.checkPermission();
-
     const options = {
-      sampleRate: 16000,
+      sampleRate: 48000,
       channels: 1,
       bitsPerSample: 16,
       wavFile: 'test.wav'
     };
 
-    AudioRecord.init(options);
-
-    AudioRecord.on('data', data => {
-      const chunk = Buffer.from(data, 'base64');
-      console.log('chunk size', chunk.byteLength);
-      // do something with audio chunk
+    this.pauseListener =DeviceEventEmitter.addListener('RecordPause',()=>{
+        this.pause();
     });
+
+
+    this.startListener =DeviceEventEmitter.addListener('RecordStart',()=>{
+      this.start();
+    });
+
+      this.listener =DeviceEventEmitter.addListener('fetchChunk',async (line)=>{
+        if(this.state.recording == true){
+          //DeviceEventEmitter.emit('returnChunk',this.state.chunk);
+          this.state.frag = false;
+          await savePcm('/test/record'+line+'.wav',this.state.chunk);
+        }
+
+      //  use param do something
+      });
+
+    AudioRecord.init(options);
+    
+
+
+    this.dataListener =DeviceEventEmitter.addListener('data',(data)=>{
+      if(this.state.frag==false){
+            // this.state.chunk = Buffer.from(data, 'base64');
+            this.state.frag=true;
+            this.state.chunk = data;
+          }else{
+            //this.state.chunk = Buffer.concat([this.state.chunk, Buffer.from(data,'base64')]);
+            this.state.chunk = this.state.chunk + data;
+          }
+    });
+
   }
 
   checkPermission = async () => {
@@ -66,14 +104,12 @@ export default class App extends Component {
     }, 1000);
   };
 
-  play = () => {
-    if (!this.state.loaded) this.player.seek(0);
-    this.setState({ paused: false, loaded: true });
-  };
 
   pause = () => {
-    this.setState({ paused: true });
+    this.setState({recording: false });
+    let audioFile = AudioRecord.stop();
   };
+
 
   onLoad = data => {
     console.log('onLoad', data);
@@ -219,6 +255,7 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.row}>
+<<<<<<< HEAD
           <Button onPress={this.linktest} title="Test" disabled={recording} />
           <Button onPress={this.start} title="Record" disabled={recording} />
           <Button onPress={this.stop} title="Stop" disabled={!recording} />
@@ -228,6 +265,15 @@ export default class App extends Component {
             <Button onPress={this.pause} title="Pause" disabled={!audioFile} />
           )}
           <Button onPress={this.upload} title="Upload" disabled={recording} />
+=======
+          {/* <Button onPress={this.start} title="Record" disabled={recording} />
+          <Button onPress={this.stop} title="Stop" disabled={!recording} />  */}
+          {/* {paused ? (
+            <Button onPress={this.play} title="Play" disabled={!audioFile} />
+          ) : (
+            <Button onPress={this.pause} title="Pause" disabled={!audioFile} />
+          )} */}
+>>>>>>> 7377d1ac677483a74af58a6cc945485b9ef27ab2
         </View>
         {!!audioFile && (
           <Video
