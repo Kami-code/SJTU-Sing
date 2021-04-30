@@ -15,8 +15,6 @@ export default class App extends Component {
   state = {
     audioFile: '',
     recording: false,
-    paused: true,
-    loaded: false,
     chunk: '',
     frag: false
   };
@@ -36,9 +34,12 @@ export default class App extends Component {
           this.pause();
           console.log("record paused");
         }
-        if (flag==1){
+        if (flag>=1){
           this.state.frag = false;
           console.log("clear chunk")
+        }
+        if(flag==2){
+          this.data = new Array();
         }
     });
 
@@ -48,7 +49,7 @@ export default class App extends Component {
     });
 
     this.finishListener =DeviceEventEmitter.addListener('RecordFinish',async()=>{
-      this.state.recording = false;
+      this.pause();
       let song = '';
       for(let i = 0;i<this.data.length;++i){
         song = song + this.data[i];
@@ -60,12 +61,10 @@ export default class App extends Component {
       this.listener =DeviceEventEmitter.addListener('fetchChunk',async (line)=>{
         if(this.state.recording == true){
           //DeviceEventEmitter.emit('returnChunk',this.state.chunk);
-          this.data[line]=this.state.chunk;
+          this.data[line]=this.state.chunk; //把缓存保存入句子组
           this.state.frag = false;
-          await saveAudio('/test/record'+line+'.wav',this.state.chunk);
+          await saveAudio('/test/record'+line+'.wav',this.data[line]); //保存句子到本地
         }
-
-      //  use param do something
       });
 
     AudioRecord.init(options);
@@ -74,11 +73,11 @@ export default class App extends Component {
 
     this.dataListener =DeviceEventEmitter.addListener('data',(data)=>{
       if(this.state.frag==false){
-            // this.state.chunk = Buffer.from(data, 'base64');
+            // 数据刚刚被填入句子，清空缓存重新装
             this.state.frag=true;
             this.state.chunk = data;
           }else{
-            //this.state.chunk = Buffer.concat([this.state.chunk, Buffer.from(data,'base64')]);
+            // 继续填充缓存
             this.state.chunk = this.state.chunk + data;
           }
     });
@@ -117,13 +116,14 @@ export default class App extends Component {
 
 
   pause = () => {
+    if (!this.state.recording) return;
+    console.log('stop record');
     this.setState({recording: false });
     let audioFile = AudioRecord.stop();
   };
 
 
   render() {
-    const { recording, audioFile, paused } = this.state;
     return (
       <View >
       </View>

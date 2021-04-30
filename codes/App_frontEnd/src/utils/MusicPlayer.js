@@ -31,6 +31,9 @@ export default class MusicPlayer extends Component {
     constructor(props) {
         super(props);
         this._timer=null;
+        this.keepBuffer = 0;
+        this.clearCurrentBuffer = 1;
+        this.clearAllBuffer = 2;
         this.state = {
             songs: SONGS,   //数据源
             pic_small: '',    //小图
@@ -56,29 +59,30 @@ export default class MusicPlayer extends Component {
     //重唱上一句话
     prevAction = (index) => {
         if(this.state.fragNum>0){       
-            DeviceEventEmitter.emit('RecordPause',1);        
-            if(lyrObj[this.state.currentLine-1].total-this.state.recordShift>5){
-                this.state.currentTime = lyrObj[this.state.currentLine-1].total-this.state.recordShift-5;
+            DeviceEventEmitter.emit('RecordPause',this.clearCurrentBuffer);   
+            let lastFrag = lyrObj[this.state.currentLine-1].total-this.state.recordShift;
+            if(lastFrag>=5){ //如果上次分割点之前还有5秒，给予5秒的准备时间。
+                this.state.currentTime = lastFrag-5;
                 this._timer=setInterval(()=>{
                     DeviceEventEmitter.emit('RecordStart');
                     clearInterval(this._timer); 
                 },5000);
-            }else{
+            }else{ //否则把时间拉到0，有多少时间给多少时间。
                 this.state.currentTime = 0;
-                DeviceEventEmitter.emit('RecordStart');
+                this._timer=setInterval(()=>{
+                    DeviceEventEmitter.emit('RecordStart');
+                    clearInterval(this._timer); 
+                },lastFrag*1000);
             }
-            // if(this.state.pause===true){
-            //     this.state.pause=false;
-            // }
             this.refs.video.seek(this.state.currentTime);
             this.state.sliderValue = this.state.currentTime;
             this.state.currentLine = this.state.currentLine - 1;
             this.state.fragNum = this.state.fragNum - 1;
         }
     }
-
+    //全部初始化
     restart = () => {
-        DeviceEventEmitter.emit('RecordPause',1); 
+        DeviceEventEmitter.emit('RecordPause',this.clearAllBuffer); 
         this.setState({
             currentTime: 0, 
             sliderValue: 0,
@@ -110,13 +114,15 @@ export default class MusicPlayer extends Component {
             this.setState({
                 isplayBtn: require('./image/播放.png')
             });
+            //同步开始录音
             DeviceEventEmitter.emit('RecordStart');
             
         } else {
             this.setState({
                 isplayBtn: require('./image/暂停.png')
             });
-            DeviceEventEmitter.emit('RecordPause',0);
+            //录音器暂停，但不清空缓存
+            DeviceEventEmitter.emit('RecordPause',this.keepBuffer);
         }
 
     }
@@ -128,6 +134,7 @@ export default class MusicPlayer extends Component {
             currentTime: data.currentTime
         })
         let shift = 0.75;
+        //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
         if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
             if(this.state.currentTime.toFixed(2)>2){
                 DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
@@ -239,14 +246,14 @@ export default class MusicPlayer extends Component {
         
     }
     async componentDidMount() {
+        //录音器保存完成后，跳转到下一个界面
         this.finishListener = DeviceEventEmitter.addListener('audioSaved',()=>{
             this.context.navigate("CompletePage");
         });
     }
 
     finish = ()=>{
-        // this.context = this.props.navigation
-        //this.context.navigate("CompletePage");
+        //告诉录音器结束了，等待录音器把完整的歌保存。
         DeviceEventEmitter.emit("RecordFinish");
         if(this.state.pause==false){
             this.playAction();
@@ -272,7 +279,6 @@ export default class MusicPlayer extends Component {
                     <View>
                     <Video
                         source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
-                        //source={require('../images/sky.mp3')}
                         ref='video'                           // Store reference
                         rate={1.0}                     // 0 is paused, 1 is normal.
                         volume={1.0}                   // 0 is muted, 1 is normal.
