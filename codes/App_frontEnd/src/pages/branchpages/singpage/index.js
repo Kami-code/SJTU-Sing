@@ -319,7 +319,7 @@ export default class MusicPlayer extends Component {
                     </View>
 
                         {/* 歌词界面设置 */}
-                    <View style={{ height: 320,alignItems: 'center' ,marginTop:20, flex: 1}}>
+                    <View style={{ height: 320,alignItems: 'center' ,marginTop:20}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
                                     snapToInterval = {15}
@@ -328,7 +328,7 @@ export default class MusicPlayer extends Component {
                         </ScrollView>
                     </View>
                     {/* 额外添加按钮 */}
-                    <View style={{ flexDirection: 'row',marginTop:pxToDp(20), justifyContent: 'space-around' ,marginBottom:pxToDp(20)}}>
+                    <View style={{ flexDirection: 'row',marginTop:pxToDp(10), justifyContent: 'space-around' }}>
 
                     <TouchableOpacity onPress={() => this.prevAction(this.state.currentIndex - 1)}>
                         <View style={styles.button}>
