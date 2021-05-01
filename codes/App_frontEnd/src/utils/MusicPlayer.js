@@ -327,7 +327,7 @@ export default class MusicPlayer extends Component {
                     </View>
 
                         {/* 歌词界面设置 */}
-                    <View style={{ height: 220,alignItems: 'center' ,marginTop:20}}>
+                    <View style={{ height: 270,alignItems: 'center' ,marginTop:20}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
                                     snapToInterval = {15}
@@ -336,7 +336,7 @@ export default class MusicPlayer extends Component {
                         </ScrollView>
                     </View>
                     {/* 额外添加按钮 */}
-                    <View style={{ flexDirection: 'row',marginTop:pxToDp(30), justifyContent: 'space-around' }}>
+                    <View style={{ flexDirection: 'row',marginTop:pxToDp(10), justifyContent: 'space-around' }}>
 
                         <TouchableOpacity style={{alignItems:"center"}}>
                             <View style={styles.button}>
@@ -365,6 +365,31 @@ export default class MusicPlayer extends Component {
                             </View>
                             <Text style={styles.buttontext}>完成</Text>
                         </TouchableOpacity>
+                    </View>
+                    <View style={{ flexDirection: 'row',marginTop:pxToDp(10), justifyContent: 'space-around' }}>
+
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
+                            </View>
+                            <Text style={styles.buttontext}>a</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
+                            </View>
+                            <Text style={styles.buttontext}>b</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}} >
+                            <View style={styles.button}>
+                                <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
+                            </View>
+                            <Text style={styles.buttontext}>c</Text>
+                        </TouchableOpacity>
+
+
                     </View>
                 </View>
             )

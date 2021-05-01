@@ -16,7 +16,8 @@ export default class App extends Component {
     audioFile: '',
     recording: false,
     chunk: '',
-    frag: false
+    frag: false,
+    start: false,
   };
 
 
@@ -30,10 +31,7 @@ export default class App extends Component {
     };
 
     this.pauseListener =DeviceEventEmitter.addListener('RecordPause',(flag)=>{
-        if(this.state.recording==true){
-          this.pause();
-          console.log("record paused");
-        }
+        this.pause();
         if (flag>=1){
           this.state.frag = false;
           console.log("clear chunk")
@@ -45,16 +43,22 @@ export default class App extends Component {
 
 
     this.startListener =DeviceEventEmitter.addListener('RecordStart',()=>{
-      this.start();
+      if(this.state.recording){return;}
+      if(!this.state.start){
+        this.start();
+      }else{
+        this.resume();
+      }
     });
 
     this.finishListener =DeviceEventEmitter.addListener('RecordFinish',async()=>{
-      this.pause();
+      AudioRecord.stop();
       let song = '';
       for(let i = 0;i<this.data.length;++i){
         song = song + this.data[i];
       }
       await saveAudio('/test/record.wav',song);
+      console.log("song"+this.data.length);
       DeviceEventEmitter.emit('audioSaved');
     });
 
@@ -64,6 +68,7 @@ export default class App extends Component {
           this.data[line]=this.state.chunk; //把缓存保存入句子组
           this.state.frag = false;
           await saveAudio('/test/record'+line+'.wav',this.data[line]); //保存句子到本地
+          console.log("frag"+line);
         }
       });
 
@@ -72,14 +77,17 @@ export default class App extends Component {
 
 
     this.dataListener =DeviceEventEmitter.addListener('data',(data)=>{
-      if(this.state.frag==false){
-            // 数据刚刚被填入句子，清空缓存重新装
-            this.state.frag=true;
-            this.state.chunk = data;
-          }else{
-            // 继续填充缓存
-            this.state.chunk = this.state.chunk + data;
-          }
+      if(this.state.recording==true){
+        if(this.state.frag==false){
+          // 数据刚刚被填入句子，清空缓存重新装
+          this.state.frag=true;
+          this.state.chunk = data;
+        }else{
+          // 继续填充缓存
+          this.state.chunk = this.state.chunk + data;
+        }
+      }
+      
     });
 
   }
@@ -98,7 +106,7 @@ export default class App extends Component {
 
   start = () => {
     console.log('start record');
-    this.setState({ audioFile: '', recording: true });
+    this.setState({ audioFile: '', recording: true ,start: true});
     AudioRecord.start();
   };
 
@@ -117,9 +125,16 @@ export default class App extends Component {
 
   pause = () => {
     if (!this.state.recording) return;
-    console.log('stop record');
+    console.log('record pause');
     this.setState({recording: false });
-    let audioFile = AudioRecord.stop();
+    // AudioRecord.stop();
+  };
+
+  resume = () => {
+    if (this.state.recording) return;
+    console.log('record resume');
+    this.setState({recording: true });
+    // AudioRecord.stop();
   };
 
 
