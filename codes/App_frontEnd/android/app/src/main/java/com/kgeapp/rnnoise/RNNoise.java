@@ -26,4 +26,6 @@ public class RNNoise {
     }
 
     public native void cancelNoise(String in, String out);
+
+    public native byte[] flowRNNoise(byte[] audio);
 }

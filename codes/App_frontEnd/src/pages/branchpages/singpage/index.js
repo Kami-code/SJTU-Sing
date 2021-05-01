@@ -241,7 +241,7 @@ export default class MusicPlayer extends Component {
     }
 
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.loadSongInfo(0)   //预先加载第一首
     }
     async componentDidMount() {
@@ -273,54 +273,66 @@ export default class MusicPlayer extends Component {
             //数据加载出来
             return (
                 <View style={styles.container}>
+
                     {/* <Recorder_2></Recorder_2> */}
                     {/* <Text>{this.context.state.params.id}</Text> */}
-                    <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
-                    <View>
-                    <Video
-                        source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
-                        ref='video'                           // Store reference
-                        rate={1.0}                     // 0 is paused, 1 is normal.
-                        volume={1.0}                   // 0 is muted, 1 is normal.
-                        muted={false}                  // Mutes the audio entirely.
-                        paused={this.state.pause}                 // Pauses playback entirely.
-                        onProgress={(e) => this.onProgress(e)}
-                        onLoad={(e) => this.onLoad(e)}
-                        onEnd={() => this.nextAction(this.state.currentIndex + 1)}
-                    />
-                    </View>
+                    {/* 顶部栏 */}
                     <View style={styles.playingInfo}>
-                        <Text>{this.state.author} - {this.state.title}</Text>
-                        <Text>{this.formatTime(Math.floor(this.state.currentTime))} - {this.formatTime(Math.floor(this.state.duration))}</Text>
+                        {/* 返回键 */}
+                        <TouchableOpacity onPress={() => {this.context.navigate("Tabbar");}}>
+                            <Image source={require('./images/上一首.png')} style={{ width: 25, height: 25}} />
+                        </TouchableOpacity>
+                        {/* 歌曲名称 */}
+                        <Text style={{fontSize:20}}> {this.state.title}</Text>
+                        {/* 切换下一首歌（以后可以换成菜单键） */}
+                        <TouchableOpacity   onPress={() => this.nextAction(this.state.currentIndex + 1)}>
+                            <Image source={require('./images/下一首.png')} style={{ width: 25, height: 25 }} />
+                        </TouchableOpacity>             
+                    </View>
+                    {/* 图片，可以换成五线谱 */}
+                    <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
+
+                    <View>
+                        <Video
+                            source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
+                            ref='video'                           // Store reference
+                            rate={1.0}                     // 0 is paused, 1 is normal.
+                            volume={1.0}                   // 0 is muted, 1 is normal.
+                            muted={false}                  // Mutes the audio entirely.
+                            paused={this.state.pause}                 // Pauses playback entirely.
+                            onProgress={(e) => this.onProgress(e)}
+                            onLoad={(e) => this.onLoad(e)}
+                            onEnd={() => this.nextAction(this.state.currentIndex + 1)}
+                        />
                     </View>
 
+
                     
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around',marginTop: pxToDp(12) }}>
-                    <View style={{ flex:9}}>
-                    <Slider
-                        ref='slider'
-                        value={this.state.sliderValue}
-                        maximumValue={this.state.file_duration}
-                        step={1}
-                        minimumTrackTintColor='#FFDB42'
-                        onValueChange={(value) => {
-                            this.setState({
-                                currentTime: value
-                            })
-                        }
-                        }
-                        onSlidingComplete={(value) => {                                
-                            this.refs.video.seek(value)
-                        }}
-                    />
-                    </View>
-                        <TouchableOpacity  style={{ flex:1}} onPress={() => this.nextAction(this.state.currentIndex + 1)}>
-                            <Image source={require('./images/下一首.png')} style={{ width: 30, height: 30 }} />
-                        </TouchableOpacity>
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around',marginTop: pxToDp(12),marginLeft:pxToDp(10),marginRight:pxToDp(10) }}>
+                        <Text>{this.formatTime(Math.floor(this.state.currentTime))} | {this.formatTime(Math.floor(this.state.duration))}</Text>
+                        <View style={{ flex:1}}>
+                            <Slider
+                                ref='slider'
+                                value={this.state.sliderValue}
+                                maximumValue={this.state.file_duration}
+                                disabled = {true}
+                                step={1}
+                                minimumTrackTintColor='#FFDB42'
+                                onValueChange={(value) => {
+                                    this.setState({
+                                        currentTime: value
+                                    })
+                                }
+                                }
+                                onSlidingComplete={(value) => {                                
+                                    this.refs.video.seek(value)
+                                }}
+                            />
+                        </View>  
                     </View>
 
                         {/* 歌词界面设置 */}
-                    <View style={{ height: 320,alignItems: 'center' ,marginTop:20}}>
+                    <View style={{ height: 320,alignItems: 'center' ,marginTop:20, flex:1}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
                                     snapToInterval = {15}
@@ -328,17 +340,17 @@ export default class MusicPlayer extends Component {
                             {this.renderItem()}
                         </ScrollView>
                     </View>
-                    {/* 额外添加按钮 */}
-                    <View style={{ flexDirection: 'row',marginTop:pxToDp(10), justifyContent: 'space-around' }}>
-
-                    <TouchableOpacity onPress={() => this.prevAction(this.state.currentIndex - 1)}>
-                        <View style={styles.button}>
-                            <Image source={require('./images/上一首.png')} style={{ width: 30, height: 30}} />
-                            
-                        </View>
-                        <Text style={styles.buttontext}>上一句</Text>
+                    {/* 添加底部按钮 */}
+                    <View style={{ flexDirection: 'row',marginTop:pxToDp(20),marginBottom:pxToDp(20), justifyContent: 'space-around' }}>
+                         {/* 重唱上一句 */}
+                        <TouchableOpacity onPress={() => this.prevAction(this.state.currentIndex - 1)}>
+                            <View style={styles.button}>
+                                <Image source={require('./images/上一首.png')} style={{ width: 30, height: 30}} />     
+                            </View>
+                            <Text style={styles.buttontext}>上一句</Text>
                         </TouchableOpacity>
 
+                        {/* 切换原唱 */}
                         <TouchableOpacity style={{alignItems:"center"}}>
                             <View style={styles.button}>
                                 <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
@@ -346,26 +358,22 @@ export default class MusicPlayer extends Component {
                             <Text style={styles.buttontext}>原唱</Text>
                         </TouchableOpacity>
 
-                        {/* <TouchableOpacity style={{alignItems:"center"}}>
-                            <View style={styles.button}>
-                                <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
-                            </View>
-                            <Text style={styles.buttontext}>返听调音</Text>
-                        </TouchableOpacity> */}
-
+                        {/* 开始暂停 */}
                         <TouchableOpacity onPress={() => this.playAction()}>
-                        <View style={styles.mainButton}>
-                            <Image source={this.state.isplayBtn} style={{ width: 40, height: 40 }} />
-                        </View>
+                            <View style={styles.mainButton}>
+                                <Image source={this.state.isplayBtn} style={{ width: 40, height: 40 }} />
+                            </View>
                         </TouchableOpacity>
 
+                        {/* 重录歌曲 */}
                         <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.restart()}>
                             <View style={styles.button}>
                                 <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
                             </View>
                             <Text style={styles.buttontext}>重录</Text>
                         </TouchableOpacity>
-
+                        
+                        {/* 完成录制 */}
                         <TouchableOpacity style={{alignItems:"center"}}onPress ={()=>this.finish()}>
                             <View style={styles.button}>
                                 <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
@@ -425,7 +433,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingTop: 20,
         paddingLeft: 20,
-        paddingRight: 20
+        paddingRight: 20,
+        marginTop: 10,
+        marginBottom: 10,
     },
     text: {
         color: "black",
@@ -444,153 +454,3 @@ const styles = StyleSheet.create({
     }
 })
 
-
-
-// import React,{Component} from 'react';
-// import {View,Text,Image,StatusBar,StyleSheet} from 'react-native';
-
-// import {pxToDp} from "../../../utils/stylesKits";
-// import MusicPlayer from "../../../utils/MusicPlayer";
-// import Recorder_2 from "../../../components/Recorder2.0/Recorder_2";
-// import Singrefer from "./components/singrefer";
-// import Svg from 'react-native-svg-uri';
-// import {origin,adjust,restart,finish} from '../../../res/fonts/iconSvg';
-// import CompletePage from './completepage';
-// import {NavigationContext} from "@react-navigation/native";
-// class Index extends Component {
-//     static contextType = NavigationContext;
-//     state = {  }
-//     goPage = ()=>{
-//         // this.context = this.props.navigation
-//         this.context.navigate("CompletePage");
-//     }
-//     render() { 
-//         return ( 
-//             <View style={styles.flexFrame}>
-//                 <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
-//                 <MusicPlayer></MusicPlayer>
-//                 <Recorder_2></Recorder_2>
-//                 {/* <Singrefer></Singrefer> */}
-//                 {/* <View style={{ flexDirection: 'row', justifyContent: 'space-around',alignContent:"center" ,paddingBottom:pxToDp(50)}}>
-//                     <TouchableOpacity style={{alignItems:"center"}}>
-//                         <View style={styles.button}>
-//                             <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
-//                         </View>
-//                         <Text style={styles.buttontext}>原唱</Text>
-//                     </TouchableOpacity>
-
-//                     <TouchableOpacity style={{alignItems:"center"}}>
-//                         <View style={styles.button}>
-//                             <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
-//                         </View>
-//                         <Text style={styles.buttontext}>返听调音</Text>
-//                     </TouchableOpacity>
-
-//                     <TouchableOpacity style={{alignItems:"center"}}>
-//                         <View style={styles.button}>
-//                             <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
-//                         </View>
-//                         <Text style={styles.buttontext}>重录</Text>
-//                     </TouchableOpacity>
-
-//                     <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.goPage("CompletePage")}>
-//                         <View style={styles.button}>
-//                             <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
-//                         </View>
-//                         <Text style={styles.buttontext}>完成</Text>
-//                     </TouchableOpacity>
-//                 </View> */}
-//             </View>
-//         );
-//     }
-// }
- 
-// export default Index;
-
-
-// const styles = StyleSheet.create({
-//     buttontext:{
-//         fontSize:pxToDp(14),
-//         marginTop:(4),
-//         color:"#4444889a"
-//     },
-//     button:{
-//         height:pxToDp(60),
-//         width:pxToDp(60),
-//         borderRadius:40,
-//         backgroundColor:"#ddddee",
-//         alignItems: 'center',
-//         justifyContent: 'center',
-//     },
-//     flexContainer: {
-//         flex: 1,
-//         // 容器需要添加direction才能变成让子元素flex
-//         flexDirection: 'row',
-//         marginTop:pxToDp(500),
-//         backgroundColor: '#cc0000',
-//     },
-//     flexFrame:{
-//         flex: 1,
-//         // 容器需要添加direction才能变成让子元素flex
-//         // flexDirection: 'column',
-//         backgroundColor: 'transparent',
-//     },
-//     cell: {
-//         flex: 1,
-//         height: 50,
-//         justifyContent: 'center',
-//         backgroundColor: '#aaaaaa',
-//         // alignSelf:"center",
-//     },
-//     welcome: {
-//         fontSize: 20,
-//         textAlign: 'center',
-//         margin: 10
-//     },
-//     cellfixed: {
-//         height: 50,
-//         width: "25%",
-//         backgroundColor: '#fefefe'
-//     },
-//     icon_more: {
-//         // height: 10,
-//         // width: 10,
-//         marginTop:pxToDp(50)
-//     },
-//     flexTopContainer: {
-//         flex: 1,
-//         // 容器需要添加direction才能变成让子元素flex
-//         flexDirection: 'row',
-//         backgroundColor: '#ccccee',
-//         // marginTop:pxToDp(100),
-//     },
-//     cellfixedTop: {
-//         height: 30,
-//         width: 70,
-//         alignSelf: "center"
-//         // backgroundColor: '#fefefe'
-//     },
-//     control:{
-//         height: 30,
-//         width: 30,
-//         alignSelf: "center"
-        
-//     },
-//     play:{
-//         height: 80,
-//         width: 80,
-//         alignSelf: "center"
-//     },
-//     flexMidContainer: {
-//         flex: 1,
-//         // 容器需要添加direction才能变成让子元素flex
-//         flexDirection: 'row',
-//         // backgroundColor: '#aaaaaa',
-//         marginTop:pxToDp(350),
-//     },
-//     cellfixedMid: {
-//         height: 40,
-//         width: 110,
-//         // backgroundColor: '#fefefe'
-//     },
-// });
