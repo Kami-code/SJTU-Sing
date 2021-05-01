@@ -11,12 +11,16 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef unsigned char byte;
 /*
  * Class:     com_kgeapp_rnnoise_RNNoise
  * Method:    cancelNoise
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_com_kgeapp_rnnoise_RNNoise_cancelNoise(JNIEnv *, jobject, jstring, jstring);
+
+JNIEXPORT jbyteArray JNICALL Java_com_kgeapp_rnnoise_RNNoise_flowRNNoise(JNIEnv *, jobject, jbyteArray);
 
 //char* Jstring2CStr(JNIEnv* env, jstring jstr);
 
