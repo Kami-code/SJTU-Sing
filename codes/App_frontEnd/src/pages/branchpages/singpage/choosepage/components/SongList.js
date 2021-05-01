@@ -12,36 +12,37 @@ import {
 
 import {pxToDp} from '../../../../../utils/stylesKits';
 
-import Svg from 'react-native-svg-uri';
-import {heart} from '../../../../../res/fonts/iconSvg';
+import {NavigationContext} from "@react-navigation/native";
+class SongList extends Component{
+    static contextType = NavigationContext;
+    constructor(props) {
+        super(props);
+        this.state={
+            song: this.props.song,
+        }
+    }
 
+    songChosen=()=>{
+        console.log("songChosen");
+        this.context.navigate("SingPage");
+    }
 
-function RenderRecommendSongs({song}){
-    return (
-        <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={{ uri: song.pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30)}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {song.title} </Text>
-                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> {song.date} </Text>
-                    </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center"}}>
-                        <Svg width="40" height="40" fill ="#ff8866"  svgXmlData={heart} />
-                        <Text >{song.love}</Text>
-                    </View>
-        </TouchableOpacity>
-    );
-}
-
-const SongList = (props) =>{
-    const List = props.songs.map((song) =>{
-        return(
-            <RenderRecommendSongs song = {song}/>
-        )
-    });
-
-    return (
-        {List}
-    );
+    render(){
+        const {song} = this.state;
+        return (
+        <View style={{height:pxToDp(80),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between',borderTopWidth :pxToDp(1),borderTopColor:"#2244cc"}}>
+            <Image source={{ uri: song.picture }} style={{height:pxToDp(80),width:pxToDp(80)}}></Image>
+            <View style={{backgroundColor:"transparent",flexDirection:'column',width:"45%",justifyContent:"center"}}>
+                <Text style={{color:'#222',fontSize:pxToDp(18)}}> {song.name} </Text>
+                <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> {song.singer} </Text>
+            </View>
+            <View style={{backgroundColor:"#aaaacc22",flexDirection:'column',padding:pxToDp(15), alignItems:"flex-end",justifyContent:"center"}}>
+                <Text style={styles.button_text} onPress={()=>this.songChosen()}>  开始K歌 </Text>
+                {/* <Text style={styles.button_text} >{song.love}</Text> */}
+            </View>
+        </View>
+    )
+    };
 }
 
 export default SongList;
