@@ -36,9 +36,9 @@ export default class MusicPlayer extends Component {
         this.clearAllBuffer = 2;
         this.state = {
             songs: SONGS,   //数据源
-            pic_small: '',    //小图
-            pic_big: '',      //大图
+            picture: '',
             file_duration: 0,    //歌曲长度
+            id: '',
             song_id: '',     //歌曲id
             title: '',       //歌曲名字
             author: '',      //歌曲作者
@@ -201,11 +201,11 @@ export default class MusicPlayer extends Component {
         //加载歌曲
         let local_song = this.state.songs[index];
         this.setState({
-            pic_small: local_song.pic_small, //小图
-            pic_big: local_song.pic_big,  //大图
-            title: local_song.title,     //歌曲名
-            author: local_song.author,   //歌手
-            file_link: local_song.file_link,   //播放链接
+            pic_small: local_song.picture, //小图
+            pic_big: local_song.picture,  //大图
+            title: local_song.name,     //歌曲名
+            author: local_song.singer,   //歌手
+            file_link: local_song.mp3,   //播放链接
             file_duration: local_song.file_duration //歌曲长度
         })
         let lry = local_song.lrcContent

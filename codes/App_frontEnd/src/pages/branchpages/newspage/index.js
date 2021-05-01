@@ -54,7 +54,7 @@ class Index extends Component {
                         return (
                             <TouchableOpacity style={styles.card}  onPress ={()=>this.goPage("NewsDetailPage")}>
                                 {/* <Text style={styles.text}>{card}</Text> */}
-                                <Image source={{ uri: this.state.songs[3].pic_big }} style={{height:"100%",width:"100%"}}></Image>
+                                <Image source={{ uri: this.state.songs[2].pic_big }} style={{height:"100%",width:"100%"}}></Image>
                             </TouchableOpacity>
                         )
                     }}
