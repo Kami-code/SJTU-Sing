@@ -34,7 +34,7 @@ export default class MusicPlayer extends Component {
         this.clearCurrentBuffer = 1;
         this.clearAllBuffer = 2;
         this.state = {
-            songs: SONGS,   //数据源
+            songs: global.SONGS,   //数据源
             pic_small: '',    //小图
             pic_big: '',      //大图
             file_duration: 0,    //歌曲长度
@@ -52,7 +52,8 @@ export default class MusicPlayer extends Component {
             currentLine: 0, //当前第几行
             firstPlay: true,
             fragNum: 0,
-            recordShift:0.75
+            recordShift:0.75,
+
         }
     }
     //重唱上一句话
@@ -200,14 +201,14 @@ export default class MusicPlayer extends Component {
         //加载歌曲
         let local_song = this.state.songs[index];
         this.setState({
-            pic_small: local_song.pic_small, //小图
-            pic_big: local_song.pic_big,  //大图
-            title: local_song.title,     //歌曲名
-            author: local_song.author,   //歌手
-            file_link: local_song.file_link,   //播放链接
+            pic_small: local_song.picture, //小图
+            pic_big: local_song.picture,  //大图
+            title: local_song.name,     //歌曲名
+            author: local_song.singer,   //歌手
+            file_link: local_song.mp3,   //播放链接
             file_duration: local_song.file_duration //歌曲长度
         })
-        let lry = local_song.lrcContent
+        let lry = local_song.lyric
         let lryAry = lry.split('\n')   //按照换行符切数组
         lryAry.forEach(function (val, index) {
             let obj = {}   //用于存放时间
@@ -242,7 +243,6 @@ export default class MusicPlayer extends Component {
 
     componentWillMount() {
         this.loadSongInfo(0)   //预先加载第一首
-        
     }
     async componentDidMount() {
         //录音器保存完成后，跳转到下一个界面
@@ -274,6 +274,7 @@ export default class MusicPlayer extends Component {
             return (
                 <View style={styles.container}>
                     {/* <Recorder_2></Recorder_2> */}
+                    {/* <Text>{this.context.state.params.id}</Text> */}
                     <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
                     <View>
                     <Video

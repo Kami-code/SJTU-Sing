@@ -19,17 +19,20 @@ import {NavigationContext} from "@react-navigation/native";
 
 import SongList from './components/SongList';
 
+import SingPage from '../index';
+
 class Index extends Component {
     static contextType = NavigationContext;
     constructor(props) {
         super(props);
         this.state={
             txt: "",
-            songs: SONGS,
+            songs: global.RECOMMEND,
             searchResult: null,
             pic_big: '', 
             my_id: 666,
             showSearchResult: false,
+            showSingPage: false,
             retstatus: 0
         }
     }
@@ -75,6 +78,23 @@ class Index extends Component {
         console.log("fetch end");
     }
 
+    onChosen= () =>{
+        this.setState({
+            showSearchResult: false
+        })
+        console.log("songChosen");
+        this.context.navigate("SingPage");
+        
+        //选定歌曲后再次请求，得到完整数据
+        // const id = 
+    }
+
+    // renderSingPage = ()=>{
+    //     return(
+    //         <SingPage/>
+    //     )
+    // }
+
     renderChoosePage=()=>{
         return(
 			<View style={styles.container}>
@@ -82,7 +102,7 @@ class Index extends Component {
                 
 				<SearchInput onChangeText={txt=>this.setState({txt})} onSearch={this.onSearch} value={this.state.txt} style={{marginTop:pxToDp(50)}}/>
                 <View>
-                    <Image source={{ uri: this.state.songs[0].pic_big }} style={{ width: "100%", height: pxToDp(200),borderRadius:pxToDp(20),marginTop:pxToDp(30) }} />
+                    <Image source={{ uri: this.state.songs[0].picture }} style={{ width: "100%", height: pxToDp(200),borderRadius:pxToDp(20),marginTop:pxToDp(30) }} />
                 </View>
                 <View style={{height:pxToDp(40),backgroundColor:"#ccd",flexDirection:'row',justifyContent:"space-between",paddingLeft:pxToDp(10),alignItems:"center",marginTop:pxToDp(30)}} >
                     {/* <VideoScreen/>
@@ -92,7 +112,7 @@ class Index extends Component {
                 <ScrollView>
                     {this.state.songs.map((item)=>{
                         return (
-                            <SongList song = {item}/>
+                            <SongList song = {item} onChosen={this.onChosen}/>
                         );
                         })
                     }
@@ -102,7 +122,7 @@ class Index extends Component {
     }
 
     renderSearchResult=()=>{
-        if (this.state.ret == 404) return(<View><Text>空列表</Text></View>)
+        // if (this.state.ret == 404) return(<View><Text>空列表</Text></View>)
         // console.log(this.state.searchResult)
         let list =JSON.parse(this.state.searchResult);
         if (list == null || list == undefined) return(<View><Text>空列表</Text></View>)
@@ -113,7 +133,7 @@ class Index extends Component {
                 <ScrollView>
                     {list.map((item)=>{
                         return (
-                            <SongList song = {item}/>
+                            <SongList song = {item} onChosen={this.onChosen}/>
                             // <Text>{item.id}</Text>
                         );
                         })
