@@ -25,8 +25,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import android.util.Base64;
+import com.kgeapp.rnnoise.RNNoise;
 
 public class SaveAudioModule extends ReactContextBaseJavaModule {
+    static{
+        System.loadLibrary("rnnoise");
+    }
     public SaveAudioModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -57,6 +61,10 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
                     // for(int i=0; i<audio.size();i++){
                     //     newaudio[i] = (short) (audio.getInt(i) & 0xFFFF);
                     // }
+                    String in = "";
+                    String out = "";
+                    RNNoise suppressor = new RNNoise(in,out);
+                    audio = suppressor.flowRNNoise(audio);
                     boolean result = SaveFile(path, audio,isWav);
                     if(result){promise.resolve("Save failed");}
                     else{promise.resolve("Save success");}
@@ -96,45 +104,6 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
         }
     }
 
-    // private byte[] short2byte(short[] sData) {
-    //     int shortArrsize = sData.length;
-    //     byte[] bytes = new byte[shortArrsize * 2];
-    //     for (int i = 0; i < shortArrsize; i++) {
-    //         bytes[i * 2] = (byte) (sData[i] & 0x00FF);
-    //         bytes[(i * 2) + 1] = (byte) (sData[i] >> 8);
-    //         sData[i] = 0;
-    //     }
-    //     return bytes;
-    // }
-
-    // private byte[] get16BitPcm(short[] data) {
-    //     byte[] resultData = new byte[2 * data.length];
-    //     int iter = 0;
-    //     for (double sample : data) {
-    //         short maxSample = (short)((sample * Short.MAX_VALUE));
-    //         resultData[iter++] = (byte)(maxSample & 0x00ff);
-    //         resultData[iter++] = (byte)((maxSample & 0xff00) >>> 8);
-    //     }
-    //     return resultData;
-    // }
-
-    // private void writeInt(final DataOutputStream output, final int value) throws IOException {
-    //     output.write(value >> 0);
-    //     output.write(value >> 8);
-    //     output.write(value >> 16);
-    //     output.write(value >> 24);
-    // }
-
-    // private void writeShort(final DataOutputStream output, final short value) throws IOException {
-    //     output.write(value >> 0);
-    //     output.write(value >> 8);
-    // }
-
-    // private void writeString(final DataOutputStream output, final String value) throws IOException {
-    //     for (int i = 0; i < value.length(); i++) {
-    //         output.write(value.charAt(i));
-    //     }
-    // }
     private void addWavHeader(FileOutputStream out, long totalAudioLen, long totalDataLen)
             throws Exception {
 

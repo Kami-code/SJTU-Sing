@@ -37,6 +37,6 @@ public class NoiseModule extends ReactContextBaseJavaModule {
     public void noise_suppress(String in, String out) {
         RNNoise suppressor = new RNNoise(in,out);
         suppressor.cancelNoise(suppressor.getInfile(),suppressor.getOutfile());
-        System.out.println("call Java");
+
     }
 }

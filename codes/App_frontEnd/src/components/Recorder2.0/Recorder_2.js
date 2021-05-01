@@ -58,7 +58,7 @@ export default class App extends Component {
         song = song + this.data[i];
       }
       await saveAudio('/test/record.wav',song);
-      console.log("song"+this.data.length);
+      console.log("frag"+line);
       DeviceEventEmitter.emit('audioSaved');
     });
 
