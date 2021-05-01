@@ -25,8 +25,12 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import android.util.Base64;
+import com.kgeapp.rnnoise.RNNoise;
 
 public class SaveAudioModule extends ReactContextBaseJavaModule {
+    static{
+        System.loadLibrary("rnnoise");
+    }
     public SaveAudioModule(ReactApplicationContext reactContext) {
         super(reactContext);
     }
@@ -57,6 +61,10 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
                     // for(int i=0; i<audio.size();i++){
                     //     newaudio[i] = (short) (audio.getInt(i) & 0xFFFF);
                     // }
+                    String in = "";
+                    String out = "";
+                    RNNoise suppressor = new RNNoise(in,out);
+                    audio = suppressor.flowRNNoise(audio);
                     boolean result = SaveFile(path, audio,isWav);
                     if(result){promise.resolve("Save failed");}
                     else{promise.resolve("Save success");}
