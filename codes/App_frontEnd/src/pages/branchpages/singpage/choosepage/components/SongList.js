@@ -82,6 +82,7 @@ class SongList extends Component{
             console.log('after ', this.state.downloadPath);
             global.ACC.push( this.state.downloadPath);
             console.log('On global: ', global.ACC[0]);
+            Loading.hide();
             this.props.onChosen();
         //   response.json();
         //   console.log("1111");
@@ -203,8 +204,8 @@ class SongList extends Component{
                 //切换页面操作
                 this.getAcc();
 
-                this.props.onChosen();
-                Loading.hide();
+                //this.props.onChosen();
+                //Loading.hide();
             })
             .catch((error) => {
             console.log("failed");
