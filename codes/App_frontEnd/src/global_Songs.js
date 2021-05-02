@@ -316,3 +316,7 @@ global.RECOMMEND =[
             "[04:22.84]我在劝我该忘了你"
     },
 ]
+
+global.ACC = [
+    
+]
