@@ -20,6 +20,8 @@ import {NavigationContext} from "@react-navigation/native";
 import SongList from './components/SongList';
 
 import SingPage from '../index';
+import Loading from '../../../../components/common/Loading';
+import "../../../../components/common/RootView"
 
 class Index extends Component {
     static contextType = NavigationContext;
@@ -42,7 +44,7 @@ class Index extends Component {
     }
     
     onSearch= () =>{
-        
+        Loading.show();
         const txt = this.state.txt;
         console.log(`http://121.4.86.24:8080/search/${txt}`)
         fetch(`http://121.4.86.24:8080/search/${txt}`, 
@@ -70,10 +72,12 @@ class Index extends Component {
                 this.setState({
                     showSearchResult: true
                 })
+                Loading.hide();
                 // console.log(ret);
             })
             .catch((error) => {
             console.log("failed");
+            Loading.hide();
             alert("没有相关资源，换一个试试吧");
             return {error_code: -3, error_msg:'请求异常，请重试'}
         })
