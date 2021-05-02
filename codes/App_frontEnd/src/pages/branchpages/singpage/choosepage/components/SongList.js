@@ -13,6 +13,8 @@ import {
 import {pxToDp} from '../../../../../utils/stylesKits';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {NavigationContext} from "@react-navigation/native";
+import {AudioRecorder, AudioUtils} from 'react-native-audio';
+
 class SongList extends Component{
     static contextType = NavigationContext;
     constructor(props) {
@@ -22,7 +24,106 @@ class SongList extends Component{
             retstatus: null,
             searchResult: null,
             downloadFinish: false,
+            downloadPath: AudioUtils.DocumentDirectoryPath + '/download.wav',
         }
+    }
+
+    downloadAcc = ()=>{
+    // 以下为下载方法（本段已废弃）
+        // const id = this.state.song.id;
+        // console.log("downloadACC start",`http://121.4.86.24:8080/download/flask/${id}.wav`);
+        // RNFetchBlob
+        // // .config({
+        // //     useDownloadManager : true, 
+        // //     fileCache : true,
+        // //     path: this.state.downloadPath
+        // // })    
+        // // .
+        // fetch('GET', `http://121.4.86.24:8080/download/flask/${id}.wav`, {})
+        // .then((res) => {
+            // console.log(res);
+            // // alert("Download");
+            // console.log('The file saved to ', res.path());
+            // console.log('before ', this.state.downloadPath);
+            // this.setState({
+            //     downloadPath :res.path()
+            // });
+            // console.log('after ', this.state.downloadPath);
+            // global.ACC.push( this.state.downloadPath);
+            // console.log('On global: ', global.ACC[0]);
+
+            // this.props.onChosen();
+        // }).catch(err => err)
+
+        // let formData = new FormData();
+        // formData.append("filename","music.mp3");
+    //-------------------------------------------------------------
+    //以下为音频(伴奏)下载方法：
+        const id = this.state.song.id;
+        const url = `http://121.4.86.24:8080/download/${id}`;
+        console.log(url);
+        RNFetchBlob
+        .config({
+            useDownloadManager : true, 
+            fileCache : true,
+            path: this.state.downloadPath
+        }).fetch('GET',url,{
+
+        }).then((res) =>{
+            console.log(res);
+            alert("Download");
+            console.log('The file saved to ', res.path());
+            console.log('before ', this.state.downloadPath);
+            this.setState({
+                downloadPath :res.path()
+            });
+            console.log('after ', this.state.downloadPath);
+            global.ACC.push( this.state.downloadPath);
+            console.log('On global: ', global.ACC[0]);
+            this.props.onChosen();
+        //   response.json();
+        //   console.log("1111");
+          // this.setState({responseInformation: response.json});
+        }).catch((error) =>{
+            // console.log(error)
+            // alert(error)
+        })
+    //-------------------------------------------------------------------
+    //以下为音频上传方法
+        // let params = {
+        //     path: global.ACC[0] // 根据自己项目修改参数哈
+        //   }
+        //   //console.log("1111");
+        //   console.log(this.state.audioFile);
+        //   let {path} = params;
+        //   let formData = new FormData();
+        //   let soundPath = `file://${path}` ;  // 注意需要增加前缀 `file://`
+        //   console.log(soundPath);
+        //   let fileName = path.substring(path.lastIndexOf('/') + 1, path.length) // 文件名，应后端要求进行修改
+        //   console.log("Filename: "+ fileName);
+        //   let file = { uri: soundPath , type: "multipart/form-data", name: fileName} // 注意 `uri` 表示文件地址，`type` 表示接口接收的类型，一般为这个，跟后端确认一下
+        //   formData.append('file',file);
+      
+        //   fetch('http://121.4.86.24:8080/upload', 
+        //     {
+        //       method: 'POST',
+        //       body:formData,
+        //       // body: "1111",
+        //       timeout: 5000 // 5s超时
+        //     }
+        //   )
+        //       .then(response =>{ 
+        //         response.json();
+        //         console.log("get response");
+        //         // console.log(response.contentLength());
+        //         // console.log('');
+        //       })
+        //       .then(formData => formData)
+        //       .catch(error => {
+        //         console.log("failed");
+        //           return {error_code: -3, error_msg:'请求异常，请重试'}
+        //   })
+        //   console.log("fetch end");
     }
 
     getAcc = ()=>{
@@ -34,14 +135,16 @@ class SongList extends Component{
         })
         .then(response =>{ 
             // response.json;
-            console.log("get response: ", response);
+            console.log("request status: ", response);
+            this.downloadAcc();
         // console.log(response);
         })
         .catch((error) => {
-            console.log("failed");
+            console.log("failed: ",error);
             return {error_code: -3, error_msg:'请求异常，请重试'}
         })
         console.log("fetch finish");
+        
     }
 
     songChosen=()=>{
@@ -96,7 +199,7 @@ class SongList extends Component{
                 console.log(global.SONGS[1].name);
                 //切换页面操作
                 this.getAcc();
-                this.props.onChosen();
+                // this.props.onChosen();
                 
             })
             .catch((error) => {

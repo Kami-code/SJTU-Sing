@@ -295,22 +295,22 @@ export default class MusicPlayer extends Component {
         DeviceEventEmitter.emit("RecordFinish",'return');
     }
     // getAcc = ()=>{
-    //     RNFetchBlob
-    //     .config({
-    //         useDownloadManager : true, 
-    //         fileCache : true,
-    //         path: this.state.downloadPath
-    //     })    
-    //     .fetch('POST', 'http://121.4.86.24:8080/flask/', {})
-    //     .then((res) => {
+        // RNFetchBlob
+        // .config({
+        //     useDownloadManager : true, 
+        //     fileCache : true,
+        //     path: this.state.downloadPath
+        // })    
+        // .fetch('POST', 'http://121.4.86.24:8080/flask/', {})
+        // .then((res) => {
 
-    //         console.log(res);
-    //         // alert("Download");
-    //         console.log('The file saved to ', res.path());
-    //         console.log('before ', this.state.audioFile);
-    //         this.setState({audioFile :res.path()});
-    //         console.log('after ', this.state.audioFile);
-    //     }).catch(err => err)
+        //     console.log(res);
+        //     // alert("Download");
+        //     console.log('The file saved to ', res.path());
+        //     console.log('before ', this.state.audioFile);
+        //     this.setState({audioFile :res.path()});
+        //     console.log('after ', this.state.audioFile);
+        // }).catch(err => err)
     // }
 
     render() {
@@ -347,7 +347,8 @@ export default class MusicPlayer extends Component {
 
                     <View>
                         <Video
-                            source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
+                            // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
+                            source = {{uri:`file:///${global.ACC[0]}`}}
                             ref='video'                           // Store reference
                             rate={1.0}                     // 0 is paused, 1 is normal.
                             volume={1.0}                   // 0 is muted, 1 is normal.
