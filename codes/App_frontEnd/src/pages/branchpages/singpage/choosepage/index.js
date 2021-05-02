@@ -21,7 +21,7 @@ import SongList from './components/SongList';
 
 import SingPage from '../index';
 import Loading from '../../../../components/common/Loading';
-import "../../../../components/common/RootView"
+import "../../../../components/common/RootView";
 
 class Index extends Component {
     static contextType = NavigationContext;
