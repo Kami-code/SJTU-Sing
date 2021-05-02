@@ -70,9 +70,11 @@ class Index extends Component {
                 this.setState({
                     showSearchResult: true
                 })
+                // console.log(ret);
             })
             .catch((error) => {
             console.log("failed");
+            alert("没有相关资源，换一个试试吧");
             return {error_code: -3, error_msg:'请求异常，请重试'}
         })
         console.log("fetch end");
@@ -122,6 +124,7 @@ class Index extends Component {
     }
 
     renderSearchResult=()=>{
+        if (this.state.ret == 404) alert("没有相关资源，换一个试试吧");
         // if (this.state.ret == 404) return(<View><Text>空列表</Text></View>)
         // console.log(this.state.searchResult)
         let list =JSON.parse(this.state.searchResult);
