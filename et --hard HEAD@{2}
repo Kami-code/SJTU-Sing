@@ -1,0 +1,47 @@
+[33ma8c2c90b[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: pull: Fast-forward
+[33m04be8ca2[m HEAD@{1}: commit: zhuanjuhua
+[33m79e77de5[m HEAD@{2}: commit: loading
+[33m55fbec28[m HEAD@{3}: commit (merge): remote
+[33me4bc3494[m HEAD@{4}: commit: sing page
+[33m40cd7cff[m HEAD@{5}: pull: Fast-forward
+[33m61c90560[m HEAD@{6}: commit: .
+[33md1e660d9[m HEAD@{7}: commit: rnnoise plug in
+[33m4f013a8d[m HEAD@{8}: commit: recorder
+[33m6f52bd22[m HEAD@{9}: pull: Fast-forward
+[33mf9927e27[m HEAD@{10}: commit: singPang
+[33m78e24f56[m HEAD@{11}: commit: sing page
+[33mdeebdfa7[m HEAD@{12}: commit: record modified
+[33me600fa08[m HEAD@{13}: commit (merge): .
+[33m3a059588[m HEAD@{14}: commit: recorder modified
+[33m7377d1ac[m HEAD@{15}: commit: recorder finished
+[33m8da08e1f[m HEAD@{16}: commit (merge): waaa
+[33m10ec6796[m HEAD@{17}: commit: record modified
+[33mbb360fd6[m HEAD@{18}: commit: aec finished
+[33mf00d211d[m HEAD@{19}: commit (merge): merge
+[33m1219fbc4[m HEAD@{20}: commit: sox fixed
+[33m04f00e1a[m HEAD@{21}: commit (merge): .
+[33mca8d72e2[m HEAD@{22}: commit: .
+[33m73774373[m HEAD@{23}: checkout: moving from ffmpeg to master
+[33m4104856c[m[33m ([m[1;31morigin/ffmpeg[m[33m, [m[1;32mffmpeg[m[33m)[m HEAD@{24}: checkout: moving from master to ffmpeg
+[33m73774373[m HEAD@{25}: checkout: moving from ffmpeg to master
+[33m4104856c[m[33m ([m[1;31morigin/ffmpeg[m[33m, [m[1;32mffmpeg[m[33m)[m HEAD@{26}: checkout: moving from master to ffmpeg
+[33m73774373[m HEAD@{27}: commit: .
+[33me471dead[m HEAD@{28}: pull: Fast-forward
+[33m12d8be77[m HEAD@{29}: checkout: moving from ffmpeg to master
+[33m4104856c[m[33m ([m[1;31morigin/ffmpeg[m[33m, [m[1;32mffmpeg[m[33m)[m HEAD@{30}: commit (merge): merge
+[33m97298436[m HEAD@{31}: commit: add sox and aecm support
+[33m5d987d6d[m HEAD@{32}: pull: Fast-forward
+[33m9c38468f[m HEAD@{33}: commit: modified
+[33m5d65b006[m HEAD@{34}: commit: modified
+[33mf22e99ef[m HEAD@{35}: commit: audio test
+[33m16e8d0df[m HEAD@{36}: commit: ffmpeg wrapper
+[33m5dc9a22e[m HEAD@{37}: commit: ...
+[33mfd4e1e08[m HEAD@{38}: commit: react-native native module and registration
+[33m4b57fea1[m HEAD@{39}: commit: The java function to call c code
+[33m8ea546de[m HEAD@{40}: commit: The compiled so library for rnnoise
+[33m9a7cb154[m HEAD@{41}: commit: The c wrapper and source file for rnnoise
+[33mf01ea3d4[m HEAD@{42}: commit: Register noise suppressor module. Cancel the inclusion of rnfs.
+[33mcdfaf9cd[m HEAD@{43}: pull: Fast-forward
+[33m949ec526[m HEAD@{44}: commit: initial commit
+[33m12d8be77[m HEAD@{45}: checkout: moving from master to ffmpeg
+[33m12d8be77[m HEAD@{46}: clone: from https://github.com/Kami-code/software-engineering-project.git

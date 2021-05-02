@@ -9,9 +9,9 @@ AppRegistry.registerComponent = (appKey, component) => {
             render() {
                 return (
                     <View style={styles.container}>
-                        <Loading></Loading>
+                        {/* 这个一定要放在最上面 */}
                         <OriginAppComponent />
-
+                        <Loading></Loading>
                         {/* //加载动画 */}
                         
                     </View>
