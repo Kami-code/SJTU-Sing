@@ -53,6 +53,7 @@ export default class MusicPlayer extends Component {
             firstPlay: true,
             fragNum: 0,
             recordShift:0.75,
+            lastFragTime: 0,
 
         }
     }
@@ -83,14 +84,18 @@ export default class MusicPlayer extends Component {
     //全部初始化
     restart = () => {
         DeviceEventEmitter.emit('RecordPause',this.clearAllBuffer); 
+        this.refs.video.seek(0);
         this.setState({
             currentTime: 0, 
             sliderValue: 0,
             currentLine: 0,
-            fragNum: 0
+            fragNum: 0,
+            lastFragTime:0,
+            pause: true,       //歌曲播放/暂停
+            isplayBtn: require('./images/暂停.png'),
         })
-        this.refs.video.seek(0);
-        DeviceEventEmitter.emit('RecordStart');
+        this.loadSongInfo(this.state.songs.length-1);
+        this.scrollView.scrollTo({ x: 0, y: 0, animated: false })
     }
 
     //下一曲
@@ -106,6 +111,7 @@ export default class MusicPlayer extends Component {
     }
     //播放/暂停
     playAction = () => {
+        console.log("a");
         this.setState({
             pause: !this.state.pause
         })
@@ -135,14 +141,16 @@ export default class MusicPlayer extends Component {
         })
         let shift = 0.75;
         //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
-        if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
-            if(this.state.currentTime.toFixed(2)>2){
-                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
-                this.state.fragNum = this.state.fragNum + 1;
+        if(this.state.currentLine<lyrObj.length-1){
+            if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
+                if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
+                    DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
+                    this.state.fragNum = this.state.fragNum + 1;
+                    this.state.lastFragTime= this.state.currentTime;
+                }
+                this.state.currentLine = this.state.currentLine + 1;
             }
-            this.state.currentLine = this.state.currentLine + 1;
         }
-        
     }
     //把秒数转换为时间类型
     formatTime(time) {
@@ -177,7 +185,7 @@ export default class MusicPlayer extends Component {
                         <Text style={{ color: '#5555ff',fontSize:22 }}> {item} </Text>
                     </View>
                 );
-                if(this.state.currentTime > 0){this.scrollView.scrollTo({ x: 0, y: (32 * i), animated: true })};
+                if(this.state.currentTime > 0){this.scrollView.scrollTo({ x: 0, y: (38 * i), animated: true })};
                 
             }
             else {
@@ -200,13 +208,21 @@ export default class MusicPlayer extends Component {
     loadSongInfo = (index) => {
         //加载歌曲
         let local_song = this.state.songs[index];
+        lyrObj = [];
         this.setState({
             pic_small: local_song.picture, //小图
             pic_big: local_song.picture,  //大图
             title: local_song.name,     //歌曲名
             author: local_song.singer,   //歌手
             file_link: local_song.mp3,   //播放链接
-            file_duration: local_song.file_duration //歌曲长度
+            file_duration: local_song.file_duration, //歌曲长度
+            currentLine: 0, //当前第几行
+            firstPlay: true,
+            fragNum: 0,
+            recordShift:0.75,
+            currentTime:0,
+            lastFragTime:0,
+
         })
         let lry = local_song.lyric
         let lryAry = lry.split('\n')   //按照换行符切数组
@@ -242,22 +258,39 @@ export default class MusicPlayer extends Component {
 
 
     UNSAFE_componentWillMount() {
-        this.loadSongInfo(0)   //预先加载第一首
+        this.loadSongInfo(this.state.songs.length-1);   //预先加载第一首
     }
     async componentDidMount() {
         //录音器保存完成后，跳转到下一个界面
-        this.finishListener = DeviceEventEmitter.addListener('audioSaved',()=>{
-            this.context.navigate("CompletePage");
+        this.finishListener = DeviceEventEmitter.addListener('RecordStopped',(param)=>{
+            if(param===0){
+                this.context.navigate("Tabbar");
+            }else{
+                this.context.navigate("CompletePage");
+            }
+            
+        });
+        this.routerEvent = this.props.navigation.addListener("focus", payload => {
+            this.loadSongInfo(this.state.songs.length-1);
         });
     }
+    componentWillUnmount() {
+        this.routerEvent && this.routerEvent();
+        this.finishListener && this.finishListener.remove();
+       }
 
     finish = ()=>{
         //告诉录音器结束了，等待录音器把完整的歌保存。
-        DeviceEventEmitter.emit("RecordFinish");
+        DeviceEventEmitter.emit("RecordFinish",'complete');
         if(this.state.pause==false){
             this.playAction();
         }
 
+    }
+
+    returnToMainPage = ()=>{
+        console.log("0");
+        DeviceEventEmitter.emit("RecordFinish",'return');
     }
 
     render() {
@@ -279,7 +312,7 @@ export default class MusicPlayer extends Component {
                     {/* 顶部栏 */}
                     <View style={styles.playingInfo}>
                         {/* 返回键 */}
-                        <TouchableOpacity onPress={() => {this.context.navigate("Tabbar");}}>
+                        <TouchableOpacity onPress={() => this.returnToMainPage()}>
                             <Image source={require('./images/上一首.png')} style={{ width: 25, height: 25}} />
                         </TouchableOpacity>
                         {/* 歌曲名称 */}
@@ -302,7 +335,10 @@ export default class MusicPlayer extends Component {
                             paused={this.state.pause}                 // Pauses playback entirely.
                             onProgress={(e) => this.onProgress(e)}
                             onLoad={(e) => this.onLoad(e)}
-                            onEnd={() => this.nextAction(this.state.currentIndex + 1)}
+                            onEnd={() => {
+                                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
+                                this.finish();
+                            }}
                         />
                     </View>
 
@@ -314,7 +350,7 @@ export default class MusicPlayer extends Component {
                             <Slider
                                 ref='slider'
                                 value={this.state.sliderValue}
-                                maximumValue={this.state.file_duration}
+                                maximumValue={this.state.duration}
                                 disabled = {true}
                                 step={1}
                                 minimumTrackTintColor='#FFDB42'
