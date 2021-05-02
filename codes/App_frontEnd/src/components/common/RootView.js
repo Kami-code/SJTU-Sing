@@ -9,10 +9,11 @@ AppRegistry.registerComponent = (appKey, component) => {
             render() {
                 return (
                     <View style={styles.container}>
+                        <Loading></Loading>
                         <OriginAppComponent />
 
                         {/* //加载动画 */}
-                        <Loading></Loading>
+                        
                     </View>
                 );
             };
