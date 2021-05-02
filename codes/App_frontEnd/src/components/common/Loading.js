@@ -32,7 +32,7 @@ class Loading extends Component {
     render() {
         if (this.state.show) {
             return (
-                <View style={{flex:9,backgroundColor: 'rgba(252, 252, 252, 1)',flexDirection:"column"}}>
+                <View style={styles.LoadingPage}>
                     <View style={{flex:1}}>
                     </View>
                     <Animated.Text 
