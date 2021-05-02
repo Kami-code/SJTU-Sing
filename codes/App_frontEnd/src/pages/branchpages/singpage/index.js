@@ -55,6 +55,7 @@ export default class MusicPlayer extends Component {
             recordShift:0.75,
             lastFragTime: 0,
 
+            accPath:"",
         }
     }
     //重唱上一句话
@@ -215,7 +216,7 @@ export default class MusicPlayer extends Component {
             title: local_song.name,     //歌曲名
             author: local_song.singer,   //歌手
             file_link: local_song.mp3,   //播放链接
-            file_duration: local_song.file_duration, //歌曲长度
+            //file_duration: local_song.file_duration, //歌曲长度
             currentLine: 0, //当前第几行
             firstPlay: true,
             fragNum: 0,
@@ -223,6 +224,7 @@ export default class MusicPlayer extends Component {
             currentTime:0,
             lastFragTime:0,
 
+            file_duration: local_song.length //歌曲长度
         })
         let lry = local_song.lyric
         let lryAry = lry.split('\n')   //按照换行符切数组
@@ -292,6 +294,24 @@ export default class MusicPlayer extends Component {
         console.log("0");
         DeviceEventEmitter.emit("RecordFinish",'return');
     }
+    // getAcc = ()=>{
+    //     RNFetchBlob
+    //     .config({
+    //         useDownloadManager : true, 
+    //         fileCache : true,
+    //         path: this.state.downloadPath
+    //     })    
+    //     .fetch('POST', 'http://121.4.86.24:8080/flask/', {})
+    //     .then((res) => {
+
+    //         console.log(res);
+    //         // alert("Download");
+    //         console.log('The file saved to ', res.path());
+    //         console.log('before ', this.state.audioFile);
+    //         this.setState({audioFile :res.path()});
+    //         console.log('after ', this.state.audioFile);
+    //     }).catch(err => err)
+    // }
 
     render() {
         //如果未加载出来数据 就一直转菊花
