@@ -18,6 +18,7 @@ export default class App extends Component {
     chunk: '',
     frag: false,
     start: false,
+    savePath: '/test/record.wav',
   };
 
 
@@ -51,18 +52,25 @@ export default class App extends Component {
       }
     });
 
-    this.finishListener =DeviceEventEmitter.addListener('RecordFinish',async()=>{
-      AudioRecord.stop();
-      let song = '';
-      for(let i = 0;i<this.data.length;++i){
-        song = song + this.data[i];
+    this.finishListener =DeviceEventEmitter.addListener('RecordFinish',async(param)=>{
+      if(this.state.recording){
+        await AudioRecord.stop();
       }
-      await saveAudio('/test/record.wav',song);
-      console.log("frag"+line);
-      DeviceEventEmitter.emit('audioSaved');
+      if(param==='return'){
+        DeviceEventEmitter.emit('RecordStopped',0);
+      }else{
+        let song = '';
+        for(let i = 0;i<this.data.length;++i){
+          song = song + this.data[i];
+        }
+        await saveAudio(this.state.savePath,song);
+        console.log("finish"+this.data.length);
+        DeviceEventEmitter.emit('RecordStopped',this.state.savePath);
+      }
+      this.data = new Array();
     });
 
-      this.listener =DeviceEventEmitter.addListener('fetchChunk',async (line)=>{
+      this.fetchListener =DeviceEventEmitter.addListener('fetchChunk',async (line)=>{
         if(this.state.recording == true){
           //DeviceEventEmitter.emit('returnChunk',this.state.chunk);
           this.data[line]=this.state.chunk; //把缓存保存入句子组
@@ -90,6 +98,13 @@ export default class App extends Component {
       
     });
 
+  }
+  componentWillUnmount(){
+    this.pauseListener && this.pauseListener.remove();
+    this.startListener && this.startListener.remove();
+    this.finishListener && this.finishListener.remove();
+    this.fetchListener && this.fetchListener.remove();
+    this.dataListener && this.dataListener.remove();
   }
 
   checkPermission = async () => {

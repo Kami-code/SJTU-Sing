@@ -54,7 +54,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_kgeapp_rnnoise_RNNoise_flowRNNoise(JNIEnv 
     float x[FRAME_SIZE];
     int p = 0;//array pointer
     int q=0;
-    int frame_num = len/FRAME_SIZE;
+    int frame_num = len/FRAME_SIZE/2;
     int remain = len % FRAME_SIZE;
 
     for (int i = 0;i<frame_num;++i) {
