@@ -13,8 +13,10 @@ import {
 import {pxToDp} from '../../../../../utils/stylesKits';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {NavigationContext} from "@react-navigation/native";
-import {AudioRecorder, AudioUtils} from 'react-native-audio';
 
+import {AudioRecorder, AudioUtils} from 'react-native-audio';
+import Loading from "../../../../../components/common/Loading"
+import "../../../../../components/common/RootView"
 class SongList extends Component{
     static contextType = NavigationContext;
     constructor(props) {
@@ -148,8 +150,9 @@ class SongList extends Component{
     }
 
     songChosen=()=>{
-        
+        Loading.show();
         console.log("songChosen");
+        
         // this.context.navigate("SingPage");
         //搜索该歌曲完整信息
         const id = this.state.song.id;
@@ -199,14 +202,17 @@ class SongList extends Component{
                 console.log(global.SONGS[1].name);
                 //切换页面操作
                 this.getAcc();
-                // this.props.onChosen();
-                
+
+                this.props.onChosen();
+                Loading.hide();
             })
             .catch((error) => {
             console.log("failed");
+            Loading.hide();
             return {error_code: -3, error_msg:'请求异常，请重试'}
         })
         console.log("fetch 2 end");
+        
         
     }
 

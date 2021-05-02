@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    Alert
 } from 'react-native'
 import Recorder_2 from '../../../components/Recorder2.0/Recorder_2'
 let { width, height } = Dimensions.get('window');
@@ -21,6 +22,8 @@ import {origin,adjust,restart,finish,svg_huatong} from '../../../res/fonts/iconS
 import {pxToDp} from '../../../utils/stylesKits';
 
 import {NavigationContext} from "@react-navigation/native";
+import Loading from "../../../components/common/Loading"
+import "../../../components/common/RootView"
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
 
@@ -142,7 +145,7 @@ export default class MusicPlayer extends Component {
         })
         let shift = 0.75;
         //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
-        if(this.state.currentLine<lyrObj.length-1){
+        if(this.state.currentLine<lyrObj.length-2){
             if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
                 if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
                     DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
@@ -268,6 +271,7 @@ export default class MusicPlayer extends Component {
             if(param===0){
                 this.context.navigate("Tabbar");
             }else{
+                Loading.hide();
                 this.context.navigate("CompletePage");
             }
             
@@ -287,6 +291,7 @@ export default class MusicPlayer extends Component {
         if(this.state.pause==false){
             this.playAction();
         }
+        Loading.show();
 
     }
 
@@ -312,7 +317,44 @@ export default class MusicPlayer extends Component {
         //     console.log('after ', this.state.audioFile);
         // }).catch(err => err)
     // }
+    finishBtn = ()=>Alert.alert(
+        '歌曲还没有结束，要直接完成吗？',
+        '',
+        [
+          {
+            text: '取消',
+            style: 'cancel',
+          },
+          {text: '完成', onPress: () => {this.finish();}},
+        ],
+        {cancelable: false},
+      );
 
+      returnBtn = ()=>Alert.alert(
+        '要退出唱歌吗？',
+        '',
+        [
+          {
+            text: '取消',
+            style: 'cancel',
+          },
+          {text: '退出', onPress: () => {this.returnToMainPage();}},
+        ],
+        {cancelable: false},
+      );
+
+      restartBtn = ()=>Alert.alert(
+        '要重唱本歌曲吗？',
+        '',
+        [
+          {
+            text: '取消',
+            style: 'cancel',
+          },
+          {text: '重唱', onPress: () => {this.restart();}},
+        ],
+        {cancelable: false},
+      );
     render() {
         //如果未加载出来数据 就一直转菊花
         if (this.state.songs.length <= 0) {
@@ -332,7 +374,7 @@ export default class MusicPlayer extends Component {
                     {/* 顶部栏 */}
                     <View style={styles.playingInfo}>
                         {/* 返回键 */}
-                        <TouchableOpacity onPress={() => this.returnToMainPage()}>
+                        <TouchableOpacity onPress={() => this.returnBtn()}>
                             <Image source={require('./images/上一首.png')} style={{ width: 25, height: 25}} />
                         </TouchableOpacity>
                         {/* 歌曲名称 */}
@@ -423,7 +465,7 @@ export default class MusicPlayer extends Component {
                         </TouchableOpacity>
 
                         {/* 重录歌曲 */}
-                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.restart()}>
+                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.restartBtn()}>
                             <View style={styles.button}>
                                 <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
                             </View>
@@ -431,7 +473,7 @@ export default class MusicPlayer extends Component {
                         </TouchableOpacity>
                         
                         {/* 完成录制 */}
-                        <TouchableOpacity style={{alignItems:"center"}}onPress ={()=>this.finish()}>
+                        <TouchableOpacity style={{alignItems:"center"}}onPress ={()=>this.finishBtn()}>
                             <View style={styles.button}>
                                 <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
                             </View>
