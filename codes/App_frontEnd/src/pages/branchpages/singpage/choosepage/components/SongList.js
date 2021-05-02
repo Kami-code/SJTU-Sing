@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 
 import {pxToDp} from '../../../../../utils/stylesKits';
-
+import RNFetchBlob from 'react-native-fetch-blob';
 import {NavigationContext} from "@react-navigation/native";
 class SongList extends Component{
     static contextType = NavigationContext;
@@ -21,7 +21,27 @@ class SongList extends Component{
             song: this.props.song,
             retstatus: null,
             searchResult: null,
+            downloadFinish: false,
         }
+    }
+
+    getAcc = ()=>{
+        const id = this.state.song.id;
+        console.log("download start",`http://121.4.86.24:8080/flask/${id}`);
+        fetch(`http://121.4.86.24:8080/flask/${id}`, {
+            method: 'GET',
+            timeout: 10000,
+        })
+        .then(response =>{ 
+            // response.json;
+            console.log("get response: ", response);
+        // console.log(response);
+        })
+        .catch((error) => {
+            console.log("failed");
+            return {error_code: -3, error_msg:'请求异常，请重试'}
+        })
+        console.log("fetch finish");
     }
 
     songChosen=()=>{
@@ -31,15 +51,15 @@ class SongList extends Component{
         //搜索该歌曲完整信息
         const id = this.state.song.id;
         console.log(`http://121.4.86.24:8080/songs/${id}`)
-        fetch(`http://121.4.86.24:8080/songs/${id}`, 
-        {
-            method: 'GET',
-            headers: {
-            },
-            // body: "1111",
-            timeout: 5000 // 5s超时
-        }
-        )
+            fetch(`http://121.4.86.24:8080/songs/${id}`, 
+            {
+                method: 'GET',
+                headers: {
+                },
+                // body: "1111",
+                timeout: 5000 // 5s超时
+            }
+            )
             .then(response =>{ 
                 // response.json;
                 console.log("get response");
@@ -68,13 +88,14 @@ class SongList extends Component{
                     singer: song.singer,
                     mp3: json.mp3,
                     lyric: json.lyric,
-                    file_duration: 300, //等后端接口完成
+                    file_duration: json.length, //时长已完成
                 };
                 global.SONGS.push(newSong);
                 console.log("here here");
                 console.log(global.SONGS[0].name);
                 console.log(global.SONGS[1].name);
                 //切换页面操作
+                this.getAcc();
                 this.props.onChosen();
                 
             })
@@ -83,9 +104,6 @@ class SongList extends Component{
             return {error_code: -3, error_msg:'请求异常，请重试'}
         })
         console.log("fetch 2 end");
-        
-           
-
         
     }
 
