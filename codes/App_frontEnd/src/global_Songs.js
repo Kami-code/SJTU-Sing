@@ -4,7 +4,7 @@ global.SONGS = [
         name: "可可托海的牧羊人", 
         singer: "王琪",
         mp3: "https://mp32.9ku.com/upload/128/2020/05/22/1004523.mp3",   //播放链接
-        file_duration: 340, //歌曲长度
+        length: 340, //歌曲长度
         lyric: "[ti:可可托海的牧羊人]\n" +
             "[ar:王琪]\n" +
             "[al:可可托海的牧羊人]\n" +
@@ -63,7 +63,7 @@ global.RECOMMEND =[
         name: "可可托海的牧羊人", 
         singer: "王琪",
         mp3: "https://mp32.9ku.com/upload/128/2020/05/22/1004523.mp3",   //播放链接
-        file_duration: 340, //歌曲长度
+        length: 340, //歌曲长度
         lyric: "[ti:可可托海的牧羊人]\n" +
             "[ar:王琪]\n" +
             "[al:可可托海的牧羊人]\n" +
@@ -119,8 +119,8 @@ global.RECOMMEND =[
         name: "Mojito",     //歌曲名
         singer: "周杰伦",   //歌手
         mp3: "https://mp32.9ku.com/upload/128/2020/10/02/1010008.mp3",   //播放链接
-        file_duration: 185, //歌曲长度
-        lrcContent: "[ti:Mojito]\n" +
+        length: 185, //歌曲长度
+        lyric: "[ti:Mojito]\n" +
             "[ar:周杰伦]\n" +
             "[al:Mojito]\n" +
             "[by:www.yolrc.com]\n" +
@@ -161,15 +161,12 @@ global.RECOMMEND =[
             "[02:52.46]这是世上最美丽的那双人舞"
     },
     {
-        date: "2021-9-5",
-        love: "12.4k",
-        pic_small: "https://bkimg.cdn.bcebos.com/pic/d788d43f8794a4c200e480bf0cf41bd5ac6e395a?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto", //小图
-        pic_big: 'https://bkimg.cdn.bcebos.com/pic/d788d43f8794a4c200e480bf0cf41bd5ac6e395a?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto',  //大图
-        title: "Love Story",     //歌曲名
-        author: "Taylor Swift",   //歌手
-        file_link: "https://mp3.9ku.com/hot/2009/10-09/194548.mp3",   //播放链接
-        file_duration: 236, //歌曲长度
-        lrcContent: "[ti:Love Story]\n" +
+        picture: 'https://bkimg.cdn.bcebos.com/pic/d788d43f8794a4c200e480bf0cf41bd5ac6e395a?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto',  //大图
+        name: "Love Story",     //歌曲名
+        singer: "Taylor Swift",   //歌手
+        mp3: "https://mp3.9ku.com/hot/2009/10-09/194548.mp3",   //播放链接
+        length: 236, //歌曲长度
+        lyric: "[ti:Love Story]\n" +
             "[ar:Taylor Swift]\n" +
             "[al:Fearless]\n" +
             "[00:01.00]Love Story\n" +
@@ -240,15 +237,12 @@ global.RECOMMEND =[
             "[03:55.80]"
     },
     {
-        date: "2021-11-22",
-        love: "34.2k",
-        pic_small: "https://bkimg.cdn.bcebos.com/pic/2f738bd4b31c8701c88b25fc2f7f9e2f0708ffef?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U4MA==,g_7,xp_5,yp_5/format,f_auto", //小图
-        pic_big: 'https://bkimg.cdn.bcebos.com/pic/2f738bd4b31c8701c88b25fc2f7f9e2f0708ffef?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U4MA==,g_7,xp_5,yp_5/format,f_auto',  //大图
-        title: "我好像在哪见过你",     //歌曲名
-        author: "薛之谦",   //歌手
+        picture: 'https://bkimg.cdn.bcebos.com/pic/2f738bd4b31c8701c88b25fc2f7f9e2f0708ffef?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2U4MA==,g_7,xp_5,yp_5/format,f_auto',  //大图
+        name: "我好像在哪见过你",     //歌曲名
+        singer: "薛之谦",   //歌手
         file_link: "https://mp32.9ku.com/upload/128/2020/10/21/1010465.mp3",   //播放链接
-        file_duration: 279, //歌曲长度
-        lrcContent: "[ti:我好像在哪见过你 (《精灵王座》动画电影主题曲)]\n" +
+        length: 279, //歌曲长度
+        lyric: "[ti:我好像在哪见过你 (《精灵王座》动画电影主题曲)]\n" +
             "[ar:薛之谦]\n" +
             "[al:我好像在哪见过你]\n" +
             "[by:]\n" +

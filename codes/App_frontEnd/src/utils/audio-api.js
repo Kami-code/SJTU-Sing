@@ -46,6 +46,7 @@ function readFile(fileName) {
 
 export async function saveAudio(path,array){
     try {
+        console.log(RNFS.ExternalStorageDirectoryPath+path);
         let msg = await SaveAudio.save(RNFS.ExternalStorageDirectoryPath+path,array);
         console.log(msg);
     }catch (e) {
