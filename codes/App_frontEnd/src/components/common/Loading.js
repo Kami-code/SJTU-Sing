@@ -24,7 +24,7 @@ class Loading extends Component {
     static show = () => {
         _this.setState({show: true})
         Animated.loop(_this.animationLoading).start(); // 开始动画
-        setTimeout(Animated.loop(_this.animationLoading).stop, 5000); // 5秒后停止动画，可用于任意时刻停止动画
+        setTimeout(Animated.loop(_this.animationLoading).stop, 60000); // 5秒后停止动画，可用于任意时刻停止动画
     };
     static hide = () => {
         _this.setState({show: false})
