@@ -61,67 +61,60 @@ export async function decodeToWav(f_in,f_out,channel,sampleRate){//channel = 1 o
     return await RNFFmpeg.execute(ffmpegCommand);
 }
 //input.xxx output.pcm
-export function decodeToPcm(f_in,f_out,channel,sampleRate){//channel = 1 or 2 sampleRate = 16000 or 48000
-    ffmpegCommand = '-y -i ' + RNFS.ExternalStorageDirectoryPath+ f_in + ' -acodec pcm_s16le -f s16le -ac '+channel+' -ar '+sampleRate + ' ' + RNFS.ExternalStorageDirectoryPath+f_out;
-    executeFFmpegAsync(ffmpegCommand, completedExecution => {
-        if (completedExecution.returnCode === 0) {
-            ffprint("Decode completed successfully.");
-        } else {
-            ffprint(`Decode failed with rc=${completedExecution.returnCode}.`);
-        }
-    }
-    ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
+// export function decodeToPcm(f_in,f_out,channel,sampleRate){//channel = 1 or 2 sampleRate = 16000 or 48000
+//     ffmpegCommand = '-y -i ' + RNFS.ExternalStorageDirectoryPath+ f_in + ' -acodec pcm_s16le -f s16le -ac '+channel+' -ar '+sampleRate + ' ' + RNFS.ExternalStorageDirectoryPath+f_out;
+//     executeFFmpegAsync(ffmpegCommand, completedExecution => {
+//         if (completedExecution.returnCode === 0) {
+//             ffprint("Decode completed successfully.");
+//         } else {
+//             ffprint(`Decode failed with rc=${completedExecution.returnCode}.`);
+//         }
+//     }
+//     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
 }
 //input.pcm output.xxx
 export function encodeFromPcm(f_in,f_out,channel){//channel = 1 or 2
     ffmpegCommand = '-y -f s16le -ac '+channel+' -ar 48000 -acodec pcm_s16le -i '+RNFS.ExternalStorageDirectoryPath+f_in+' '+RNFS.ExternalStorageDirectoryPath+f_out
-    executeFFmpegAsync(ffmpegCommand, completedExecution => {
-        if (completedExecution.returnCode === 0) {
-            ffprint("Encode completed successfully.");
-        } else {
-            ffprint(`Encode failed with rc=${completedExecution.returnCode}.`);
-        }
-    }
-    ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
+    return await RNFFmpeg.execute(ffmpegCommand);
 }
 
 //input.wav output.xxx
-export function encodeFromWav(f_in,f_out,channel){//channel = 1 or 2
-    ffmpegCommand = '-y -ac '+channel+' -ar 48000 -acodec pcm_s16le -i '+RNFS.ExternalStorageDirectoryPath+f_in+' '+RNFS.ExternalStorageDirectoryPath+f_out
-    executeFFmpegAsync(ffmpegCommand, completedExecution => {
-        if (completedExecution.returnCode === 0) {
-            ffprint("Encode completed successfully.");
-        } else {
-            ffprint(`Encode failed with rc=${completedExecution.returnCode}.`);
-        }
-    }
-    ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
-}
+// export function encodeFromWav(f_in,f_out,channel){//channel = 1 or 2
+//     ffmpegCommand = `-y -ac ${channel} -ar 48000 -acodec pcm_s16le -i ${f_in} ${f_out}`;
+//     executeFFmpegAsync(ffmpegCommand, completedExecution => {
+//         if (completedExecution.returnCode === 0) {
+//             ffprint("Encode completed successfully.");
+//         } else {
+//             ffprint(`Encode failed with rc=${completedExecution.returnCode}.`);
+//         }
+//     }
+//     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
+// }
 
 //input.wav output.pcm
-export function WavToPcm(f_in,f_out){
-    ffmpegCommand = '-y -i '+RNFS.ExternalStorageDirectoryPath+f_in+' -f s16le '+RNFS.ExternalStorageDirectoryPath+f_out
-    executeFFmpegAsync(ffmpegCommand, completedExecution => {
-        if (completedExecution.returnCode === 0) {
-            ffprint("Encode completed successfully.");
-        } else {
-            ffprint(`Encode failed with rc=${completedExecution.returnCode}.`);
-        }
-    }
-    ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
-}
-//input.pcm output.wav 采样率必须为48000
-export function PcmToWav(f_in,f_out,channel){//channel = 1 or 2
-    ffmpegCommand = '-y -f s16le -ac '+channel+' -ar 48000 -i '+RNFS.ExternalStorageDirectoryPath+f_in+' '+RNFS.ExternalStorageDirectoryPath+f_out
-    executeFFmpegAsync(ffmpegCommand, completedExecution => {
-        if (completedExecution.returnCode === 0) {
-            ffprint("Encode completed successfully.");
-        } else {
-            ffprint(`Encode failed with rc=${completedExecution.returnCode}.`);
-        }
-    }
-    ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
-}
+// export function WavToPcm(f_in,f_out){
+//     ffmpegCommand = '-y -i '+RNFS.ExternalStorageDirectoryPath+f_in+' -f s16le '+RNFS.ExternalStorageDirectoryPath+f_out
+//     executeFFmpegAsync(ffmpegCommand, completedExecution => {
+//         if (completedExecution.returnCode === 0) {
+//             ffprint("Encode completed successfully.");
+//         } else {
+//             ffprint(`Encode failed with rc=${completedExecution.returnCode}.`);
+//         }
+//     }
+//     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
+// }
+// //input.pcm output.wav 采样率必须为48000
+// export function PcmToWav(f_in,f_out,channel){//channel = 1 or 2
+//     ffmpegCommand = '-y -f s16le -ac '+channel+' -ar 48000 -i '+RNFS.ExternalStorageDirectoryPath+f_in+' '+RNFS.ExternalStorageDirectoryPath+f_out
+//     executeFFmpegAsync(ffmpegCommand, completedExecution => {
+//         if (completedExecution.returnCode === 0) {
+//             ffprint("Encode completed successfully.");
+//         } else {
+//             ffprint(`Encode failed with rc=${completedExecution.returnCode}.`);
+//         }
+//     }
+//     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
+// }
 
 //输入输出必须是pcm，采样率48000，16bit
 export function noiseSuppress(f_in,f_out){
