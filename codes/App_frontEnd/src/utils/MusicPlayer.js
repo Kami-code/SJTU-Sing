@@ -35,7 +35,7 @@ export default class MusicPlayer extends Component {
         this.clearCurrentBuffer = 1;
         this.clearAllBuffer = 2;
         this.state = {
-            songs: SONGS,   //数据源
+            songs: global.SONGS,   //数据源
             picture: '',
             file_duration: 0,    //歌曲长度
             id: '',
@@ -45,11 +45,11 @@ export default class MusicPlayer extends Component {
             file_link: '',   //歌曲播放链接
             songLyr: [],     //当前歌词
             sliderValue: 0,    //Slide的value
-            pause: true,       //歌曲播放/暂停
+            pause: false,       //歌曲播放/暂停
             currentTime: 0.0,   //当前时间
             duration: 0.0,     //歌曲时间
             currentIndex: 0,    //当前第几首
-            isplayBtn: require('./image/暂停.png'),  //播放/暂停按钮背景图
+            isplayBtn: require('./image/播放.png'),  //播放/暂停按钮背景图
             currentLine: 0, //当前第几行
             firstPlay: true,
             fragNum: 0,
@@ -58,40 +58,9 @@ export default class MusicPlayer extends Component {
     }
     //重唱上一句话
     prevAction = (index) => {
-        if(this.state.fragNum>0){       
-            DeviceEventEmitter.emit('RecordPause',this.clearCurrentBuffer);   
-            let lastFrag = lyrObj[this.state.currentLine-1].total-this.state.recordShift;
-            if(lastFrag>=5){ //如果上次分割点之前还有5秒，给予5秒的准备时间。
-                this.state.currentTime = lastFrag-5;
-                this._timer=setInterval(()=>{
-                    DeviceEventEmitter.emit('RecordStart');
-                    clearInterval(this._timer); 
-                },5000);
-            }else{ //否则把时间拉到0，有多少时间给多少时间。
-                this.state.currentTime = 0;
-                this._timer=setInterval(()=>{
-                    DeviceEventEmitter.emit('RecordStart');
-                    clearInterval(this._timer); 
-                },lastFrag*1000);
-            }
-            this.refs.video.seek(this.state.currentTime);
-            this.state.sliderValue = this.state.currentTime;
-            this.state.currentLine = this.state.currentLine - 1;
-            this.state.fragNum = this.state.fragNum - 1;
-        }
+
     }
-    //全部初始化
-    restart = () => {
-        DeviceEventEmitter.emit('RecordPause',this.clearAllBuffer); 
-        this.setState({
-            currentTime: 0, 
-            sliderValue: 0,
-            currentLine: 0,
-            fragNum: 0
-        })
-        this.refs.video.seek(0);
-        DeviceEventEmitter.emit('RecordStart');
-    }
+
 
     //下一曲
     nextAction = (index) => {
@@ -115,14 +84,14 @@ export default class MusicPlayer extends Component {
                 isplayBtn: require('./image/播放.png')
             });
             //同步开始录音
-            DeviceEventEmitter.emit('RecordStart');
+           
             
         } else {
             this.setState({
                 isplayBtn: require('./image/暂停.png')
             });
             //录音器暂停，但不清空缓存
-            DeviceEventEmitter.emit('RecordPause',this.keepBuffer);
+            
         }
 
     }
@@ -133,14 +102,10 @@ export default class MusicPlayer extends Component {
             sliderValue: val,
             currentTime: data.currentTime
         })
-        let shift = 0.75;
-        //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
-        if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
-            if(this.state.currentTime.toFixed(2)>2){
-                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
-                this.state.fragNum = this.state.fragNum + 1;
+        if(this.state.currentLine<lyrObj.length-2){
+            if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total)){
+                this.state.currentLine = this.state.currentLine + 1;
             }
-            this.state.currentLine = this.state.currentLine + 1;
         }
         
     }
@@ -208,7 +173,7 @@ export default class MusicPlayer extends Component {
             file_link: local_song.mp3,   //播放链接
             file_duration: local_song.file_duration //歌曲长度
         })
-        let lry = local_song.lrcContent
+        let lry = local_song.lyric
         let lryAry = lry.split('\n')   //按照换行符切数组
         lryAry.forEach(function (val, index) {
             let obj = {}   //用于存放时间
@@ -242,24 +207,14 @@ export default class MusicPlayer extends Component {
 
 
     componentWillMount() {
-        this.loadSongInfo(0)   //预先加载第一首
+        this.loadSongInfo(this.state.songs.length-1)   //预先加载第一首
         
     }
     async componentDidMount() {
         //录音器保存完成后，跳转到下一个界面
-        this.finishListener = DeviceEventEmitter.addListener('audioSaved',()=>{
-            this.context.navigate("CompletePage");
-        });
-    }
-
-    finish = ()=>{
-        //告诉录音器结束了，等待录音器把完整的歌保存。
-        DeviceEventEmitter.emit("RecordFinish");
-        if(this.state.pause==false){
-            this.playAction();
-        }
 
     }
+
 
     render() {
         //如果未加载出来数据 就一直转菊花
@@ -275,19 +230,20 @@ export default class MusicPlayer extends Component {
             return (
                 <View style={styles.container}>
                     {/* <Recorder_2></Recorder_2> */}
-                    <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
+                    {/* <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} /> */}
                     <View>
-                    <Video
-                        source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
-                        ref='video'                           // Store reference
-                        rate={1.0}                     // 0 is paused, 1 is normal.
-                        volume={1.0}                   // 0 is muted, 1 is normal.
-                        muted={false}                  // Mutes the audio entirely.
-                        paused={this.state.pause}                 // Pauses playback entirely.
-                        onProgress={(e) => this.onProgress(e)}
-                        onLoad={(e) => this.onLoad(e)}
-                        onEnd={() => this.nextAction(this.state.currentIndex + 1)}
-                    />
+                        <Video
+                                // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
+                                source = {{uri:`file:///${global.ACC[4]}`}}
+                                ref='video'                           // Store reference
+                                rate={1.0}                     // 0 is paused, 1 is normal.
+                                volume={1.0}                   // 0 is muted, 1 is normal.
+                                muted={false}                  // Mutes the audio entirely.
+                                paused={this.state.pause}                 // Pauses playback entirely.
+                                onProgress={(e) => this.onProgress(e)}
+                                onLoad={(e) => this.onLoad(e)}
+                                onEnd={() => {}}
+                            />
                     </View>
                     <View style={styles.playingInfo}>
                         <Text>{this.state.author} - {this.state.title}</Text>
@@ -313,17 +269,10 @@ export default class MusicPlayer extends Component {
                     />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around',marginTop: pxToDp(12) }}>
 
-                        <TouchableOpacity onPress={() => this.prevAction(this.state.currentIndex - 1)}>
-                            <Image source={require('./image/上一首.png')} style={{ width: 30, height: 30 }} />
-                        </TouchableOpacity>
-
                         <TouchableOpacity onPress={() => this.playAction()}>
                             <Image source={this.state.isplayBtn} style={{ width: 30, height: 30 }} />
                         </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => this.nextAction(this.state.currentIndex + 1)}>
-                            <Image source={require('./image/下一首.png')} style={{ width: 30, height: 30 }} />
-                        </TouchableOpacity>
                     </View>
 
                         {/* 歌词界面设置 */}
@@ -335,62 +284,7 @@ export default class MusicPlayer extends Component {
                             {this.renderItem()}
                         </ScrollView>
                     </View>
-                    {/* 额外添加按钮 */}
-                    <View style={{ flexDirection: 'row',marginTop:pxToDp(10), justifyContent: 'space-around' }}>
 
-                        <TouchableOpacity style={{alignItems:"center"}}>
-                            <View style={styles.button}>
-                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
-                            </View>
-                            <Text style={styles.buttontext}>原唱</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{alignItems:"center"}}>
-                            <View style={styles.button}>
-                                <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
-                            </View>
-                            <Text style={styles.buttontext}>返听调音</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.restart()}>
-                            <View style={styles.button}>
-                                <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
-                            </View>
-                            <Text style={styles.buttontext}>重录</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.finish()}>
-                            <View style={styles.button}>
-                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
-                            </View>
-                            <Text style={styles.buttontext}>完成</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{ flexDirection: 'row',marginTop:pxToDp(10), justifyContent: 'space-around' }}>
-
-                        <TouchableOpacity style={{alignItems:"center"}}>
-                            <View style={styles.button}>
-                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
-                            </View>
-                            <Text style={styles.buttontext}>a</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{alignItems:"center"}}>
-                            <View style={styles.button}>
-                                <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
-                            </View>
-                            <Text style={styles.buttontext}>b</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{alignItems:"center"}} >
-                            <View style={styles.button}>
-                                <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
-                            </View>
-                            <Text style={styles.buttontext}>c</Text>
-                        </TouchableOpacity>
-
-
-                    </View>
                 </View>
             )
         }
