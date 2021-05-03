@@ -186,6 +186,7 @@ class SongList extends Component{
                 // console.log(mp3)
                 const {song} = this.state;
                 let newSong ={
+                    id: song.id,
                     picture: song.picture,
                     name: song.name,
                     singer: song.singer,
