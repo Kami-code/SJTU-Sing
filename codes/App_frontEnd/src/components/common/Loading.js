@@ -18,7 +18,8 @@ class Loading extends Component {
             {
                 toValue: 360, // 终点值
                 easing: Easing.linear, // 这里使用匀速曲线，详见RN-api-Easing
-            }
+                useNativeDriver: true,
+            },
         );
         }
     static show = () => {

@@ -5,12 +5,15 @@ import Permissions from 'react-native-permissions';
 import Video from 'react-native-video';
 //import AudioRecord from 'react-native-audio-record';
 import {saveAudio} from '../../utils/audio-api';
-import AudioRecord from '../../utils/audioRecord'
+import AudioRecord from '../../utils/audioRecord';
+import RNFS from "react-native-fs";
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.data = new Array();
+    this.fragTable = new Array();
+    this.data[0]=0;
   }
   state = {
     audioFile: '',
@@ -18,7 +21,7 @@ export default class App extends Component {
     chunk: '',
     frag: false,
     start: false,
-    savePath: '/test/record.wav',
+    savePath: `${RNFS.ExternalStorageDirectoryPath}/test/raw_audio.wav`,
   };
 
 
@@ -47,37 +50,55 @@ export default class App extends Component {
       if(this.state.recording){return;}
       if(!this.state.start){
         this.start();
-      }else{
-        this.resume();
       }
+      this.resume();
     });
 
     this.finishListener =DeviceEventEmitter.addListener('RecordFinish',async(param)=>{
-      if(this.state.recording){
+      if(this.state.start){
         await AudioRecord.stop();
+        this.state.start = false;
       }
       if(param==='return'){
         DeviceEventEmitter.emit('RecordStopped',0);
       }else{
+        let line = param.fragNum;
+        let time = param.fragTime;
+        this.fragTable[line+1] = time; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
+        this.data[line]=this.state.chunk; //把缓存保存入句子组
+        this.state.frag = false;
+        let path = `${RNFS.ExternalStorageDirectoryPath}/test/record${line}.wav`
+        await saveAudio(path,this.data[line]); //保存句子到本地
+        global.ACC[line+6] = path;
+        console.log("frag"+line);
+        
         let song = '';
         for(let i = 0;i<this.data.length;++i){
           song = song + this.data[i];
         }
+        this.data = new Array();
+        
+        global.ACC[2] = this.state.savePath;
+        
         await saveAudio(this.state.savePath,song);
         console.log("finish"+this.data.length);
         DeviceEventEmitter.emit('RecordStopped',this.state.savePath);
+
       }
-      this.data = new Array();
+      
     });
 
-      this.fetchListener =DeviceEventEmitter.addListener('fetchChunk',async (line)=>{
-        if(this.state.recording == true){
-          //DeviceEventEmitter.emit('returnChunk',this.state.chunk);
-          this.data[line]=this.state.chunk; //把缓存保存入句子组
-          this.state.frag = false;
-          await saveAudio('/test/record'+line+'.wav',this.data[line]); //保存句子到本地
-          console.log("frag"+line);
-        }
+      this.fetchListener =DeviceEventEmitter.addListener('fetchChunk',async (param)=>{
+        let line = param.fragNum;
+        let time = param.fragTime;
+        this.fragTable[line+1] = time; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
+        this.data[line]=this.state.chunk; //把缓存保存入句子组
+        this.state.frag = false;
+        let path = `${RNFS.ExternalStorageDirectoryPath}/test/record${line}.wav`
+        await saveAudio(path,this.data[line]); //保存句子到本地
+        global.ACC[line+6] = path;
+        console.log("frag"+line);
+          
       });
 
     AudioRecord.init(options);
@@ -95,6 +116,12 @@ export default class App extends Component {
           this.state.chunk = this.state.chunk + data;
         }
       }
+      this.initListener = DeviceEventEmitter.addListener('RecordInit',()=>{
+        if(!this.state.start){
+          this.state.start = true;
+          this.start();
+        }
+      });
       
     });
 
@@ -121,7 +148,7 @@ export default class App extends Component {
 
   start = () => {
     console.log('start record');
-    this.setState({ audioFile: '', recording: true ,start: true});
+    this.setState({ audioFile: '', start: true});
     AudioRecord.start();
   };
 
