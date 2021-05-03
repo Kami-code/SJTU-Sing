@@ -492,7 +492,7 @@ export default class MusicPlayer extends Component {
                         </TouchableOpacity>
 
                         {/* 切换原唱 */}
-                        <TouchableOpacity style={{alignItems:"center"}}>
+                        <TouchableOpacity style={{alignItems:"center"}}onPress ={()=>this.uploadUser()}>
                             <View style={styles.button}>
                                 <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
                             </View>
