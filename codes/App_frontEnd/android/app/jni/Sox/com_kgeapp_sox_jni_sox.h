@@ -37,7 +37,7 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeInit
  * Method:    nativeAddVolEffect
  * Signature: (JI)V
  */
-JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddVolEffect
+JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddVolEffect
   (JNIEnv *, jclass, jint);
 
 /*
@@ -53,7 +53,7 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddFlangerEffect
  * Method:    nativeAddEqualizerEffect
  * Signature: (JIDD)V
  */
-JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEqualizerEffect
+JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEqualizerEffect
   (JNIEnv *, jclass, jint, jdouble, jdouble);
 
 /*
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEqualizerEffect
  * Method:    nativeAddHighPassEffect
  * Signature: (JID)V
  */
-JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddHighPassEffect
+JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddHighPassEffect
   (JNIEnv *, jclass, jint, jdouble);
 
 /*
@@ -69,7 +69,7 @@ JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddHighPassEffect
  * Method:    nativeAddLowPassEffect
  * Signature: (JID)V
  */
-JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddLowPassEffect
+JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddLowPassEffect
   (JNIEnv *, jclass, jint, jdouble);
 
 /*
@@ -77,7 +77,7 @@ JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddLowPassEffect
  * Method:    nativeAddCompandEffect
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddCompandEffect
+JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddCompandEffect
   (JNIEnv *, jclass);
 
 /*
@@ -85,7 +85,7 @@ JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddCompandEffect
  * Method:    nativeAddReverbEffect
  * Signature: (JZIIIIII)V
  */
-JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddReverbEffect
+JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddReverbEffect
   (JNIEnv *, jclass, jboolean, jint, jint, jint, jint, jint, jint);
 
 /*
@@ -93,7 +93,7 @@ JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddReverbEffect
  * Method:    nativeAddChorusEffects
  * Signature: (J)V
  */
-JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddChorusEffects
+JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddChorusEffects
   (JNIEnv *, jclass);
 
 /*
@@ -101,8 +101,8 @@ JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddChorusEffects
  * Method:    nativeAddEchoEffects
  * Signature: (J)V
  */
-JNIEXPORT int JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEchoEffects
-  (JNIEnv *, jclass);
+JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEchoEffects
+  (JNIEnv *, jclass, jint);
 
 /*
  * Class:     com_kgeapp_sox_jni_sox
