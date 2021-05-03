@@ -71,7 +71,7 @@ export async function decodeToWav(f_in,f_out,channel,sampleRate){//channel = 1 o
 //         }
 //     }
 //     ).then(executionId => ffprint(`Async FFmpeg process started with arguments \'${ffmpegCommand}\' and executionId ${executionId}.`));
-}
+// }
 //input.pcm output.xxx
 // export function encodeFromPcm(f_in,f_out,channel){//channel = 1 or 2
 //     ffmpegCommand = '-y -f s16le -ac '+channel+' -ar 48000 -acodec pcm_s16le -i '+RNFS.ExternalStorageDirectoryPath+f_in+' '+RNFS.ExternalStorageDirectoryPath+f_out
@@ -79,7 +79,7 @@ export async function decodeToWav(f_in,f_out,channel,sampleRate){//channel = 1 o
 // }
 
 // input.wav output.xxx
-export function encodeFromWav(f_in,f_out,channel){//channel = 1 or 2
+export async function encodeFromWav(f_in,f_out,channel){//channel = 1 or 2
     ffmpegCommand = `-y -ac ${channel} -ar 48000 -acodec pcm_s16le -i ${f_in} ${f_out}`;
     return await RNFFmpeg.execute(ffmpegCommand);
 }
