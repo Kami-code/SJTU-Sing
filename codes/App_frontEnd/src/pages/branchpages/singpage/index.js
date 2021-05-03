@@ -12,6 +12,8 @@ import {
     DeviceEventEmitter,
     Alert
 } from 'react-native'
+
+// import {Slider} from '@react-native-community/slider'
 import Recorder_2 from '../../../components/Recorder2.0/Recorder_2'
 let { width, height } = Dimensions.get('window');
 import Video from 'react-native-video';
@@ -22,8 +24,10 @@ import {origin,adjust,restart,finish,svg_huatong} from '../../../res/fonts/iconS
 import {pxToDp} from '../../../utils/stylesKits';
 
 import {NavigationContext} from "@react-navigation/native";
-import Loading from "../../../components/common/Loading"
-import "../../../components/common/RootView"
+import Loading from "../../../components/common/Loading";
+import "../../../components/common/RootView";
+import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, toSingleChannel} from '../../../utils/audio-api';
+import RNFS from 'react-native-fs';
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
 
@@ -59,6 +63,8 @@ export default class MusicPlayer extends Component {
             lastFragTime: 0,
 
             accPath:"",
+            proc_audio_wav: `${RNFS.ExternalStorageDirectoryPath}/test/proc_audio.wav`,
+            merge_audio_wav: `${RNFS.ExternalStorageDirectoryPath}/test/merge_audio.wav`
         }
     }
     //重唱上一句话
@@ -148,7 +154,7 @@ export default class MusicPlayer extends Component {
         if(this.state.currentLine<lyrObj.length-2){
             if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
                 if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
-                    DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
+                    DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.fragNum,"fragTime":this.state.currentTime});
                     this.state.fragNum = this.state.fragNum + 1;
                     this.state.lastFragTime= this.state.currentTime;
                 }
@@ -212,6 +218,7 @@ export default class MusicPlayer extends Component {
     loadSongInfo = (index) => {
         //加载歌曲
         let local_song = this.state.songs[index];
+
         lyrObj = [];
         this.setState({
             pic_small: local_song.picture, //小图
@@ -265,12 +272,19 @@ export default class MusicPlayer extends Component {
     UNSAFE_componentWillMount() {
         this.loadSongInfo(this.state.songs.length-1);   //预先加载第一首
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     async componentDidMount() {
+        DeviceEventEmitter.emit('RecordInit');
         //录音器保存完成后，跳转到下一个界面
-        this.finishListener = DeviceEventEmitter.addListener('RecordStopped',(param)=>{
+        this.finishListener = DeviceEventEmitter.addListener('RecordStopped',async(param)=>{
             if(param===0){
                 this.context.navigate("Tabbar");
             }else{
+                global.ACC[3] = this.state.proc_audio_wav;
+                global.ACC[4] = this.state.merge_audio_wav;
+                await default_sox(global.ACC[2],global.ACC[3]);
+                await mergeAudio(global.ACC[1],global.ACC[3],global.ACC[4]);
                 Loading.hide();
                 this.context.navigate("CompletePage");
             }
@@ -278,6 +292,7 @@ export default class MusicPlayer extends Component {
         });
         this.routerEvent = this.props.navigation.addListener("focus", payload => {
             this.loadSongInfo(this.state.songs.length-1);
+            DeviceEventEmitter.emit('RecordInit');
         });
     }
     componentWillUnmount() {
@@ -287,7 +302,7 @@ export default class MusicPlayer extends Component {
 
     finish = ()=>{
         //告诉录音器结束了，等待录音器把完整的歌保存。
-        DeviceEventEmitter.emit("RecordFinish",'complete');
+        DeviceEventEmitter.emit("RecordFinish",{"fragNum": this.state.fragNum, "fragTime": this.state.currentTime});
         if(this.state.pause==false){
             this.playAction();
         }
@@ -390,7 +405,7 @@ export default class MusicPlayer extends Component {
                     <View>
                         <Video
                             // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
-                            source = {{uri:`file:///${global.ACC[0]}`}}
+                            source = {{uri:`file:///${global.ACC[1]}`}}
                             ref='video'                           // Store reference
                             rate={1.0}                     // 0 is paused, 1 is normal.
                             volume={1.0}                   // 0 is muted, 1 is normal.
@@ -399,7 +414,6 @@ export default class MusicPlayer extends Component {
                             onProgress={(e) => this.onProgress(e)}
                             onLoad={(e) => this.onLoad(e)}
                             onEnd={() => {
-                                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
                                 this.finish();
                             }}
                         />
