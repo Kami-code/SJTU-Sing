@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    Alert
 } from 'react-native'
 import Recorder_2 from '../../../components/Recorder2.0/Recorder_2'
 let { width, height } = Dimensions.get('window');
@@ -22,6 +23,10 @@ import {pxToDp} from '../../../utils/stylesKits';
 
 import {NavigationContext} from "@react-navigation/native";
 import { cos } from 'react-native-reanimated';
+import Loading from "../../../components/common/Loading";
+import "../../../components/common/RootView";
+import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, toSingleChannel} from '../../../utils/audio-api';
+import RNFS from 'react-native-fs';
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
 
@@ -57,6 +62,8 @@ export default class MusicPlayer extends Component {
             lastFragTime: 0,
 
             accPath:"",
+            proc_audio_wav: `${RNFS.ExternalStorageDirectoryPath}/test/proc_audio.wav`,
+            merge_audio_wav: `${RNFS.ExternalStorageDirectoryPath}/test/merge_audio.wav`
         }
     }
     //重唱上一句话
@@ -143,10 +150,10 @@ export default class MusicPlayer extends Component {
         })
         let shift = 0.75;
         //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
-        if(this.state.currentLine<lyrObj.length-1){
+        if(this.state.currentLine<lyrObj.length-2){
             if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
                 if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
-                    DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
+                    DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.fragNum,"fragTime":this.state.currentTime});
                     this.state.fragNum = this.state.fragNum + 1;
                     this.state.lastFragTime= this.state.currentTime;
                 }
@@ -265,17 +272,24 @@ export default class MusicPlayer extends Component {
         this.loadSongInfo(this.state.songs.length-1);   //预先加载第一首
     }
     async componentDidMount() {
+        DeviceEventEmitter.emit('RecordInit');
         //录音器保存完成后，跳转到下一个界面
-        this.finishListener = DeviceEventEmitter.addListener('RecordStopped',(param)=>{
+        this.finishListener = DeviceEventEmitter.addListener('RecordStopped',async(param)=>{
             if(param===0){
                 this.context.navigate("Tabbar");
             }else{
+                global.ACC[3] = this.state.proc_audio_wav;
+                global.ACC[4] = this.state.merge_audio_wav;
+                await default_sox(global.ACC[2],global.ACC[3]);
+                await mergeAudio(global.ACC[1],global.ACC[3],global.ACC[4]);
+                Loading.hide();
                 this.context.navigate("CompletePage");
             }
             
         });
         this.routerEvent = this.props.navigation.addListener("focus", payload => {
             this.loadSongInfo(this.state.songs.length-1);
+            DeviceEventEmitter.emit('RecordInit');
         });
     }
     componentWillUnmount() {
@@ -285,17 +299,55 @@ export default class MusicPlayer extends Component {
 
     finish = ()=>{
         //告诉录音器结束了，等待录音器把完整的歌保存。
-        DeviceEventEmitter.emit("RecordFinish",'complete');
+        DeviceEventEmitter.emit("RecordFinish",{"fragNum": this.state.fragNum, "fragTime": this.state.currentTime});
         if(this.state.pause==false){
             this.playAction();
         }
-
+        Loading.show();
     }
 
     returnToMainPage = ()=>{
         console.log("0");
         DeviceEventEmitter.emit("RecordFinish",'return');
     }
+    finishBtn = ()=>Alert.alert(
+        '歌曲还没有结束，要直接完成吗？',
+        '',
+        [
+          {
+            text: '取消',
+            style: 'cancel',
+          },
+          {text: '完成', onPress: () => {this.finish();}},
+        ],
+        {cancelable: false},
+      );
+
+      returnBtn = ()=>Alert.alert(
+        '要退出唱歌吗？',
+        '',
+        [
+          {
+            text: '取消',
+            style: 'cancel',
+          },
+          {text: '退出', onPress: () => {this.returnToMainPage();}},
+        ],
+        {cancelable: false},
+      );
+
+      restartBtn = ()=>Alert.alert(
+        '要重唱本歌曲吗？',
+        '',
+        [
+          {
+            text: '取消',
+            style: 'cancel',
+          },
+          {text: '重唱', onPress: () => {this.restart();}},
+        ],
+        {cancelable: false},
+      );
 
     //打分
     getScore = async()=>{
@@ -432,7 +484,7 @@ export default class MusicPlayer extends Component {
                     <View>
                         <Video
                             source={{ uri: this.state.file_link }}   //原唱
-                            // source = {{uri:`file:///${global.ACC[0]}`}}//伴奏
+                            // source = {{uri:`file:///${global.ACC[1]}`}}//伴奏
                             ref='video'                           // Store reference
                             rate={1.0}                     // 0 is paused, 1 is normal.
                             volume={1.0}                   // 0 is muted, 1 is normal.
@@ -441,7 +493,6 @@ export default class MusicPlayer extends Component {
                             onProgress={(e) => this.onProgress(e)}
                             onLoad={(e) => this.onLoad(e)}
                             onEnd={() => {
-                                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
                                 this.finish();
                             }}
                         />
