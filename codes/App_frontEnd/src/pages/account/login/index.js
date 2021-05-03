@@ -19,6 +19,8 @@ class Index extends Component{
     state ={
         //手机号
         phoneNumber:"15600000000",
+        code: "111111",
+        code_r: "",
         //是否合法
         phoneValid:true,
         //是否显示登录页面
@@ -44,6 +46,16 @@ class Index extends Component{
     phoneNumberChangeText=(phoneNumber)=>{
         this.setState({phoneNumber});
         console.log(phoneNumber);
+    }
+
+    codeChangeText=(code)=>{
+        this.setState({code});
+        console.log(code);
+    }
+
+    RcodeChangeText=(code_r)=>{
+        this.setState({code_r});
+        console.log(code_r);
     }
 
     //手机号码点击完成时触发
@@ -114,13 +126,168 @@ class Index extends Component{
         }
     }
 
+    switchRegister=()=>{
+        this.setState({
+            showLogin: false,
+            phoneNumber: "",
+            code: "",
+            code_r: "",
+        })
+        console.log("switch")
+    }
 
-    //登陆页面渲染
-    renderLogin=()=>{
-        const {phoneNumber,phoneValid} =this.state;
+    switchLogin=()=>{
+        this.setState({
+            showLogin: true,
+            phoneNumber: "",
+            code: "",
+            code_r: "",
+        })
+        console.log("switch")
+    }
+
+    registerFetch=()=>{
+        //先行确认手机号是否合法
+        const {phoneNumber,code,code_r} =this.state;
+        const phoneValid = validator.validatePhone(phoneNumber);
+        if(!phoneValid){
+            this.setState({phoneValid});
+            alert("不是有效的手机号")
+            return;
+        }
+        //两次密码相同
+        if(! code == code_r ){
+            alert("两次密码不同")
+            return;
+        }
+        //密码为空
+        if(code == "" ){
+            alert("密码不能为空")
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("name",this.state.phoneNumber);
+        formData.append("password",this.state.code);
+        formData.append("mode",0);
+        console.log(formData);
+
+        const url = 'http://121.4.86.24:8080/login';
+        fetch(url,{
+        method:'POST',
+        headers: {},
+        body: formData,
+        }).then(response =>response.json()
+        ).then(data => {
+            console.log(data)
+            switch (data){
+                case 1:{
+                    console.log("登陆成功")
+                    break;
+                }
+                case 2:{
+                    console.log("注册成功")
+                    //将登入信息挂入全局变量
+                    global.account = this.state.phoneNumber;
+                    this.props.navigation.navigate("Tabbar");
+                    break;
+                }
+                case 3:{
+                    console.log("账户或密码错误")
+                    alert("账户或密码错误")
+                    break;
+                }
+                case 4:{
+                    console.log("用户名已存在")
+                    alert("手机号已被注册")
+                    break;
+                }
+                case 5:{
+                    console.log("模式错误")
+                    break;
+                }
+            }
+        })
+        .catch((error) =>{
+        alert(error)
+        })
+    }
+
+    loginFetch=()=>{
+        //先行确认手机号合法
+        const {phoneNumber,code} =this.state;
+        const phoneValid = validator.validatePhone(phoneNumber);
+        if(!phoneValid){
+            this.setState({phoneValid});
+            alert("不是有效的手机号")
+            return;
+        }
+        //确认密码非空
+        if(code == ""){
+            alert("密码不能为空")
+            return;
+        }
+
+
+        let formData = new FormData();
+        formData.append("name",this.state.phoneNumber);
+        formData.append("password",this.state.code);
+        formData.append("mode",1);
+        console.log(formData);
+
+        const url = 'http://121.4.86.24:8080/login';
+        fetch(url,{
+        method:'POST',
+        headers: {
+            // 　　　　 "Accept": "application/json",
+                    // "Content-Type": 'application/json',   
+                    // "Connection": "close",   
+                    // "type": "getUserData",
+        　　　　 },
+        // body:JSON.stringify(params),
+        // body: 'name = Bob&id = 10086',
+        body: formData,
+        }).then(response =>response.json()
+        ).then(data => {
+            console.log(data)
+            switch (data){
+                case 1:{
+                    console.log("登陆成功")
+                    //将登入信息挂入全局变量
+                    global.account = this.state.phoneNumber;
+                    this.props.navigation.navigate("Tabbar");
+                    break;
+                }
+                case 2:{
+                    console.log("注册成功")
+                    break;
+                }
+                case 3:{
+                    console.log("账户或密码错误")
+                    alert("账户或密码错误")
+                    break;
+                }
+                case 4:{
+                    console.log("用户名已存在")
+                    alert("用户名已存在")
+                    break;
+                }
+                case 5:{
+                    console.log("模式错误")
+                    break;
+                }
+            }
+        })
+        .catch((error) =>{
+        alert(error)
+        })
+    }
+    //注册页面渲染
+    renderRegister =()=>{
+        const {phoneNumber,phoneValid,code_r,code} =this.state;
         return <View>
         {/* title */}
-        <View><Text style={{fontSize:pxToDp(30),color:"#888",fontWeight:"bold"}}>手机号登陆注册</Text></View>
+        <View><Text style={{fontSize:pxToDp(30),color:"#888",fontWeight:"bold"}}>手机号注册</Text></View>
         {/* input （使用ui框架：react-native-elements）*/}
         <View style={{marginTop:pxToDp(40)}}>
             <Input
@@ -137,16 +304,116 @@ class Index extends Component{
                 // errorMessage 错误提示
                 errorMessage={ phoneValid ? "":"不是一个有效手机号"}
                 //onSubmitEditing 用户输入完毕点击完成时触发
-                onSubmitEditing={this.phoneNumberSubmitEditing}
+                // onSubmitEditing={this.phoneNumberSubmitEditing}
                 keyboardType="phone-pad"
                 leftIcon={{type:'font-awesome', name:'phone',color:"#888", size:pxToDp(20)}}>
+            </Input>
+        </View>
+        <View >
+            <Input
+                placeholder ='请输入密码'
+                // maxLenth 用于限制输入长度
+                maxLength= {11}
+                // keyboardType 默认数字键盘，优化体验
+                // value 可以设置默认值
+                value ={code}
+                // inputStyle 设置打出的字体
+                inputStyle={{color:"#444"}}
+                // onChangeText 响应输入
+                onChangeText = {this.codeChangeText}
+                // errorMessage 错误提示
+                errorMessage={ (code=="")?"无效的密码":""}
+                //onSubmitEditing 用户输入完毕点击完成时触发
+                // onSubmitEditing={this.phoneNumberSubmitEditing}
+                keyboardType="phone-pad"
+                leftIcon={{type:'font-awesome', name:'lock',color:"#888", size:pxToDp(20)}}>
+            </Input>
+            <Input
+                placeholder ='请重复密码'
+                // maxLenth 用于限制输入长度
+                maxLength= {11}
+                // keyboardType 默认数字键盘，优化体验
+                // value 可以设置默认值
+                value ={code_r}
+                // inputStyle 设置打出的字体
+                inputStyle={{color:"#444"}}
+                // onChangeText 响应输入
+                onChangeText = {this.RcodeChangeText}
+                // errorMessage 错误提示
+                errorMessage={ (code=="")?"无效的密码":""}
+                //onSubmitEditing 用户输入完毕点击完成时触发
+                // onSubmitEditing={this.phoneNumberSubmitEditing}
+                keyboardType="phone-pad"
+                leftIcon={{type:'font-awesome', name:'lock',color:"#888", size:pxToDp(20)}}>
             </Input>
         </View>
         {/* 按钮 */}
         <View>
             <View style ={{width:"80%",height:pxToDp(40),alignSelf:"center"}}>
-               <Button onPress={this.phoneNumberSubmitEditing} style={{borderRadius:pxToDp(20)}}>获取验证码</Button>
+               <Button onPress={this.registerFetch} style={{borderRadius:pxToDp(20)}}>注册</Button>
             </View>
+        </View>
+        <View style={{justifyContent:"center",alignSelf:"center",padding:pxToDp(30)}}>
+            <Text  onPress={this.switchLogin}> 已有帐号？前往登录</Text>
+        </View>
+    </View>
+    }
+
+    //登陆页面渲染
+    renderLogin=()=>{
+        const {phoneNumber,phoneValid,code} =this.state;
+        return <View>
+        {/* title */}
+        <View><Text style={{fontSize:pxToDp(30),color:"#888",fontWeight:"bold"}}>手机号登陆</Text></View>
+        {/* input （使用ui框架：react-native-elements）*/}
+        <View style={{marginTop:pxToDp(40)}}>
+            <Input
+                placeholder ='请输入手机号码'
+                // maxLenth 用于限制输入长度
+                maxLength= {11}
+                // keyboardType 默认数字键盘，优化体验
+                // value 可以设置默认值
+                value ={phoneNumber}
+                // inputStyle 设置打出的字体
+                inputStyle={{color:"#444"}}
+                // onChangeText 响应输入
+                onChangeText = {this.phoneNumberChangeText}
+                // errorMessage 错误提示
+                errorMessage={ phoneValid ? "":"不是一个有效手机号"}
+                //onSubmitEditing 用户输入完毕点击完成时触发
+                // onSubmitEditing={this.phoneNumberSubmitEditing}
+                keyboardType="phone-pad"
+                leftIcon={{type:'font-awesome', name:'phone',color:"#888", size:pxToDp(20)}}>
+            </Input>
+        </View>
+        <View >
+            <Input
+                placeholder ='请输入密码'
+                // maxLenth 用于限制输入长度
+                maxLength= {11}
+                // keyboardType 默认数字键盘，优化体验
+                // value 可以设置默认值
+                value ={code}
+                // inputStyle 设置打出的字体
+                inputStyle={{color:"#444"}}
+                // onChangeText 响应输入
+                onChangeText = {this.codeChangeText}
+                // errorMessage 错误提示
+                errorMessage={ (code=="")?"无效的密码":""}
+                //onSubmitEditing 用户输入完毕点击完成时触发
+                // onSubmitEditing={this.phoneNumberSubmitEditing}
+                keyboardType="phone-pad"
+                leftIcon={{type:'font-awesome', name:'lock',color:"#888", size:pxToDp(20)}}>
+            </Input>
+        </View>
+        {/* 按钮 */}
+        <View>
+            <View style ={{width:"80%",height:pxToDp(40),alignSelf:"center"}}>
+               <Button onPress={this.loginFetch} style={{borderRadius:pxToDp(20)}}>登录</Button>
+            </View>
+        </View>
+        <View style={{justifyContent:"center",alignSelf:"center",padding:pxToDp(30)}}>
+            <Text  onPress={this.switchRegister}> 新用户快捷注册</Text>
         </View>
     </View>
     }
@@ -209,7 +476,8 @@ class Index extends Component{
                 {/* 2.0 content */}
                 <View style={{padding:pxToDp(20)}}>
                     {/* 2.1 login */}
-                    {showLogin ? this.renderLogin() : this.renderCode()}
+                    {showLogin ? this.renderLogin() : this.renderRegister()}
+                    {/* {this.renderLogin()} */}
                     {/* 2.1 login END */}
                 </View>
                 {/* 2.0 content END */}

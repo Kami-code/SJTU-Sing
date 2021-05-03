@@ -13,11 +13,8 @@ import {
 import {pxToDp} from '../../../../../utils/stylesKits';
 import RNFetchBlob from 'react-native-fetch-blob';
 import {NavigationContext} from "@react-navigation/native";
-
 import {AudioRecorder, AudioUtils} from 'react-native-audio';
-import Loading from "../../../../../components/common/Loading"
-import "../../../../../components/common/RootView"
-import {decodeToWav} from "../../../../../utils/audio-api"
+
 class SongList extends Component{
     static contextType = NavigationContext;
     constructor(props) {
@@ -27,8 +24,7 @@ class SongList extends Component{
             retstatus: null,
             searchResult: null,
             downloadFinish: false,
-            downloadPath: AudioUtils.DocumentDirectoryPath + '/download.mp3',
-            wavPath: `${AudioUtils.DocumentDirectoryPath}/download.wav`,
+            downloadPath: AudioUtils.DocumentDirectoryPath + '/download.wav',
         }
     }
 
@@ -73,7 +69,7 @@ class SongList extends Component{
             path: this.state.downloadPath
         }).fetch('GET',url,{
 
-        }).then(async(res) =>{
+        }).then((res) =>{
             console.log(res);
             alert("Download");
             console.log('The file saved to ', res.path());
@@ -82,11 +78,8 @@ class SongList extends Component{
                 downloadPath :res.path()
             });
             console.log('after ', this.state.downloadPath);
-            global.ACC[0] =  this.state.downloadPath;
+            global.ACC.push( this.state.downloadPath);
             console.log('On global: ', global.ACC[0]);
-            global.ACC[1] = this.state.wavPath;
-            await decodeToWav(global.ACC[0],global.ACC[1],2,48000);
-            Loading.hide();
             this.props.onChosen();
         //   response.json();
         //   console.log("1111");
@@ -155,9 +148,8 @@ class SongList extends Component{
     }
 
     songChosen=()=>{
-        Loading.show();
-        console.log("songChosen");
         
+        console.log("songChosen");
         // this.context.navigate("SingPage");
         //搜索该歌曲完整信息
         const id = this.state.song.id;
@@ -207,17 +199,14 @@ class SongList extends Component{
                 console.log(global.SONGS[1].name);
                 //切换页面操作
                 this.getAcc();
-
-                //this.props.onChosen();
-                //Loading.hide();
+                // this.props.onChosen();
+                
             })
             .catch((error) => {
             console.log("failed");
-            Loading.hide();
             return {error_code: -3, error_msg:'请求异常，请重试'}
         })
         console.log("fetch 2 end");
-        
         
     }
 

@@ -35,6 +35,7 @@ class Index extends Component {
                         <View style={{height:"100%",paddingTop:pxToDp(20),flexDirection:"column"}}>
                             <Text style={{color:"#fff",fontSize:pxToDp(24),fontWeight:'bold'}}> 张三 </Text>
                             <Text style={{color:"#fff",fontSize:pxToDp(16)}}> 男 广东 22岁</Text>
+                            <Text style={{color:"#fff",fontSize:pxToDp(16)}}> 手机号: {global.account}</Text>
                             <Text style={{color:"#fff",fontSize:pxToDp(16)}}> </Text>
                         </View>
                         <TouchableOpacity style ={{borderColor:"#000"}}>
