@@ -59,18 +59,18 @@ export default class MusicPlayer extends Component {
     //重唱上一句话
     prevAction = (index) => {
         if(this.state.fragNum>0){       
-            
+            DeviceEventEmitter.emit('RecordPause',this.clearCurrentBuffer);   
             let lastFrag = lyrObj[this.state.currentLine-1].total-this.state.recordShift;
             if(lastFrag>=5){ //如果上次分割点之前还有5秒，给予5秒的准备时间。
                 this.state.currentTime = lastFrag-5;
                 this._timer=setInterval(()=>{
-                   
+                    DeviceEventEmitter.emit('RecordStart');
                     clearInterval(this._timer); 
                 },5000);
             }else{ //否则把时间拉到0，有多少时间给多少时间。
                 this.state.currentTime = 0;
                 this._timer=setInterval(()=>{
-                    
+                    DeviceEventEmitter.emit('RecordStart');
                     clearInterval(this._timer); 
                 },lastFrag*1000);
             }
@@ -82,7 +82,7 @@ export default class MusicPlayer extends Component {
     }
     //全部初始化
     restart = () => {
-        
+        DeviceEventEmitter.emit('RecordPause',this.clearAllBuffer); 
         this.setState({
             currentTime: 0, 
             sliderValue: 0,
@@ -90,7 +90,7 @@ export default class MusicPlayer extends Component {
             fragNum: 0
         })
         this.refs.video.seek(0);
-        
+        DeviceEventEmitter.emit('RecordStart');
     }
 
     //下一曲
@@ -115,14 +115,14 @@ export default class MusicPlayer extends Component {
                 isplayBtn: require('./image/播放.png')
             });
             //同步开始录音
-           
+            DeviceEventEmitter.emit('RecordStart');
             
         } else {
             this.setState({
                 isplayBtn: require('./image/暂停.png')
             });
             //录音器暂停，但不清空缓存
-            
+            DeviceEventEmitter.emit('RecordPause',this.keepBuffer);
         }
 
     }
@@ -247,9 +247,19 @@ export default class MusicPlayer extends Component {
     }
     async componentDidMount() {
         //录音器保存完成后，跳转到下一个界面
-
+        this.finishListener = DeviceEventEmitter.addListener('audioSaved',()=>{
+            this.context.navigate("CompletePage");
+        });
     }
 
+    finish = ()=>{
+        //告诉录音器结束了，等待录音器把完整的歌保存。
+        DeviceEventEmitter.emit("RecordFinish");
+        if(this.state.pause==false){
+            this.playAction();
+        }
+
+    }
 
     render() {
         //如果未加载出来数据 就一直转菊花
@@ -267,18 +277,17 @@ export default class MusicPlayer extends Component {
                     {/* <Recorder_2></Recorder_2> */}
                     <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
                     <View>
-                        <Video
-                                // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
-                                source = {{uri:`file:///${global.ACC[4]}`}}
-                                ref='video'                           // Store reference
-                                rate={1.0}                     // 0 is paused, 1 is normal.
-                                volume={1.0}                   // 0 is muted, 1 is normal.
-                                muted={false}                  // Mutes the audio entirely.
-                                paused={this.state.pause}                 // Pauses playback entirely.
-                                onProgress={(e) => this.onProgress(e)}
-                                onLoad={(e) => this.onLoad(e)}
-                                onEnd={() => {}}
-                            />
+                    <Video
+                        source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
+                        ref='video'                           // Store reference
+                        rate={1.0}                     // 0 is paused, 1 is normal.
+                        volume={1.0}                   // 0 is muted, 1 is normal.
+                        muted={false}                  // Mutes the audio entirely.
+                        paused={this.state.pause}                 // Pauses playback entirely.
+                        onProgress={(e) => this.onProgress(e)}
+                        onLoad={(e) => this.onLoad(e)}
+                        onEnd={() => this.nextAction(this.state.currentIndex + 1)}
+                    />
                     </View>
                     <View style={styles.playingInfo}>
                         <Text>{this.state.author} - {this.state.title}</Text>
@@ -304,10 +313,17 @@ export default class MusicPlayer extends Component {
                     />
                     <View style={{ flexDirection: 'row', justifyContent: 'space-around',marginTop: pxToDp(12) }}>
 
+                        <TouchableOpacity onPress={() => this.prevAction(this.state.currentIndex - 1)}>
+                            <Image source={require('./image/上一首.png')} style={{ width: 30, height: 30 }} />
+                        </TouchableOpacity>
+
                         <TouchableOpacity onPress={() => this.playAction()}>
                             <Image source={this.state.isplayBtn} style={{ width: 30, height: 30 }} />
                         </TouchableOpacity>
 
+                        <TouchableOpacity onPress={() => this.nextAction(this.state.currentIndex + 1)}>
+                            <Image source={require('./image/下一首.png')} style={{ width: 30, height: 30 }} />
+                        </TouchableOpacity>
                     </View>
 
                         {/* 歌词界面设置 */}
@@ -319,7 +335,62 @@ export default class MusicPlayer extends Component {
                             {this.renderItem()}
                         </ScrollView>
                     </View>
+                    {/* 额外添加按钮 */}
+                    <View style={{ flexDirection: 'row',marginTop:pxToDp(10), justifyContent: 'space-around' }}>
 
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
+                            </View>
+                            <Text style={styles.buttontext}>原唱</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
+                            </View>
+                            <Text style={styles.buttontext}>返听调音</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.restart()}>
+                            <View style={styles.button}>
+                                <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
+                            </View>
+                            <Text style={styles.buttontext}>重录</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}} onPress ={()=>this.finish()}>
+                            <View style={styles.button}>
+                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={finish} />
+                            </View>
+                            <Text style={styles.buttontext}>完成</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ flexDirection: 'row',marginTop:pxToDp(10), justifyContent: 'space-around' }}>
+
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
+                            </View>
+                            <Text style={styles.buttontext}>a</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}}>
+                            <View style={styles.button}>
+                                <Svg width="35" height="35" fill ="#fff"  svgXmlData={adjust} />
+                            </View>
+                            <Text style={styles.buttontext}>b</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{alignItems:"center"}} >
+                            <View style={styles.button}>
+                                <Svg width="40" height="40" fill ="#fff"  svgXmlData={restart} />
+                            </View>
+                            <Text style={styles.buttontext}>c</Text>
+                        </TouchableOpacity>
+
+
+                    </View>
                 </View>
             )
         }

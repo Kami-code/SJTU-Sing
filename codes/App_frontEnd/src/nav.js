@@ -51,7 +51,7 @@ function Nav() {
   return (
     <NavigationContainer>
       {/* 录音模块放在 ./components/Recorder 中，含保存方法*/}
-      <Stack.Navigator headerMode="none" initialRouteName="Tabbar">
+      <Stack.Navigator headerMode="none" initialRouteName="Login">
         <Stack.Screen name="Login" component={Login} />
         {/* <Stack.Screen name="MainPage" component={MainPage} /> */}
 

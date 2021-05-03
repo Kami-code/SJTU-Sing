@@ -39,16 +39,10 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeInit
 
 
 JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEchoEffects
-  (JNIEnv *env, jclass cla,jint Delay){
+  (JNIEnv *env, jclass cla){
 
       sox_effect_t* e = sox_create_effect(sox_find_effect("echo"));
-      char delay[10];
-      sprintf(delay,"%d",Delay);
-      char* gainIn = "0.8";
-      char* gainOut = "0.88";
-      char* decay = "0.4";
-      char* args[] = {gainIn, gainOut, delay, decay} ;
-      if(sox_effect_options(e, 4, args) != SOX_SUCCESS){return 1;}
+      if(sox_effect_options(e, 0, NULL) != SOX_SUCCESS){return 1;}
       /* Add the effect to the end of the effects processing chain: */
       if(sox_add_effect(chain, e, &in->signal, &in->signal) != SOX_SUCCESS){return 1;}
       free(e);
@@ -60,7 +54,7 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEchoEffects
  * Method:    nativeAddVolEffect
  * Signature: (JI)V
  */
-JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddVolEffect
+JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddVolEffect
     (JNIEnv * env, jclass cla, jint Volume){
         sox_effect_t * e = sox_create_effect(sox_find_effect("vol"));
         char volume[10];
@@ -68,11 +62,10 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddVolEffect
         //args[0] = "3dB";
         // char* args[] = {strcat(intStr,"dB")};
         char* args[] = {volume};
-        if(sox_effect_options(e, 1, args) != SOX_SUCCESS){return 1;};
+        assert(sox_effect_options(e, 1, args) == SOX_SUCCESS);
         /* Add the effect to the end of the effects processing chain: */
-        if(sox_add_effect(chain, e, &in->signal, &in->signal) != SOX_SUCCESS){return 1;};
+        assert(sox_add_effect(chain, e, &in->signal, &in->signal) == SOX_SUCCESS);
         free(e);
-        return 0;
     }
 
 /*
@@ -95,7 +88,7 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddFlangerEffect
  * Method:    nativeAddCompandEffect
  * Signature: (J)V
  */
-JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddCompandEffect
+JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddCompandEffect
     (JNIEnv * env, jclass cla){
         sox_effect_t * e = sox_create_effect(sox_find_effect("compand"));
         char* attackRelease = "0.3,1.0";
@@ -104,11 +97,10 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddCompandEffect
         char* initialVolume = "-90";
         char* delay = "0.1";
         char* args[] = {attackRelease, functionTransTable, gain, initialVolume, delay} ;
-        if(sox_effect_options(e, 5, args) != SOX_SUCCESS){return 1;};
+        assert(sox_effect_options(e, 5, args) == SOX_SUCCESS);
         /* Add the effect to the end of the effects processing chain: */
-        if(sox_add_effect(chain, e, &in->signal, &in->signal) != SOX_SUCCESS){return 1;};
+        assert(sox_add_effect(chain, e, &in->signal, &in->signal) == SOX_SUCCESS);
         free(e);
-        return 0;
     }
 
 /*
@@ -116,7 +108,7 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddCompandEffect
  * Method:    nativeAddReverbEffect
  * Signature: (JZIIIIII)V
  */
-JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddReverbEffect
+JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddReverbEffect
     (JNIEnv * env, jclass cla, jboolean WetOnly, jint Reverbrance, jint HfDamping, jint RoomScale, jint StereoDepth, jint PreDelay, jint WetGain)
   {
       char* wetOnly;
@@ -136,15 +128,14 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddReverbEffect
       if(WetOnly){
         wetOnly = "-w";
         char* arg[] = {wetOnly, reverbrance, hfDamping, roomScale, stereoDepth, preDelay,wetGain} ;
-        if(sox_effect_options(e, 7, arg) != SOX_SUCCESS){return 1;};
+        assert(sox_effect_options(e, 7, arg) == SOX_SUCCESS);
       }
       else{
         char* args[] = {reverbrance, hfDamping, roomScale, stereoDepth, preDelay,wetGain};
-        if(sox_effect_options(e, 6, args) != SOX_SUCCESS){return 1;};
+        assert(sox_effect_options(e, 6, args) == SOX_SUCCESS);
       }
-      if(sox_add_effect(chain, e, &in->signal, &in->signal) != SOX_SUCCESS){return 1;};
+      assert(sox_add_effect(chain, e, &in->signal, &in->signal) == SOX_SUCCESS);
       free(e);
-      return 0;
   }
 
 /*
@@ -152,22 +143,21 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddReverbEffect
  * Method:    nativeAddChorusEffects
  * Signature: (J)V
  */
-JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddChorusEffects
+JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddChorusEffects
   (JNIEnv *env, jclass cla)
   {
       sox_effect_t * e = sox_create_effect(sox_find_effect("chorus"));
-      if(sox_effect_options(e, 0, NULL) == SOX_SUCCESS){return 1;};
+      assert(sox_effect_options(e, 0, NULL) == SOX_SUCCESS);
       /* Add the effect to the end of the effects processing chain: */
-      if(sox_add_effect(chain, e, &in->signal, &in->signal) != SOX_SUCCESS){return 1;};
+      assert(sox_add_effect(chain, e, &in->signal, &in->signal) == SOX_SUCCESS);
       free(e);
-      return 0;
   }
 /*
  * Class:     com_kgeapp_sox_jni_sox
  * Method:    nativeAddEqualizerEffect
  * Signature: (JIDD)V
  */
-JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEqualizerEffect
+JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEqualizerEffect
   (JNIEnv *env, jclass cla, jint Frequency, jdouble BandWidth, jdouble Gain)
   {
       sox_effect_t * e = sox_create_effect(sox_find_effect("equalizer"));
@@ -180,11 +170,10 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEqualizerEffect
       sprintf(gain,"%.1lfdB",Gain);
       char* args[] = {frequency, bandWidth, gain};
 
-      if(sox_effect_options(e, 3, args) == SOX_SUCCESS){return 1;};
+      assert(sox_effect_options(e, 3, args) == SOX_SUCCESS);
       /* Add the effect to the end of the effects processing chain: */
-      if(sox_add_effect(chain, e, &in->signal, &in->signal) != SOX_SUCCESS){return 1;};
+      assert(sox_add_effect(chain, e, &in->signal, &in->signal) == SOX_SUCCESS);
       free(e);
-      return 0;
   }
 
 /*
@@ -192,7 +181,7 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEqualizerEffect
  * Method:    nativeAddHighPassEffect
  * Signature: (JID)V
  */
-JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddHighPassEffect
+JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddHighPassEffect
   (JNIEnv *env, jclass cla, jint Frequency, jdouble Width)
   {
       sox_effect_t * e = sox_create_effect(sox_find_effect("highpass"));
@@ -203,11 +192,10 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddHighPassEffect
       sprintf(width,"%.2lfq",Width);
       char* args[] = {frequency, width};
 
-      if(sox_effect_options(e, 2, args) == SOX_SUCCESS){return 1;};
+      assert(sox_effect_options(e, 2, args) == SOX_SUCCESS);
       /* Add the effect to the end of the effects processing chain: */
-      if(sox_add_effect(chain, e, &in->signal, &in->signal) != SOX_SUCCESS){return 1;};
+      assert(sox_add_effect(chain, e, &in->signal, &in->signal) == SOX_SUCCESS);
       free(e);
-      return 0;
   }
 
 /*
@@ -215,7 +203,7 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddHighPassEffect
  * Method:    nativeAddLowPassEffect
  * Signature: (JID)V
  */
-JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddLowPassEffect
+JNIEXPORT void JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddLowPassEffect
   (JNIEnv *env, jclass cla, jint Frequency, jdouble Width)
   {
       sox_effect_t * e = sox_create_effect(sox_find_effect("lowpass"));
@@ -226,11 +214,10 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddLowPassEffect
       sprintf(width,"%.2lfq",Width);
       char* args[] = {frequency, width};
 
-      if(sox_effect_options(e, 2, args) == SOX_SUCCESS){return 1;};
+      assert(sox_effect_options(e, 2, args) == SOX_SUCCESS);
       /* Add the effect to the end of the effects processing chain: */
-      if(sox_add_effect(chain, e, &in->signal, &in->signal) != SOX_SUCCESS){return 1;};
+      assert(sox_add_effect(chain, e, &in->signal, &in->signal) == SOX_SUCCESS);
       free(e);
-      return 0;
   }
 
 
@@ -255,7 +242,6 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeFlowEffects
         sox_delete_effects_chain(chain);
         sox_close(out);
         sox_close(in);
-
         sox_quit();
         return 0;
     }

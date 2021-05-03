@@ -20,40 +20,40 @@ public class sox {
 	    return nativeInit(in, out);
 	}
 
-    public int addVolEffect(int volume){
-	    return nativeAddVolEffect(volume);
+    public void addVolEffect(int volume){
+	    nativeAddVolEffect(volume);
 	}
 
     public int addFlangerEffect(){
 	    return nativeAddFlangerEffect();
 	}
 
-    public int addEqualizerEffect(int frequency, double bandWidth, int gain){
-	    return nativeAddEqualizerEffect( frequency, bandWidth, gain);
+    public void addEqualizerEffect(int frequency, double bandWidth, int gain){
+	    nativeAddEqualizerEffect( frequency, bandWidth, gain);
 	}
 
-    public int addHighPassEffect(int frequency, double bandWidth){
-	    return nativeAddHighPassEffect( frequency, bandWidth);
+    public void addHighPassEffect(int frequency, double bandWidth){
+	    nativeAddHighPassEffect( frequency, bandWidth);
 	}
 
-    public int addLowPassEffect(int frequency, double bandWidth){
-	    return nativeAddLowPassEffect( frequency, bandWidth);
+    public void addLowPassEffect(int frequency, double bandWidth){
+	    nativeAddLowPassEffect( frequency, bandWidth);
 	}
 
-    public int addCompandEffect(){
-	    return nativeAddCompandEffect();
+    public void addCompandEffect(){
+	    nativeAddCompandEffect();
 	}
 
-    public int addChorusEffect(){
-	    return nativeAddChorusEffects();
+    public void addChorusEffect(){
+	    nativeAddChorusEffects();
 	}
 
-    public int addEchoEffect(int delay){
-	    return nativeAddEchoEffects(delay);
+    public int addEchoEffect(){
+	    return nativeAddEchoEffects();
 	}
 
-    public int addReverbEffect(boolean wetOnly, int reverbrance, int hfDamping, int roomScale, int stereoDepth, int preDelay, int wetGain){
-	    return nativeAddReverbEffect(wetOnly, reverbrance, hfDamping, roomScale, stereoDepth, preDelay, wetGain);
+    public void addReverbEffect(boolean wetOnly, int reverbrance, int hfDamping, int roomScale, int stereoDepth, int preDelay, int wetGain){
+	    nativeAddReverbEffect(wetOnly, reverbrance, hfDamping, roomScale, stereoDepth, preDelay, wetGain);
 	}
 
     public int flowEffects(){
@@ -63,23 +63,23 @@ public class sox {
 
     protected static native int nativeInit(String in, String out);
 
-    protected static native int nativeAddVolEffect(int volume);
+    protected static native void nativeAddVolEffect(int volume);
 
     protected static native int nativeAddFlangerEffect();
 
-    protected static native int nativeAddEqualizerEffect(int frequency, double bandWidth, double gain);
+    protected static native void nativeAddEqualizerEffect(int frequency, double bandWidth, double gain);
 
-    protected static native int nativeAddHighPassEffect(int frequency, double bandWidth);
+    protected static native void nativeAddHighPassEffect(int frequency, double bandWidth);
 
-    protected static native int nativeAddLowPassEffect( int frequency, double bandWidth);
+    protected static native void nativeAddLowPassEffect( int frequency, double bandWidth);
 
-    protected static native int nativeAddCompandEffect();
+    protected static native void nativeAddCompandEffect();
 
-    protected static native int nativeAddReverbEffect(boolean wetOnly, int reverbrance, int hfDamping, int roomScale, int stereoDepth, int preDelay, int wetGain);
+    protected static native void nativeAddReverbEffect(boolean wetOnly, int reverbrance, int hfDamping, int roomScale, int stereoDepth, int preDelay, int wetGain);
 
-    protected static native int nativeAddChorusEffects();
+    protected static native void nativeAddChorusEffects();
 
-    protected static native int nativeAddEchoEffects(int delay);
+    protected static native int nativeAddEchoEffects();
     
     protected static native int nativeFlowEffects();
 

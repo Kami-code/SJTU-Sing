@@ -9,7 +9,6 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.kgeapp.sox.jni.sox;
 import com.facebook.react.bridge.ReadableMap;
-import com.facebook.react.bridge.Promise;
 
 //import java.util.Map;
 //import java.util.HashMap;
@@ -39,29 +38,25 @@ public class SoxModule extends ReactContextBaseJavaModule {
     
 
     @ReactMethod
-    public void init(String inFile, String outFile, Promise promise) {
-       
+    public int init(String inFile, String outFile) {
         sox_object = new sox(inFile,outFile);
-        int result = sox_object.init(sox_object.getInfile(),sox_object.getOutfile());
-        if(result==1){promise.resolve("sox init fail");return;}
-        promise.resolve("sox init success");
-  
+        if(sox_object.init(sox_object.getInfile(),sox_object.getOutfile())==1){return 1;}
+        System.out.println("call Java");
+        return 0;
     }
-    
 
     @ReactMethod
-    public void add_effect(String effect, ReadableMap args, Promise promise) {
-        int result = 0;
+    public int add_effect(String effect, ReadableMap args) {
         switch(effect){
             case "vol" :
-                int volume = args.getInt("volume");              
-                result = sox_object.addVolEffect(volume);
+                int volume = args.getInt("volume");
+                sox_object.addVolEffect(volume);
                 break; 
             case "equalizer" :
                 int frequency = args.getInt("frequency");
                 double bandWidth = args.getDouble("bandWidth");
                 int gain = args.getInt("gain");
-                result = sox_object.addEqualizerEffect(frequency,bandWidth,gain);
+                sox_object.addEqualizerEffect(frequency,bandWidth,gain);
                 break; 
             case "reverb" :
                 boolean wetOnly = args.getBoolean("wetOnly");
@@ -71,7 +66,7 @@ public class SoxModule extends ReactContextBaseJavaModule {
                 int stereoDepth = args.getInt("stereoDepth");
                 int preDelay = args.getInt("preDelay");
                 int wetGain = args.getInt("wetGain");
-                result = sox_object.addReverbEffect(wetOnly,reverbrance,hfDamping,roomScale,stereoDepth,preDelay,wetGain);
+                sox_object.addReverbEffect(wetOnly,reverbrance,hfDamping,roomScale,stereoDepth,preDelay,wetGain);
                 break; 
             case "compand" :
                 sox_object.addCompandEffect();
@@ -79,41 +74,28 @@ public class SoxModule extends ReactContextBaseJavaModule {
             case "highPass" :
                 int frequency2 = args.getInt("frequency");
                 double bandWidth2 = args.getDouble("bandWidth");
-                result = sox_object.addHighPassEffect(frequency2,bandWidth2);
+                sox_object.addHighPassEffect(frequency2,bandWidth2);
                 break; 
             case "lowPass" :
                 int frequency3 = args.getInt("frequency");
                 double bandWidth3 = args.getDouble("bandWidth");
-                
-                result = sox_object.addLowPassEffect(frequency3,bandWidth3);
+                sox_object.addLowPassEffect(frequency3,bandWidth3);
                 break; 
             case "echo" :
-                int delay = args.getInt("delay");
-                result = sox_object.addEchoEffect(delay);
+                if(sox_object.addEchoEffect()==1){return 1;}
                 break; 
             case "chorus" :
-                result = sox_object.addChorusEffect();
+                sox_object.addChorusEffect();
                 break; 
             
             default : 
-                result = 1;
+                return 1;
         }
-        if(result == 1){
-            promise.resolve("effect add "+effect+" fail");
-        }else{
-            promise.resolve("effect add " + effect+ " success");
-        }
-        return;
+        return 0;
     }
-
     @ReactMethod
-    public void flow(Promise promise){
-        int result = sox_object.flowEffects();
-        if(result==1){
-            promise.resolve("add  fail");
-            return;
-            }
-        promise.resolve("sox flow success");
-        return;
+    public int flow(){
+        if(sox_object.flowEffects()==1){return 1;}
+        return 0;
     } 
 }
