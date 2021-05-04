@@ -456,6 +456,14 @@ export default class MusicPlayer extends Component {
     //     console.log("fetch end");
     // }
 
+    switchSource =()=>{
+        let state = this.state.playACC
+        this.setState({
+            playACC: (!state)
+        })
+        console.log(this.state.playACC)
+    }
+
     render() {
         //如果未加载出来数据 就一直转菊花
         if (this.state.songs.length <= 0) {
@@ -489,9 +497,10 @@ export default class MusicPlayer extends Component {
                     <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
 
                     <View>
+                    {(this.state.playACC)? 
                         <Video
-                            source={{ uri: this.state.file_link }}   //原唱
-                            // source = {{uri:`file:///${global.ACC[1]}`}}//伴奏
+                            // source={{uri: this.state.file_link }}   //原唱
+                            source = {{uri:`file:///${global.ACC[0]}`}}//伴奏
                             ref='video'                           // Store reference
                             rate={1.0}                     // 0 is paused, 1 is normal.
                             volume={1.0}                   // 0 is muted, 1 is normal.
@@ -500,9 +509,25 @@ export default class MusicPlayer extends Component {
                             onProgress={(e) => this.onProgress(e)}
                             onLoad={(e) => this.onLoad(e)}
                             onEnd={() => {
+                                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
                                 this.finish();
                             }}
-                        />
+                        />: 
+                        <Video
+                            source={{uri: this.state.file_link }}   //原唱
+                            // source = {{uri:`file:///${global.ACC[0]}`}}//伴奏
+                            ref='video'                           // Store reference
+                            rate={1.0}                     // 0 is paused, 1 is normal.
+                            volume={1.0}                   // 0 is muted, 1 is normal.
+                            muted={false}                  // Mutes the audio entirely.
+                            paused={this.state.pause}                 // Pauses playback entirely.
+                            onProgress={(e) => this.onProgress(e)}
+                            onLoad={(e) => this.onLoad(e)}
+                            onEnd={() => {
+                                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
+                                this.finish();
+                            }}
+                        />}
                     </View>
 
 
@@ -550,11 +575,15 @@ export default class MusicPlayer extends Component {
                         </TouchableOpacity>
 
                         {/* 切换原唱 */}
-                        <TouchableOpacity style={{alignItems:"center"}}onPress ={()=>this.uploadUser()}>
+                        <TouchableOpacity style={{alignItems:"center"}}onPress ={()=>this.switchSource()}>
                             <View style={styles.button}>
                                 <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
                             </View>
-                            <Text style={styles.buttontext}>原唱</Text>
+                            {(this.state.playACC)?
+                                <Text style={styles.buttontext}>原唱</Text>:
+                                <Text style={styles.buttontext}>伴唱</Text>
+                            }
+                            
                         </TouchableOpacity>
 
                         {/* 开始暂停 */}
