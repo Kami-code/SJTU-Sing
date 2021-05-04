@@ -291,6 +291,11 @@ export default class MusicPlayer extends Component {
             this.loadSongInfo(this.state.songs.length-1);
             DeviceEventEmitter.emit('RecordInit');
         });
+
+        this.uploadListener = DeviceEventEmitter.addListener("RecordUpload",(param)=>{
+            this.uploadUser(param.index,param.start,param.end);
+            
+        });
     }
     componentWillUnmount() {
         this.routerEvent && this.routerEvent();
@@ -350,12 +355,12 @@ export default class MusicPlayer extends Component {
       );
 
     //打分
-    getScore = async()=>{
+    getScore = async(start,end)=>{
         //一定要在upload之后调用，否则返回no reference, 高强度连续调用会返回Wait（并发为1，建议转个菊花）
         let formData = new FormData();
         formData.append("song_id",this.state.song_id);//歌的id，与upload中一致
-        formData.append("begin",0.0);//起讫时间测试中写死了，需要根据实际调整
-        formData.append("end",5.0);
+        formData.append("begin",start);//起讫时间测试中写死了，需要根据实际调整
+        formData.append("end",end);
         console.log(formData);
 
         const url = 'http://121.4.86.24:8080/score';
@@ -365,6 +370,7 @@ export default class MusicPlayer extends Component {
         }).then(response =>response.json())
         .then(data => {
             console.log("get response")
+            console.log(data)
             console.log(data.score)//数据在这里，data.score
         })
         .catch((error) =>{
@@ -374,11 +380,11 @@ export default class MusicPlayer extends Component {
     }
 
     //上传用户作品段
-    uploadUser = async()=>{
+    uploadUser = async(i,start,end)=>{
         //本函数上传id+user.wav文件
         //调用一次上次传一个，流程中需要调用两次，一次原唱一次用户（原唱应该只需要一次）
         let params = {
-            path: global.ACC[0] // 根据自己项目修改参数哈
+            path: global.ACC[i+6] // 根据自己项目修改参数哈
         }
         //console.log("1111");
         console.log(this.state.audioFile);
@@ -404,6 +410,7 @@ export default class MusicPlayer extends Component {
             console.log("get response");
             // console.log(response.contentLength());
             // console.log('');
+            this.getScore(start,end)
             })
             .then(formData => formData)
             .catch(error => {
@@ -413,41 +420,41 @@ export default class MusicPlayer extends Component {
         console.log("fetch end");
     }
 
-    //上传原唱
-    uploadRef = async()=>{
-        //本函数上传id+ref.wav文件，即原唱
-        //调用一次上次传一个，流程中需要调用两次，一次原唱一次用户（原唱应该只需要一次）
-        let params = {
-            path: global.ACC[0] // 根据自己项目修改参数哈
-        }
-        //console.log("1111");
-        console.log(this.state.audioFile);
-        let {path} = params;
-        let formData = new FormData();
-        let soundPath = `file://${path}` ;  // 注意需要增加前缀 `file://`
-        console.log(soundPath);
-        let fileName = `${this.state.song_id}ref.wav`// 文件名，应后端要求进行修改
-        console.log("Filename: "+ fileName);
-        let file = { uri: soundPath , type: "multipart/form-data", name: fileName} // 注意 `uri` 表示文件地址，`type` 表示接口接收的类型，一般为这个，跟后端确认一下
-        formData.append('file',file);
-        fetch('http://121.4.86.24:8080/upload', 
-        {
-            method: 'POST',
-            body:formData,
-            timeout: 5000 // 5s超时
-        }
-        )
-            .then(response =>{ 
-            response.json();
-            console.log("get response");
-            })
-            .then(formData => formData)
-            .catch(error => {
-            console.log("failed");
-                return {error_code: -3, error_msg:'请求异常，请重试'}
-        })
-        console.log("fetch end");
-    }
+    // //上传原唱
+    // uploadRef = async()=>{
+    //     //本函数上传id+ref.wav文件，即原唱
+    //     //调用一次上次传一个，流程中需要调用两次，一次原唱一次用户（原唱应该只需要一次）
+    //     let params = {
+    //         path: global.ACC[0] // 根据自己项目修改参数哈
+    //     }
+    //     //console.log("1111");
+    //     console.log(this.state.audioFile);
+    //     let {path} = params;
+    //     let formData = new FormData();
+    //     let soundPath = `file://${path}` ;  // 注意需要增加前缀 `file://`
+    //     console.log(soundPath);
+    //     let fileName = `${this.state.song_id}ref.wav`// 文件名，应后端要求进行修改
+    //     console.log("Filename: "+ fileName);
+    //     let file = { uri: soundPath , type: "multipart/form-data", name: fileName} // 注意 `uri` 表示文件地址，`type` 表示接口接收的类型，一般为这个，跟后端确认一下
+    //     formData.append('file',file);
+    //     fetch('http://121.4.86.24:8080/upload', 
+    //     {
+    //         method: 'POST',
+    //         body:formData,
+    //         timeout: 5000 // 5s超时
+    //     }
+    //     )
+    //         .then(response =>{ 
+    //         response.json();
+    //         console.log("get response");
+    //         })
+    //         .then(formData => formData)
+    //         .catch(error => {
+    //         console.log("failed");
+    //             return {error_code: -3, error_msg:'请求异常，请重试'}
+    //     })
+    //     console.log("fetch end");
+    // }
 
     render() {
         //如果未加载出来数据 就一直转菊花
