@@ -8,6 +8,7 @@ import {saveAudio} from '../../utils/audio-api';
 import AudioRecord from '../../utils/audioRecord';
 import RNFS from "react-native-fs";
 
+
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -89,6 +90,7 @@ export default class App extends Component {
     });
 
       this.fetchListener =DeviceEventEmitter.addListener('fetchChunk',async (param)=>{
+        this.fragTable[0]= 0;
         let line = param.fragNum;
         let time = param.fragTime;
         this.fragTable[line+1] = time; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
@@ -98,6 +100,7 @@ export default class App extends Component {
         await saveAudio(path,this.data[line]); //保存句子到本地
         global.ACC[line+6] = path;
         console.log("frag"+line);
+        DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":this.fragTable[line],"end":this.fragTable[line+1]});
           
       });
 
