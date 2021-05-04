@@ -62,8 +62,8 @@ export default class MusicPlayer extends Component {
             lastFragTime: 0,
 
             accPath:"",
-            proc_audio_wav: `${RNFS.ExternalStorageDirectoryPath}/test/proc_audio.wav`,
-            merge_audio_wav: `${RNFS.ExternalStorageDirectoryPath}/test/merge_audio.wav`
+            proc_audio_wav: `${RNFS.CachesDirectoryPath }/proc_audio.wav`,
+            merge_audio_wav: `${RNFS.CachesDirectoryPath }/merge_audio.wav`
         }
     }
     //重唱上一句话
