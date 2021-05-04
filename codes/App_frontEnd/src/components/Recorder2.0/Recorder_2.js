@@ -22,7 +22,7 @@ export default class App extends Component {
     chunk: '',
     frag: false,
     start: false,
-    savePath: `${RNFS.ExternalStorageDirectoryPath}/test/raw_audio.wav`,
+    savePath: `${RNFS.CachesDirectoryPath }/raw_audio.wav`,
   };
 
 
@@ -68,7 +68,7 @@ export default class App extends Component {
         this.fragTable[line+1] = time; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
         this.data[line]=this.state.chunk; //把缓存保存入句子组
         this.state.frag = false;
-        let path = `${RNFS.ExternalStorageDirectoryPath}/test/record${line}.wav`
+        let path = `${RNFS.CachesDirectoryPath }/record${line}.wav`
         await saveAudio(path,this.data[line]); //保存句子到本地
         global.ACC[line+6] = path;
         console.log("frag"+line);
@@ -80,9 +80,8 @@ export default class App extends Component {
         this.data = new Array();
         
         global.ACC[2] = this.state.savePath;
-        
         await saveAudio(this.state.savePath,song);
-        console.log("finish"+this.data.length);
+        console.log(`save finish${this.data.length} at ${this.state.savePath}`);
         DeviceEventEmitter.emit('RecordStopped',this.state.savePath);
 
       }
@@ -96,7 +95,7 @@ export default class App extends Component {
         this.fragTable[line+1] = time; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
         this.data[line]=this.state.chunk; //把缓存保存入句子组
         this.state.frag = false;
-        let path = `${RNFS.ExternalStorageDirectoryPath}/test/record${line}.wav`
+        let path = `${RNFS.CachesDirectoryPath }/record${line}.wav`
         await saveAudio(path,this.data[line]); //保存句子到本地
         global.ACC[line+6] = path;
         console.log("frag"+line);
