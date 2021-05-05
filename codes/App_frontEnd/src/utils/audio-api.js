@@ -39,10 +39,10 @@ function readFile(fileName) {
     })
   }
 
-export async function saveAudio(path,array){
+export async function saveAudio(path,array,offset){
     try {
         console.log(path);
-        let msg = await SaveAudio.save(path,array);
+        let msg = await SaveAudio.save(path,array,offset);
         console.log(msg);
     }catch (e) {
         console.error(e);
@@ -139,7 +139,7 @@ export async function default_sox(infile,outfile){
 
     msg = await Sox.init(tempPath0,tempPath2);
     console.log(msg);
-    msg = await Sox.add_effect("equalizer",{"frequency":300,"bandWidth":1.25,"gain":3});
+    msg = await Sox.add_effect("equalizer",{"frequency":300,"bandWidth":1.25,"gain":8});
     console.log(msg);
     // let msg3 = await Sox.add_effect("highPass",{"frequency":70,"bandWidth":0.5});
     // console.log(msg3);
@@ -147,7 +147,7 @@ export async function default_sox(infile,outfile){
     // console.log(msg4);
     msg = await Sox.add_effect("compand",{});
     console.log(msg);
-    msg = await Sox.add_effect("vol",{"volume":15});
+    msg = await Sox.add_effect("vol",{"volume":30});
     console.log(msg);
     msg = await Sox.flow();
     console.log(msg);

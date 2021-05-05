@@ -236,3 +236,5 @@ global.ACC = [
 ]
 
 global.TOTALSCORE = 0
+
+global.RECORDING = false; 
