@@ -80,7 +80,6 @@ export default class App extends Component {
         this.data = new Array();
         
         global.ACC[2] = this.state.savePath;
-        
         await saveAudio(this.state.savePath,song);
         console.log(`save finish${this.data.length} at ${this.state.savePath}`);
         DeviceEventEmitter.emit('RecordStopped',this.state.savePath);
