@@ -1,0 +1,12 @@
+prefix=/home/waaa/ff/sox-code-7524160b29a476f7e87bc14fddf12d349f9a3c5e/android/x86
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: SoX
+Description: Audio file format and effects library
+Version: 14.4.3git
+URL: http://sox.sourceforge.net
+Libs: -L${libdir} -lsox
+Libs.private: -lm 
+Cflags: -I${includedir}
