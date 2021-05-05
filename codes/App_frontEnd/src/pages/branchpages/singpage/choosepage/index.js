@@ -122,7 +122,7 @@ class Index extends Component {
                 <ScrollView>
                     {global.RECOMMEND.map((item)=>{
                         return (
-                            <SongList song = {item} onChosen={this.onChosen}/>
+                            <SongList key = {item.name} song = {item} onChosen={this.onChosen}/>
                         );
                         })
                     }

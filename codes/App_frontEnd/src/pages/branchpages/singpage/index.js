@@ -519,7 +519,10 @@ export default class Singpage extends Component {
 
                     <View>
                         <Text> 当前得分： {this.state.myScore}</Text>
+<<<<<<< HEAD
                         <Text> 当前平均得分： {this.state.totalScore/this.state.numOfScore}</Text>
+=======
+>>>>>>> e3f2dd2c0f387653b6b8c7e3886a0254c8ae3b6c
                     {/* {(this.state.playACC)?  */}
                         <Video
                             // source={{uri: this.state.file_link }}   //原唱
@@ -544,6 +547,10 @@ export default class Singpage extends Component {
                             volume={1.0}                   // 0 is muted, 1 is normal.
                             muted={!this.state.playACC}                  // Mutes the audio entirely.
                             paused={this.state.pause}                 // Pauses playback entirely.
+<<<<<<< HEAD
+=======
+            
+>>>>>>> e3f2dd2c0f387653b6b8c7e3886a0254c8ae3b6c
                         />
                     </View>
 
