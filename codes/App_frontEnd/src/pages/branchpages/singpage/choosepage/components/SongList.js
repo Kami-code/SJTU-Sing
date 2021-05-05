@@ -75,7 +75,7 @@ class SongList extends Component{
 
         }).then(async(res) =>{
             console.log(res);
-            //alert("Download");
+            // alert("Download");
             console.log('The file saved to ', res.path());
             console.log('before ', this.state.downloadPath);
             this.setState({
@@ -187,6 +187,8 @@ class SongList extends Component{
                 })
                 if (this.state.retstatus == 500){
                     alert("非常抱歉，因版权问题，本歌曲不开放使用");
+                    Loading.hide();
+                    return;
                 }
                 //填入globalsongs中
                 // let mp3 = JSON.parse(this.state.searchResult).mp3;

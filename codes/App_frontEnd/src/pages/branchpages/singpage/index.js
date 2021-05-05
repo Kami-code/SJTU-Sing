@@ -66,6 +66,8 @@ export default class Singpage extends Component {
             merge_audio_wav: `${RNFS.CachesDirectoryPath }/merge_audio.wav`,
             playACC:false,
             myScore: 0,
+            totalScore: 0,
+            numOfScore: 0,
         }
     }
     //重唱上一句话
@@ -292,7 +294,8 @@ export default class Singpage extends Component {
                 await default_sox(global.ACC[2],global.ACC[3]);
                 await mergeAudio(global.ACC[1],global.ACC[3],global.ACC[4]);
                 Loading.hide();
-                global.SCORE = this.state.myScore;
+                global.SCORE = this.state.totalScore / this.state.numOfScorer;
+                
                 console.log ("finScore = ", global.SCORE);
                 this.context.navigate("CompletePage");
             }
@@ -383,8 +386,12 @@ export default class Singpage extends Component {
             console.log("get response score")
             console.log(data)
             console.log(data.score)//数据在这里，data.score
+            let total = this.state.totalScore; 
+            let times = this.state.numOfScore;
             this.setState({
-                myScore: data.score
+                myScore: data.score,
+                totalScore: total + data.score,
+                numOfScore: times + 1,
             })
         })
         .catch((error) =>{
@@ -512,6 +519,10 @@ export default class Singpage extends Component {
 
                     <View>
                         <Text> 当前得分： {this.state.myScore}</Text>
+<<<<<<< HEAD
+                        <Text> 当前平均得分： {this.state.totalScore/this.state.numOfScore}</Text>
+=======
+>>>>>>> e3f2dd2c0f387653b6b8c7e3886a0254c8ae3b6c
                     {/* {(this.state.playACC)?  */}
                         <Video
                             // source={{uri: this.state.file_link }}   //原唱
@@ -536,7 +547,10 @@ export default class Singpage extends Component {
                             volume={1.0}                   // 0 is muted, 1 is normal.
                             muted={!this.state.playACC}                  // Mutes the audio entirely.
                             paused={this.state.pause}                 // Pauses playback entirely.
+<<<<<<< HEAD
+=======
             
+>>>>>>> e3f2dd2c0f387653b6b8c7e3886a0254c8ae3b6c
                         />
                     </View>
 
@@ -590,8 +604,8 @@ export default class Singpage extends Component {
                                 <Svg width="45" height="45" fill ="#fff"  svgXmlData={origin} />
                             </View>
                             {(this.state.playACC)?
-                                <Text style={styles.buttontext}>原唱</Text>:
-                                <Text style={styles.buttontext}>伴唱</Text>
+                                <Text style={styles.buttontext}>伴唱</Text>:
+                                <Text style={styles.buttontext}>原唱</Text>
                             }
                             
                         </TouchableOpacity>
