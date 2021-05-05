@@ -62,9 +62,10 @@ export default class MusicPlayer extends Component {
             lastFragTime: 0,
 
             accPath:"",
-            proc_audio_wav: `${RNFS.ExternalStorageDirectoryPath}/test/proc_audio.wav`,
-            merge_audio_wav: `${RNFS.ExternalStorageDirectoryPath}/test/merge_audio.wav`,
+            proc_audio_wav: `${RNFS.CachesDirectoryPath }/proc_audio.wav`,
+            merge_audio_wav: `${RNFS.CachesDirectoryPath }/merge_audio.wav`,
             playACC:false,
+            myScore: 0,
         }
     }
     //重唱上一句话
@@ -284,6 +285,8 @@ export default class MusicPlayer extends Component {
                 await default_sox(global.ACC[2],global.ACC[3]);
                 await mergeAudio(global.ACC[1],global.ACC[3],global.ACC[4]);
                 Loading.hide();
+                global.SCORE = this.state.myScore;
+                console.log ("finScore = ", global.SCORE);
                 this.context.navigate("CompletePage");
             }
             
@@ -370,13 +373,16 @@ export default class MusicPlayer extends Component {
             body: formData,
         }).then(response =>response.json())
         .then(data => {
-            console.log("get response")
+            console.log("get response score")
             console.log(data)
             console.log(data.score)//数据在这里，data.score
+            this.setState({
+                myScore: data.score
+            })
         })
         .catch((error) =>{
             console.log(error)
-            alert(error)
+            // alert(error)
         })
     }
 
@@ -498,6 +504,7 @@ export default class MusicPlayer extends Component {
                     <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
 
                     <View>
+                        <Text> 当前得分： {this.state.myScore}</Text>
                     {(this.state.playACC)? 
                         <Video
                             // source={{uri: this.state.file_link }}   //原唱
