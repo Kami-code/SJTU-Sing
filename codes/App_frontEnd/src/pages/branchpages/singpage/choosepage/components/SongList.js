@@ -75,7 +75,7 @@ class SongList extends Component{
 
         }).then(async(res) =>{
             console.log(res);
-            alert("Download");
+            //alert("Download");
             console.log('The file saved to ', res.path());
             console.log('before ', this.state.downloadPath);
             this.setState({
@@ -222,7 +222,7 @@ class SongList extends Component{
     render(){
         const {song} = this.state;
         return (
-        <View style={{height:pxToDp(80),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between',borderTopWidth :pxToDp(1),borderTopColor:"#2244cc"}}>
+        <View key={song.name} style={{height:pxToDp(80),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between',borderTopWidth :pxToDp(1),borderTopColor:"#2244cc"}}>
             <Image source={{ uri: song.picture }} style={{height:pxToDp(80),width:pxToDp(80)}}></Image>
             <View style={{backgroundColor:"transparent",flexDirection:'column',width:"45%",justifyContent:"center"}}>
                 <Text style={{color:'#222',fontSize:pxToDp(18)}}> {song.name} </Text>

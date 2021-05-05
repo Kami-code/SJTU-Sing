@@ -30,7 +30,7 @@ import RNFS from 'react-native-fs';
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
 
-export default class MusicPlayer extends Component {
+export default class Singpage extends Component {
     static contextType = NavigationContext;
 
     constructor(props) {
@@ -86,7 +86,8 @@ export default class MusicPlayer extends Component {
                     clearInterval(this._timer); 
                 },lastFrag*1000);
             }
-            this.refs.video.seek(this.state.currentTime);
+            this.refs.yuanchang.seek(this.state.currentTime);
+            this.refs.banzou.seek(this.state.currentTime);
             this.state.sliderValue = this.state.currentTime;
             this.state.currentLine = this.state.currentLine - 1;
             this.state.fragNum = this.state.fragNum - 1;
@@ -95,7 +96,8 @@ export default class MusicPlayer extends Component {
     //全部初始化
     restart = () => {
         DeviceEventEmitter.emit('RecordPause',this.clearAllBuffer); 
-        this.refs.video.seek(0);
+        this.refs.yuanchang.seek(0);
+        this.refs.banzou.seek(0);
         this.setState({
             currentTime: 0, 
             sliderValue: 0,
@@ -104,6 +106,7 @@ export default class MusicPlayer extends Component {
             lastFragTime:0,
             pause: true,       //歌曲播放/暂停
             isplayBtn: require('./images/暂停.png'),
+            firstPlay: true,
         })
         this.loadSongInfo(this.state.songs.length-1);
         this.scrollView.scrollTo({ x: 0, y: 0, animated: false })
@@ -122,7 +125,11 @@ export default class MusicPlayer extends Component {
     }
     //播放/暂停
     playAction = () => {
-        console.log("a");
+        if(this.state.firstPlay){
+            this.state.firstPlay = false;
+            this.refs.yuanchang.seek(0);
+            this.refs.banzou.seek(0);
+        }
         this.setState({
             pause: !this.state.pause
         })
@@ -181,7 +188,7 @@ export default class MusicPlayer extends Component {
 
             if (i < 2){
                 itemAry.push(
-                    <View key={i} style={styles.itemStyle}>
+                    <View style={styles.itemStyle}>
 
                         <Text style={{ color: 'blue' }}>  </Text>
                     </View>
@@ -505,14 +512,14 @@ export default class MusicPlayer extends Component {
 
                     <View>
                         <Text> 当前得分： {this.state.myScore}</Text>
-                    {(this.state.playACC)? 
+                    {/* {(this.state.playACC)?  */}
                         <Video
                             // source={{uri: this.state.file_link }}   //原唱
                             source = {{uri:`file:///${global.ACC[0]}`}}//伴奏
-                            ref='video'                           // Store reference
+                            ref='banzou'                           // Store reference
                             rate={1.0}                     // 0 is paused, 1 is normal.
                             volume={1.0}                   // 0 is muted, 1 is normal.
-                            muted={false}                  // Mutes the audio entirely.
+                            muted={this.state.playACC}                  // Mutes the audio entirely.
                             paused={this.state.pause}                 // Pauses playback entirely.
                             onProgress={(e) => this.onProgress(e)}
                             onLoad={(e) => this.onLoad(e)}
@@ -520,22 +527,17 @@ export default class MusicPlayer extends Component {
                                 DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
                                 this.finish();
                             }}
-                        />: 
+                        />
                         <Video
                             source={{uri: this.state.file_link }}   //原唱
                             // source = {{uri:`file:///${global.ACC[0]}`}}//伴奏
-                            ref='video'                           // Store reference
+                            ref='yuanchang'                           // Store reference
                             rate={1.0}                     // 0 is paused, 1 is normal.
                             volume={1.0}                   // 0 is muted, 1 is normal.
-                            muted={false}                  // Mutes the audio entirely.
+                            muted={!this.state.playACC}                  // Mutes the audio entirely.
                             paused={this.state.pause}                 // Pauses playback entirely.
-                            onProgress={(e) => this.onProgress(e)}
-                            onLoad={(e) => this.onLoad(e)}
-                            onEnd={() => {
-                                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
-                                this.finish();
-                            }}
-                        />}
+            
+                        />
                     </View>
 
 
