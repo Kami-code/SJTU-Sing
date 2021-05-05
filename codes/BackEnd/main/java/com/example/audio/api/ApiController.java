@@ -106,6 +106,8 @@ public class ApiController {
 	 */
 	@RequestMapping(value = "/flask/{str}", method = RequestMethod.GET)
 	public @ResponseBody String getAccompaniment(@PathVariable("str") String song_id) throws Exception {
+		File targetFile = new File("/root/audioData/flask/"+song_id+".mp3");
+		if(targetFile.exists()){return "target file exist!";}
 		File file = new File("/root/audioData/music/"+song_id+".mp3");
 		if(!file.exists()){return "no origin file!";}
 		api.info("传给flask开始人声消除");
@@ -125,20 +127,20 @@ public class ApiController {
 	 */
 	@RequestMapping(value = "/score", method = RequestMethod.POST)
 	public @ResponseBody String getScore(@RequestParam String song_id,@RequestParam float begin, @RequestParam float end) throws Exception {
-		File fileRef = new File("/root/audioData/user/"+song_id+"user.wav");
-		if(!fileRef.exists()){return "no reference audio!!!";}
 		File fileUser = new File("/root/audioData/user/"+song_id+"user.wav");
 		if(!fileUser.exists()){return "no user audio!!!";}
+		File fileRef = new File("/root/audioData/music/"+song_id+".mp3");
+		if(!fileRef.exists()){return "no reference audio!!!";}
 
 		api.info("***开始打分score");
 		List<NameValuePair> formList = new ArrayList<>();
 		formList.add(new BasicNameValuePair("sung_song_path", "/root/audioData/user/"+song_id+"user.wav"));//用户的歌位置
-		formList.add(new BasicNameValuePair("reference_song_path", "/root/audioData/user/"+song_id+"ref.wav"));//参考的歌位置
+		formList.add(new BasicNameValuePair("reference_song_path", "/root/audioData/music/"+song_id+".mp3"));//参考的歌位置
 		formList.add(new BasicNameValuePair("begintime",Float.toString(begin)));
 		formList.add(new BasicNameValuePair("endtime",Float.toString(end)));
 		System.out.println(begin);
 		System.out.println(end);
-		return doFlask("http://localhost:5050/score", formList);
+		return doScore("http://localhost:5050/score", formList);
 	}
 
 
@@ -176,8 +178,8 @@ public class ApiController {
 	static boolean flag=true;
 	public String doFlask(String url, List<NameValuePair> formList) throws Exception {
 		if(!flag){
-			System.out.println("WAIT!!!");
-			return "WAIT!!!";
+			System.out.println("flaskWAIT!!!");
+			return "flaskWAIT!!!";
 		}
 		flag=false;
 		// 第一步：创建一个httpClient对象
@@ -198,6 +200,39 @@ public class ApiController {
 		response.close();
 		httpClient.close();
 		flag=true;
+		return result;
+	}
+
+
+	static int score=2;
+	public String doScore(String url, List<NameValuePair> formList) throws Exception {
+		if(!flag){
+			System.out.println("flaskWAIT!!!");
+			return "flaskWAIT!!!";
+		}
+		if(score==0){
+			System.out.println("scoreWAIT!!!");
+			return "scoreWAIT!!!";
+		}
+		score--;
+		// 第一步：创建一个httpClient对象
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+		// 第二步：创建一个HttpPost对象。需要指定一个url
+		HttpPost post = new HttpPost(url);
+		// 第三步：创建一个list模拟表单，list中每个元素是一个NameValuePair对象
+		// 第四步：需要把表单包装到Entity对象中。StringEntity
+		StringEntity entity = new UrlEncodedFormEntity(formList, "utf-8");
+		post.setEntity(entity);
+		// 第五步：执行请求。
+		CloseableHttpResponse response = httpClient.execute(post);
+		// 第六步：接收返回结果
+		HttpEntity httpEntity = response.getEntity();
+		String result = EntityUtils.toString(httpEntity);
+		System.out.println(result);
+		// 第七步：关闭流。
+		response.close();
+		httpClient.close();
+		score++;
 		return result;
 	}
 
