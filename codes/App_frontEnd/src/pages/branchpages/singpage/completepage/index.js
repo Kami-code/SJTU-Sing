@@ -20,6 +20,7 @@ class Index extends Component {
           pic_big: '', 
           proc_audio_wav: '/test/proc_audio.wav',
           proc_audio_mp3: '/test/proc_audio.mp3',
+          finScore: global.SCORE,
       }
     }
     goPage = ()=>{
@@ -33,7 +34,7 @@ class Index extends Component {
                 {/* <View style={{backgroundColor:"blue",height:100}}></View> */}
                 <View>
                   {/* <Image source={{ uri: global.SONGS[global.SONGS.length-1].picture }} style={{ width: "100%", height: pxToDp(200),borderRadius:pxToDp(20),marginTop:pxToDp(30) }} /> */}
-                  <Text style={{fontSize:pxToDp(60),color:"#6699ffa9",paddingLeft:pxToDp(48)}}> 得分：77</Text>
+                  <Text style={{fontSize:pxToDp(60),color:"#6699ffa9",paddingLeft:pxToDp(48)}}> 得分：{this.state.finScore}</Text>
                 </View>
                 <View style={{flex: 1}}>
                   <MusicPlayer></MusicPlayer>

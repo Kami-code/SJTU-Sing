@@ -120,9 +120,9 @@ export function aecm(f_near, f_far, f_out){
 }
 
 export async function default_sox(infile,outfile){
-    let tempPath0 = `${RNFS.ExternalStorageDirectoryPath}/test/tmp0.wav`
-    let tempPath1 = `${RNFS.ExternalStorageDirectoryPath}/test/tmp1.wav`;
-    let tempPath2 = `${RNFS.ExternalStorageDirectoryPath}/test/tmp2.wav`;
+    let tempPath0 = `${RNFS.CachesDirectoryPath }/tmp0.wav`
+    let tempPath1 = `${RNFS.CachesDirectoryPath }/tmp1.wav`;
+    let tempPath2 = `${RNFS.CachesDirectoryPath }/tmp2.wav`;
     let msg;
     msg = await toStero(infile,tempPath0);
     console.log(msg);
