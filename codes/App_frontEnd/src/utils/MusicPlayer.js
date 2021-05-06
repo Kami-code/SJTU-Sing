@@ -5,14 +5,14 @@ import {
     Text,
     Image,
     View,
-    Slider,
+    // Slider,
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
     DeviceEventEmitter
 } from 'react-native'
 import Recorder_2 from '../components/Recorder2.0/Recorder_2'
-
+import Slider from '@react-native-community/slider';
 let { width, height } = Dimensions.get('window');
 import Video from 'react-native-video';
 let lyrObj = []   // 存放歌词
@@ -206,7 +206,7 @@ export default class MusicPlayer extends Component {
     }
 
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.loadSongInfo(this.state.songs.length-1)   //预先加载第一首
         
     }

@@ -5,14 +5,15 @@ import {
     Text,
     Image,
     View,
-    Slider,
+    // Slider,
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
     DeviceEventEmitter,
     Alert
 } from 'react-native'
-import Recorder_2 from '../../../components/Recorder2.0/Recorder_2'
+import Slider from '@react-native-community/slider';
+import Recorder_2 from '../../../components/Recorder2.0/Recorder_2';
 let { width, height } = Dimensions.get('window');
 import Video from 'react-native-video';
 let lyrObj = []   // 存放歌词
@@ -192,7 +193,7 @@ export default class Singpage extends Component {
 
             if (i < 2){
                 itemAry.push(
-                    <View style={styles.itemStyle}>
+                    <View key={i} style={styles.itemStyle}>
 
                         <Text style={{ color: 'blue' }}>  </Text>
                     </View>
@@ -314,6 +315,9 @@ export default class Singpage extends Component {
         this.refreshTimer = setInterval(() => {
             let shift = 0;//这个需要调
             //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
+            if(this.state.pause==false){
+                this.state.currentTime = this.state.currentTime+0.01;
+            }
             if(this.state.currentLine<lyrObj.length-2){
                 if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
                     if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
@@ -324,7 +328,7 @@ export default class Singpage extends Component {
                     this.state.currentLine = this.state.currentLine + 1;
                 }
             }
-        },50);
+        },10);
     }
     componentWillUnmount() {
         this.routerEvent && this.routerEvent();

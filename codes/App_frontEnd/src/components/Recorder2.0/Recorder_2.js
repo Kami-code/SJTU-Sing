@@ -121,12 +121,12 @@ export default class App extends Component {
           this.state.chunk = this.state.chunk + data;
         }
       }
-      this.initListener = DeviceEventEmitter.addListener('RecordInit',()=>{
-        if(!this.state.start){
-          this.state.start = true;
-          this.start();
-        }
-      });
+      // this.initListener = DeviceEventEmitter.addListener('RecordInit',()=>{
+      //   if(!this.state.start){
+      //     this.state.start = true;
+      //     this.start();
+      //   }
+      // });
       
     });
 
@@ -153,9 +153,11 @@ export default class App extends Component {
   };
 
   start = () => {
-    console.log('start record');
-    this.setState({ audioFile: '', start: true});
-    AudioRecord.start();
+    if(this.state.start==false){
+      console.log('start record');
+      this.setState({ audioFile: '', start: true});
+      AudioRecord.start();
+    }
   };
 
   stop = async () => {
