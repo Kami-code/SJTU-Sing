@@ -143,6 +143,7 @@ export default class Singpage extends Component {
             //同步开始录音
             DeviceEventEmitter.emit('RecordStart');
             global.RECORDING = true;
+            
         } else {
             this.setState({
                 isplayBtn: require('./images/暂停.png')
@@ -309,7 +310,6 @@ export default class Singpage extends Component {
 
         this.uploadListener = DeviceEventEmitter.addListener("RecordUpload",(param)=>{
             this.uploadUser(param.index,param.start,param.end);
-            
         });
         this.refreshTimer = setInterval(() => {
             let shift = 0;//这个需要调
@@ -560,6 +560,7 @@ export default class Singpage extends Component {
                             volume={1.0}                   // 0 is muted, 1 is normal.
                             muted={!this.state.playACC}                  // Mutes the audio entirely.
                             paused={this.state.pause}                 // Pauses playback entirely.
+            
                         />
                     </View>
 

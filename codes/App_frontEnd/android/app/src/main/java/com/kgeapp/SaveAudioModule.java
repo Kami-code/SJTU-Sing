@@ -91,7 +91,6 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
             if(isWav){
                 addWavHeader(output,data.length,36 + data.length);
             }
-
             int numByte = (int)(offset * 48000 * 2);
             for(int i = 0;i<data.length-numByte;++i){
                 dataArray[i]=data[i+numByte];
