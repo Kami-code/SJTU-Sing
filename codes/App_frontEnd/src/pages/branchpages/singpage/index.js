@@ -142,13 +142,14 @@ export default class Singpage extends Component {
             });
             //同步开始录音
             DeviceEventEmitter.emit('RecordStart');
-            
+            global.RECORDING = true;
         } else {
             this.setState({
                 isplayBtn: require('./images/暂停.png')
             });
             //录音器暂停，但不清空缓存
             DeviceEventEmitter.emit('RecordPause',this.keepBuffer);
+            // global.RECORDING = false;
         }
 
     }
@@ -159,18 +160,18 @@ export default class Singpage extends Component {
             sliderValue: val,
             currentTime: data.currentTime
         })
-        let shift = 0.75;
-        //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
-        if(this.state.currentLine<lyrObj.length-2){
-            if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
-                if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
-                    DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.fragNum,"fragTime":this.state.currentTime});
-                    this.state.fragNum = this.state.fragNum + 1;
-                    this.state.lastFragTime= this.state.currentTime;
-                }
-                this.state.currentLine = this.state.currentLine + 1;
-            }
-        }
+        // let shift = 0.75;
+        // //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
+        // if(this.state.currentLine<lyrObj.length-2){
+        //     if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
+        //         if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
+        //             DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.fragNum,"fragTime":this.state.currentTime});
+        //             this.state.fragNum = this.state.fragNum + 1;
+        //             this.state.lastFragTime= this.state.currentTime;
+        //         }
+        //         this.state.currentLine = this.state.currentLine + 1;
+        //     }
+        // }
     }
     //把秒数转换为时间类型
     formatTime(time) {
@@ -294,7 +295,7 @@ export default class Singpage extends Component {
                 await default_sox(global.ACC[2],global.ACC[3]);
                 await mergeAudio(global.ACC[1],global.ACC[3],global.ACC[4]);
                 Loading.hide();
-                global.SCORE = this.state.totalScore / this.state.numOfScorer;
+                global.SCORE = this.state.myScore;
                 
                 console.log ("finScore = ", global.SCORE);
                 this.context.navigate("CompletePage");
@@ -310,10 +311,25 @@ export default class Singpage extends Component {
             this.uploadUser(param.index,param.start,param.end);
             
         });
+        this.refreshTimer = setInterval(() => {
+            let shift = 0;//这个需要调
+            //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
+            if(this.state.currentLine<lyrObj.length-2){
+                if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
+                    if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
+                        DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.fragNum,"fragTime":this.state.currentTime});
+                        this.state.fragNum = this.state.fragNum + 1;
+                        this.state.lastFragTime= this.state.currentTime;
+                    }
+                    this.state.currentLine = this.state.currentLine + 1;
+                }
+            }
+        },50);
     }
     componentWillUnmount() {
         this.routerEvent && this.routerEvent();
         this.finishListener && this.finishListener.remove();
+        this.refreshTimer && clearInterval(this.refreshTimer);
        }
 
     finish = ()=>{
@@ -519,10 +535,7 @@ export default class Singpage extends Component {
 
                     <View>
                         <Text> 当前得分： {this.state.myScore}</Text>
-<<<<<<< HEAD
                         <Text> 当前平均得分： {this.state.totalScore/this.state.numOfScore}</Text>
-=======
->>>>>>> e3f2dd2c0f387653b6b8c7e3886a0254c8ae3b6c
                     {/* {(this.state.playACC)?  */}
                         <Video
                             // source={{uri: this.state.file_link }}   //原唱
@@ -547,10 +560,6 @@ export default class Singpage extends Component {
                             volume={1.0}                   // 0 is muted, 1 is normal.
                             muted={!this.state.playACC}                  // Mutes the audio entirely.
                             paused={this.state.pause}                 // Pauses playback entirely.
-<<<<<<< HEAD
-=======
-            
->>>>>>> e3f2dd2c0f387653b6b8c7e3886a0254c8ae3b6c
                         />
                     </View>
 
