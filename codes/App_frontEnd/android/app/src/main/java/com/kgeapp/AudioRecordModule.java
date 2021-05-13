@@ -108,7 +108,7 @@ public class AudioRecordModule extends ReactContextBaseJavaModule {
                         bytesRead = recorder.read(buffer, 0, buffer.length);
 
                         // skip first 2 buffers to eliminate "click sound"
-                        if (bytesRead > 0 ) {
+                        if (bytesRead > 0) {
                             base64Data = Base64.encodeToString(buffer, Base64.NO_WRAP);
                             eventEmitter.emit("data", base64Data);
                             //os.write(buffer, 0, bytesRead);

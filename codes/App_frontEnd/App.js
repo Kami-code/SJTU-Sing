@@ -4,7 +4,7 @@ import Nav from "./src/nav";
 import Layout from "./src/components/Layout";
 import global_Songs from "./src/global_Songs";//该操作引入全局变量，不可删去
 
-console.disableYellowBox = true;
+// console.disableYellowBox = true;//该操作隐藏warning
 
 class App extends Component{
     render(){
