@@ -1,0 +1,14 @@
+解决了c语言指针越界导致程序崩溃的问题。
+解决了唱歌页面加载多次加载后残有上次信息的问题。
+解决了过快地多次保存导致程序崩溃的问题。
+基本解决了重唱上一句后，连接错位的问题。主要是因为开始获取数据流的时机有延时。
+添加了转菊花的功能
+
+ACC
+0: music_mp3
+1: music_wav
+2: raw_audio 
+3: processed_audio_wav
+4: merged_audio_wav
+5: merged_audio_mp3
+i>=6: (i-6)th audio fragment
