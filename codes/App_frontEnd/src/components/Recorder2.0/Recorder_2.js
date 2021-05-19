@@ -90,15 +90,16 @@ export default class App extends Component {
       this.fetchListener =DeviceEventEmitter.addListener('fetchChunk',async (param)=>{
         this.fragTable[0]= 0;
         let line = param.fragNum;
-        let time = param.fragTime;
-        this.fragTable[line+1] = time+this.offset; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
+        let startTime = param.startTime;
+        let endTime = param.fragTime;
+        this.fragTable[line] = [startTime,endTime]; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
         this.data[line]=this.state.chunk; //把缓存保存入句子组
         this.state.frag = false;
         let path = `${RNFS.CachesDirectoryPath }/record${line}.wav`
         await saveAudio(path,this.data[line],0); //保存句子到本地
         global.ACC[line+6] = path;
-        console.log("frag"+line);
-        DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":this.fragTable[line],"end":this.fragTable[line+1]});
+        console.log("frag"+startTime+" "+endTime);
+        //DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":startTime,"end":this.endTime});
           
       });
 
