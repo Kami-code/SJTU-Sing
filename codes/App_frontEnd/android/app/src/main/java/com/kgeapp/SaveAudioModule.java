@@ -63,8 +63,8 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
                     // }
                     String in = "";
                     String out = "";
-                    // RNNoise suppressor = new RNNoise(in,out);
-                    // audio = suppressor.flowRNNoise(audio);
+                    RNNoise suppressor = new RNNoise(in,out);
+                    audio = suppressor.flowRNNoise(audio);
                     boolean result = SaveFile(path, audio,isWav,offset);
                     if(result){promise.resolve("Save failed");}
                     else{promise.resolve("Save success");}

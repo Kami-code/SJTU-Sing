@@ -29,9 +29,6 @@ export default class App extends Component {
 
   async componentDidMount() {
     await this.checkPermission();
-  //   this.Timer = setTimeout(() => {
-  //     this.start();
-  // },100);
     const options = {
       sampleRate: 48000,
       channels: 1,
@@ -48,13 +45,9 @@ export default class App extends Component {
         if(flag==2){
           this.data = new Array();
         }
-    // this.timer = setInterval(()=>{
-    //   this.state.recording = global.RECORDING;
-    // },10);
+
     });
-    // this.timer = setInterval(()=>{
-    //   this.state.recording = global.RECORDING;
-    // },10);
+
 
     this.startListener =DeviceEventEmitter.addListener('RecordStart',()=>{
       this.start();
@@ -80,7 +73,7 @@ export default class App extends Component {
         console.log("frag"+line);
         
         let song = '';
-        for(let i = 0;i<this.data.length;++i){
+        for(let i = 0;i<=line;++i){
           song = song + this.data[i];
         }
         this.data = new Array();

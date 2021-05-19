@@ -37,6 +37,7 @@ export default class Singpage extends Component {
     constructor(props) {
         super(props);
         this._timer=null;
+        this.scrollTimer=null;
         this.keepBuffer = 0;
         this.clearCurrentBuffer = 1;
         this.clearAllBuffer = 2;
@@ -51,6 +52,7 @@ export default class Singpage extends Component {
             file_link: '',   //歌曲播放链接
             songLyr: [],     //当前歌词
             sliderValue: 0,    //Slide的value
+            scrolling: false,
             pause: true,       //歌曲播放/暂停
             currentTime: 0.0,   //当前时间
             duration: 0.0,     //歌曲时间
@@ -58,7 +60,7 @@ export default class Singpage extends Component {
             isplayBtn: require('./images/暂停.png'),  //播放/暂停按钮背景图
             currentLine: 0, //当前第几行
             firstPlay: true,
-            fragNum: 0,
+            // fragNum: 0,
             recordShift:0.75,
             lastFragTime: 0,
 
@@ -69,11 +71,12 @@ export default class Singpage extends Component {
             myScore: 0,
             totalScore: 0,
             numOfScore: 0,
+            
         }
     }
     //重唱上一句话
     prevAction = (index) => {
-        if(this.state.fragNum>0){       
+        if(this.state.currentLine>0){       
             DeviceEventEmitter.emit('RecordPause',this.clearCurrentBuffer);   
             let lastFrag = lyrObj[this.state.currentLine-1].total-this.state.recordShift+0.55;
             if(lastFrag>=5){ //如果上次分割点之前还有5秒，给予5秒的准备时间。
@@ -93,7 +96,7 @@ export default class Singpage extends Component {
             this.refs.banzou.seek(this.state.currentTime);
             this.state.sliderValue = this.state.currentTime;
             this.state.currentLine = this.state.currentLine - 1;
-            this.state.fragNum = this.state.fragNum - 1;
+
         }
     }
     //全部初始化
@@ -105,27 +108,18 @@ export default class Singpage extends Component {
             currentTime: 0, 
             sliderValue: 0,
             currentLine: 0,
-            fragNum: 0,
             lastFragTime:0,
             pause: true,       //歌曲播放/暂停
             isplayBtn: require('./images/暂停.png'),
             firstPlay: true,
         })
         this.loadSongInfo(this.state.songs.length-1);
-        this.scrollView.scrollTo({ x: 0, y: 0, animated: false })
+        if(!this.state.scrolling){
+            this.scrollView.scrollTo({ x: 0, y: 0, animated: false });
+        }
     }
 
-    //下一曲
-    nextAction = (index) => {
-        lyrObj = [];
-        if (index === this.state.songs.length) {
-            index = 0 //如果是最后一首就回到第一首
-        }
-        this.setState({
-            currentIndex: index  //更新数据
-        })
-        this.loadSongInfo(index)   //加载数据
-    }
+
     //播放/暂停
     playAction = () => {
         if(this.state.firstPlay){
@@ -151,29 +145,17 @@ export default class Singpage extends Component {
             });
             //录音器暂停，但不清空缓存
             DeviceEventEmitter.emit('RecordPause',this.keepBuffer);
-            // global.RECORDING = false;
         }
-
     }
+
+
     //播放器每隔250ms调用一次
     onProgress = (data) => {
-        let val = parseInt(data.currentTime)
+        let val = parseInt(data.currentTime);
         this.setState({
             sliderValue: val,
             currentTime: data.currentTime
-        })
-        // let shift = 0.75;
-        // //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
-        // if(this.state.currentLine<lyrObj.length-2){
-        //     if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
-        //         if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
-        //             DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.fragNum,"fragTime":this.state.currentTime});
-        //             this.state.fragNum = this.state.fragNum + 1;
-        //             this.state.lastFragTime= this.state.currentTime;
-        //         }
-        //         this.state.currentLine = this.state.currentLine + 1;
-        //     }
-        // }
+        });
     }
     //把秒数转换为时间类型
     formatTime(time) {
@@ -208,7 +190,7 @@ export default class Singpage extends Component {
                         <Text style={{ color: '#5555ff',fontSize:22 }}> {item} </Text>
                     </View>
                 );
-                if(this.state.currentTime > 0){this.scrollView.scrollTo({ x: 0, y: (38 * i), animated: true })};
+                if(this.state.currentTime > 0 && !this.state.scrolling){this.scrollView.scrollTo({ x: 0, y: (38 * i), animated: true })};
                 
             }
             else {
@@ -219,6 +201,13 @@ export default class Singpage extends Component {
                     </View>
                 )
             }
+        }
+        for (let i = 0; i < 5; i++) {
+            itemAry.push(
+                <View key={i + 100} style={styles.itemStyle}>
+                    <Text style={{ color: '#ff55559a',fontSize:18 }}> {} </Text>
+                </View>
+            )
         }
 
         return itemAry;
@@ -242,7 +231,6 @@ export default class Singpage extends Component {
             //file_duration: local_song.file_duration, //歌曲长度
             currentLine: 0, //当前第几行
             firstPlay: true,
-            fragNum: 0,
             recordShift:0.75,
             currentTime:0,
             lastFragTime:0,
@@ -310,21 +298,19 @@ export default class Singpage extends Component {
         });
 
         this.uploadListener = DeviceEventEmitter.addListener("RecordUpload",(param)=>{
-            this.uploadUser(param.index,param.start,param.end);
+            if(param.end>3){
+                this.uploadUser(param.index,param.start,param.end);
+            }
         });
         this.refreshTimer = setInterval(() => {
-            let shift = 0;//这个需要调
-            //维护两个状态，当前唱到的歌和保存时的编号，后者使得分割尽可能是有意义的。
+            //维护当前唱到的句子号
             if(this.state.pause==false){
                 this.state.currentTime = this.state.currentTime+0.01;
             }
-            if(this.state.currentLine<lyrObj.length-2){
+            if(this.state.currentLine<lyrObj.length-1){
                 if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
-                    if(this.state.currentTime.toFixed(2)-this.state.lastFragTime.toFixed(2)>3){
-                        DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.fragNum,"fragTime":this.state.currentTime});
-                        this.state.fragNum = this.state.fragNum + 1;
-                        this.state.lastFragTime= this.state.currentTime;
-                    }
+                    DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.currentLine,"fragTime":this.state.currentTime});
+                    this.state.lastFragTime= this.state.currentTime;
                     this.state.currentLine = this.state.currentLine + 1;
                 }
             }
@@ -338,7 +324,7 @@ export default class Singpage extends Component {
 
     finish = ()=>{
         //告诉录音器结束了，等待录音器把完整的歌保存。
-        DeviceEventEmitter.emit("RecordFinish",{"fragNum": this.state.fragNum, "fragTime": this.state.currentTime});
+        DeviceEventEmitter.emit("RecordFinish",{"fragNum": this.state.currentLine, "fragTime": this.state.currentTime});
         if(this.state.pause==false){
             this.playAction();
         }
@@ -461,42 +447,6 @@ export default class Singpage extends Component {
         console.log("fetch end");
     }
 
-    // //上传原唱
-    // uploadRef = async()=>{
-    //     //本函数上传id+ref.wav文件，即原唱
-    //     //调用一次上次传一个，流程中需要调用两次，一次原唱一次用户（原唱应该只需要一次）
-    //     let params = {
-    //         path: global.ACC[0] // 根据自己项目修改参数哈
-    //     }
-    //     //console.log("1111");
-    //     console.log(this.state.audioFile);
-    //     let {path} = params;
-    //     let formData = new FormData();
-    //     let soundPath = `file://${path}` ;  // 注意需要增加前缀 `file://`
-    //     console.log(soundPath);
-    //     let fileName = `${this.state.song_id}ref.wav`// 文件名，应后端要求进行修改
-    //     console.log("Filename: "+ fileName);
-    //     let file = { uri: soundPath , type: "multipart/form-data", name: fileName} // 注意 `uri` 表示文件地址，`type` 表示接口接收的类型，一般为这个，跟后端确认一下
-    //     formData.append('file',file);
-    //     fetch('http://121.4.86.24:8080/upload', 
-    //     {
-    //         method: 'POST',
-    //         body:formData,
-    //         timeout: 5000 // 5s超时
-    //     }
-    //     )
-    //         .then(response =>{ 
-    //         response.json();
-    //         console.log("get response");
-    //         })
-    //         .then(formData => formData)
-    //         .catch(error => {
-    //         console.log("failed");
-    //             return {error_code: -3, error_msg:'请求异常，请重试'}
-    //     })
-    //     console.log("fetch end");
-    // }
-
     switchSource =()=>{
         let state = this.state.playACC
         this.setState({
@@ -552,7 +502,7 @@ export default class Singpage extends Component {
                             onProgress={(e) => this.onProgress(e)}
                             onLoad={(e) => this.onLoad(e)}
                             onEnd={() => {
-                                DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
+                                // DeviceEventEmitter.emit('fetchChunk',this.state.fragNum);
                                 this.finish();
                             }}
                         />
@@ -598,6 +548,17 @@ export default class Singpage extends Component {
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
                                     snapToInterval = {15}
+                                    onScrollBeginDrag = {()=>{
+                                        this.scrollTimer && clearInterval(this.scrollTimer); 
+                                        this.state.scrolling=true;
+                                    }}
+                                    onScrollEndDrag = {()=>{
+                                        this.scrollTimer=setInterval(()=>{
+                                            this.state.scrolling=false;
+                                            this.scrollTimer && clearInterval(this.scrollTimer); 
+                                        },3000);
+                                    }}
+                                    snapToAlignment = {'center'}
                         >
                             {this.renderItem()}
                         </ScrollView>
