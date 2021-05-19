@@ -25,6 +25,7 @@ import {pxToDp} from '../../../utils/stylesKits';
 import {NavigationContext} from "@react-navigation/native";
 import { cos } from 'react-native-reanimated';
 import Loading from "../../../components/common/Loading";
+import Ready from "../../../components/common/Ready"
 import "../../../components/common/RootView";
 import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, toSingleChannel} from '../../../utils/audio-api';
 import RNFS from 'react-native-fs';
@@ -53,6 +54,7 @@ export default class Singpage extends Component {
             songLyr: [],     //当前歌词
             sliderValue: 0,    //Slide的value
             scrolling: false,
+            scrollValue: 0,
             pause: true,       //歌曲播放/暂停
             currentTime: 0.0,   //当前时间
             duration: 0.0,     //歌曲时间
@@ -61,7 +63,7 @@ export default class Singpage extends Component {
             currentLine: 0, //当前第几行
             firstPlay: true,
             // fragNum: 0,
-            recordShift:0.75,
+            recordShift:0.2,
             lastFragTime: 0,
 
             accPath:"",
@@ -73,6 +75,33 @@ export default class Singpage extends Component {
             numOfScore: 0,
             
         }
+    }
+
+    jumpTo = (index) =>{
+        DeviceEventEmitter.emit('RecordPause',this.clearCurrentBuffer); 
+        Ready.show();  
+            let lastFrag = lyrObj[index].total-this.state.recordShift+0.1;
+            if(lastFrag>=5){ //如果上次分割点之前还有5秒，给予5秒的准备时间。
+                this.state.currentTime = lastFrag-5;
+                console.log("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa1");
+                this._timer=setInterval(()=>{
+                    DeviceEventEmitter.emit('RecordStart');
+                    Ready.hide();
+                    console.log("waaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+                    this._timer && clearInterval(this._timer); 
+                },5000);
+            }else{ //否则把时间拉到0，有多少时间给多少时间。
+                this.state.currentTime = 0;
+                this._timer=setInterval(()=>{
+                    DeviceEventEmitter.emit('RecordStart');
+                    Ready.hide();
+                    this._timer && clearInterval(this._timer); 
+                },lastFrag*1000);
+            }
+            this.refs.yuanchang.seek(this.state.currentTime);
+            this.refs.banzou.seek(this.state.currentTime);
+            this.state.sliderValue = this.state.currentTime;
+            this.state.currentLine = index;
     }
     //重唱上一句话
     prevAction = (index) => {
@@ -170,35 +199,33 @@ export default class Singpage extends Component {
     renderItem() {
         // 数组
         let itemAry = [];
+        // itemAry.push(
+        //     <View key={0} style={styles.itemStyle}>
+        //         <Text style={{ color: '#ff55559a',fontSize:18 }}> {} </Text>
+        //     </View>
+        // );
+        if(!this.state.scrolling){
+            
         for (let i = 0; i < lyrObj.length; i++) {
             let item = lyrObj[i].txt
 
-            if (i < 2){
-                itemAry.push(
-                    <View key={i} style={styles.itemStyle}>
-
-                        <Text style={{ color: 'blue' }}>  </Text>
-                    </View>
-                );
-
-            }
             if (i==this.state.currentLine) {
                 //正在唱的歌词
                 itemAry.push(
                     <View key={i + 2} style={styles.itemStyle}>
 
-                        <Text style={{ color: '#5555ff',fontSize:22 }}> {item} </Text>
+                        <Text style={{ color: '#5555ff',fontSize:23 }}> {item} </Text>
                     </View>
                 );
-                if(this.state.currentTime > 0 && !this.state.scrolling){this.scrollView.scrollTo({ x: 0, y: (38 * i), animated: true })};
+                if(this.state.currentTime > 0){this.scrollView.scrollTo({ x: 0, y: (40 * i), animated: true })};
                 
             }
             else {
                 //所有歌词
                 itemAry.push(
-                    <View key={i + 2} style={styles.itemStyle}>
-                        <Text style={{ color: '#ff55559a',fontSize:18 }}> {item} </Text>
-                    </View>
+                        <View key={i + 2} style={styles.itemStyle}>
+                            <Text style={{ color: '#ff55559a',fontSize:19 }}> {item} </Text>
+                        </View>
                 )
             }
         }
@@ -211,6 +238,39 @@ export default class Singpage extends Component {
         }
 
         return itemAry;
+        }else{
+            let line = Math.round(this.state.scrollValue/40);
+            for (let i = 0; i < lyrObj.length; i++) {
+                let item = lyrObj[i].txt
+    
+                if (i==line) {
+                    //正在唱的歌词
+                    itemAry.push(
+                        <View key={i + 2} style={styles.itemStyle}>
+    
+                            <Text style={{ color: '#5555ff',fontSize:23 }}> {item} </Text>
+                        </View>
+                    );                    
+                }
+                else {
+                    //所有歌词
+                    itemAry.push(
+                        <View key={i + 2} style={styles.itemStyle}>
+                            <Text style={{ color: '#ff55559a',fontSize:19 }}> {item} </Text>
+                        </View>   
+                    )
+                }
+            }
+            for (let i = 0; i < 5; i++) {
+                itemAry.push(
+                    <View key={i + 100} style={styles.itemStyle}>
+                        <Text style={{ color: '#ff55559a',fontSize:18 }}> {} </Text>
+                    </View>
+                )
+            }
+    
+            return itemAry;
+        }
     }
     // 播放器加载好时调用,其中有一些信息带过来
     onLoad = (data) => {
@@ -231,7 +291,6 @@ export default class Singpage extends Component {
             //file_duration: local_song.file_duration, //歌曲长度
             currentLine: 0, //当前第几行
             firstPlay: true,
-            recordShift:0.75,
             currentTime:0,
             lastFragTime:0,
 
@@ -309,7 +368,7 @@ export default class Singpage extends Component {
             }
             if(this.state.currentLine<lyrObj.length-1){
                 if (this.state.currentTime.toFixed(2) > (lyrObj[this.state.currentLine+1].total-this.state.recordShift)){
-                    DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.currentLine,"fragTime":this.state.currentTime});
+                    DeviceEventEmitter.emit('fetchChunk',{"fragNum":this.state.currentLine,"startTime":lyrObj[this.state.currentLine].total-this.state.recordShift,"fragTime":this.state.currentTime});
                     this.state.lastFragTime= this.state.currentTime;
                     this.state.currentLine = this.state.currentLine + 1;
                 }
@@ -454,6 +513,11 @@ export default class Singpage extends Component {
         })
         console.log(this.state.playACC)
     }
+    handleScroll= (event: Object)=> {
+        this.setState({
+            scrollValue:event.nativeEvent.contentOffset.y
+        });
+       }
 
     render() {
         //如果未加载出来数据 就一直转菊花
@@ -552,11 +616,16 @@ export default class Singpage extends Component {
                                         this.scrollTimer && clearInterval(this.scrollTimer); 
                                         this.state.scrolling=true;
                                     }}
+                                    onScroll = {this.handleScroll}
                                     onScrollEndDrag = {()=>{
                                         this.scrollTimer=setInterval(()=>{
                                             this.state.scrolling=false;
+                                            let index = Math.round(this.state.scrollValue/40);
+                                            if(index<this.state.currentLine&&this.state.pause==false){
+                                                this.jumpTo(index);
+                                            }
                                             this.scrollTimer && clearInterval(this.scrollTimer); 
-                                        },3000);
+                                        },200);
                                     }}
                                     snapToAlignment = {'center'}
                         >
@@ -566,11 +635,11 @@ export default class Singpage extends Component {
                     {/* 添加底部按钮 */}
                     <View style={{ flexDirection: 'row',marginTop:pxToDp(20),marginBottom:pxToDp(20), justifyContent: 'space-around' }}>
                          {/* 重唱上一句 */}
-                        <TouchableOpacity onPress={() => this.prevAction(this.state.currentIndex - 1)}>
+                        <TouchableOpacity onPress={()=>{}}>
                             <View style={styles.button}>
                                 <Image source={require('./images/上一首.png')} style={{ width: 30, height: 30}} />     
                             </View>
-                            <Text style={styles.buttontext}>上一句</Text>
+                            <Text style={styles.buttontext}>未定义</Text>
                         </TouchableOpacity>
 
                         {/* 切换原唱 */}
@@ -677,7 +746,9 @@ const styles = StyleSheet.create({
     },
     itemStyle: {
         height: 40,
-        alignItems: 'center'
+        //flexDirection: 'row',
+        alignItems: 'center',
+        flex:1
     }
 })
 
