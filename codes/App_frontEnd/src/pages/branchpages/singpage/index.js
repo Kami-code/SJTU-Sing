@@ -297,7 +297,7 @@ export default class Singpage extends Component {
                 await default_sox(global.ACC[2],global.ACC[3]);
                 await mergeAudio(global.ACC[1],global.ACC[3],global.ACC[4]);
                 Loading.hide();
-                global.SCORE = this.state.totalScore / this.state.numOfScorer;
+                global.SCORE = this.state.myScore;
                 
                 console.log ("finScore = ", global.SCORE);
                 this.context.navigate("CompletePage");

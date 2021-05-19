@@ -48,6 +48,9 @@ export default class App extends Component {
         if(flag==2){
           this.data = new Array();
         }
+    // this.timer = setInterval(()=>{
+    //   this.state.recording = global.RECORDING;
+    // },10);
     });
     // this.timer = setInterval(()=>{
     //   this.state.recording = global.RECORDING;
