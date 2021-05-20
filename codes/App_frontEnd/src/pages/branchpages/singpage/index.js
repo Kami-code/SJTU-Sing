@@ -104,28 +104,9 @@ export default class Singpage extends Component {
             this.state.currentLine = index;
     }
     //重唱上一句话
-    prevAction = (index) => {
-        if(this.state.currentLine>0){       
-            DeviceEventEmitter.emit('RecordPause',this.clearCurrentBuffer);   
-            let lastFrag = lyrObj[this.state.currentLine-1].total-this.state.recordShift+0.55;
-            if(lastFrag>=5){ //如果上次分割点之前还有5秒，给予5秒的准备时间。
-                this.state.currentTime = lastFrag-5;
-                this._timer=setInterval(()=>{
-                    DeviceEventEmitter.emit('RecordStart');
-                    clearInterval(this._timer); 
-                },5000);
-            }else{ //否则把时间拉到0，有多少时间给多少时间。
-                this.state.currentTime = 0;
-                this._timer=setInterval(()=>{
-                    DeviceEventEmitter.emit('RecordStart');
-                    clearInterval(this._timer); 
-                },lastFrag*1000);
-            }
-            this.refs.yuanchang.seek(this.state.currentTime);
-            this.refs.banzou.seek(this.state.currentTime);
-            this.state.sliderValue = this.state.currentTime;
-            this.state.currentLine = this.state.currentLine - 1;
-
+    prevAction = () => {
+        for(let i =0;i<lyrObj.length-1;++i){
+            console.log(lyrObj[i].total+" "+lyrObj[i].min+" "+lyrObj[i].sec+" "+lyrObj[i].txt+" "+lyrObj[i].ms);
         }
     }
     //全部初始化
@@ -320,7 +301,7 @@ export default class Singpage extends Component {
             obj.txt = val.substring(indeofLastTime + 1, val.length) //歌词文本: 留下唇印的嘴
             obj.txt = obj.txt.replace(/(^\s*)|(\s*$)/g, '')
             obj.dis = false
-            obj.total = obj.min * 60 + obj.sec + obj.ms / 100   //总时间
+            obj.total = obj.min * 60 + obj.sec + obj.ms / 1000   //总时间
             if (obj.txt.length > 0) {
                 lyrObj.push(obj)
             }
@@ -611,6 +592,7 @@ export default class Singpage extends Component {
                     <View style={{ height: 320,alignItems: 'center' ,marginTop:20, flex:1}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
+                                    showsVerticalScrollIndicator = {false}
                                     snapToInterval = {15}
                                     onScrollBeginDrag = {()=>{
                                         this.scrollTimer && clearInterval(this.scrollTimer); 
@@ -635,7 +617,7 @@ export default class Singpage extends Component {
                     {/* 添加底部按钮 */}
                     <View style={{ flexDirection: 'row',marginTop:pxToDp(20),marginBottom:pxToDp(20), justifyContent: 'space-around' }}>
                          {/* 重唱上一句 */}
-                        <TouchableOpacity onPress={()=>{}}>
+                        <TouchableOpacity onPress={()=>{this.prevAction();}}>
                             <View style={styles.button}>
                                 <Image source={require('./images/上一首.png')} style={{ width: 30, height: 30}} />     
                             </View>
