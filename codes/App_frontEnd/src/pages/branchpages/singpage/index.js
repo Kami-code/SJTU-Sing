@@ -28,9 +28,12 @@ import Loading from "../../../components/common/Loading";
 import Ready from "../../../components/common/Ready"
 import "../../../components/common/RootView";
 import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, toSingleChannel} from '../../../utils/audio-api';
-import RNFS from 'react-native-fs';
+import RNFS, { stat } from 'react-native-fs';
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
+import Spectrum from '../../../components/Spectrum';
+import { ImageBackground } from 'react-native';
+
 
 export default class Singpage extends Component {
     static contextType = NavigationContext;
@@ -70,6 +73,7 @@ export default class Singpage extends Component {
             proc_audio_wav: `${RNFS.CachesDirectoryPath }/proc_audio.wav`,
             merge_audio_wav: `${RNFS.CachesDirectoryPath }/merge_audio.wav`,
             playACC:false,
+            showSpectrum: 'none',
             myScore: 0,
             totalScore: 0,
             numOfScore: 0,
@@ -419,11 +423,13 @@ export default class Singpage extends Component {
         //一定要在upload之后调用，否则返回no reference, 高强度连续调用会返回Wait（并发为1，建议转个菊花）
         let formData = new FormData();
         formData.append("song_id",this.state.song_id);//歌的id，与upload中一致
+        formData.append("username",global.account);
         formData.append("begin",start);//起讫时间测试中写死了，需要根据实际调整
         formData.append("end",end);
+        
         console.log(formData);
 
-        const url = 'http://121.4.86.24:8080/score';
+        const url = `http://${global.IP}/score`;
         fetch(url,{
             method:'POST',
             body: formData,
@@ -453,7 +459,6 @@ export default class Singpage extends Component {
         let params = {
             path: global.ACC[i+6] // 根据自己项目修改参数哈
         }
-        //console.log("1111");
         console.log(this.state.audioFile);
         let {path} = params;
         let formData = new FormData();
@@ -463,8 +468,10 @@ export default class Singpage extends Component {
         console.log("Filename: "+ fileName);
         let file = { uri: soundPath , type: "multipart/form-data", name: fileName} // 注意 `uri` 表示文件地址，`type` 表示接口接收的类型，一般为这个，跟后端确认一下
         formData.append('file',file);
-    
-        fetch('http://121.4.86.24:8080/upload', 
+        formData.append('username',global.account);
+        formData.append('songid',this.state.song_id);
+        
+        fetch(`http://${global.IP}/upload`, 
         {
             method: 'POST',
             body:formData,
@@ -483,6 +490,8 @@ export default class Singpage extends Component {
             .catch(error => {
             console.log("failed");
                 return {error_code: -3, error_msg:'请求异常，请重试'}
+        }).catch((error) =>{
+            console.log(error)
         })
         console.log("fetch end");
     }
@@ -498,7 +507,20 @@ export default class Singpage extends Component {
         this.setState({
             scrollValue:event.nativeEvent.contentOffset.y
         });
-       }
+    }
+
+    switchBackground =()=>{
+        let sta = this.state.showSpectrum
+        if (sta === 'none'){
+            sta = 'flex'
+        }
+        else if (sta === 'flex'){
+            sta = 'none'
+        }
+        this.setState({
+            showSpectrum: sta
+        })
+    }
 
     render() {
         //如果未加载出来数据 就一直转菊花
@@ -530,8 +552,14 @@ export default class Singpage extends Component {
                         </TouchableOpacity>             
                     </View>
                     {/* 图片，可以换成五线谱 */}
-                    <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} />
-
+                    <TouchableOpacity onPress={()=> this.switchBackground()}>
+                        <ImageBackground source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} >
+                            <View style={{flex:1, display: this.state.showSpectrum }}>
+                                <Spectrum pause ={this.state.pause}/>
+                            </View>
+                        </ImageBackground>
+                    </TouchableOpacity>
+                    
                     <View>
                         <Text> 当前得分： {this.state.myScore}</Text>
                         <Text> 当前平均得分： {this.state.totalScore/this.state.numOfScore}</Text>
@@ -588,7 +616,7 @@ export default class Singpage extends Component {
                         </View>  
                     </View>
 
-                        {/* 歌词界面设置 */}
+                    {/* 歌词界面设置 */}
                     <View style={{ height: 320,alignItems: 'center' ,marginTop:20, flex:1}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
@@ -621,7 +649,7 @@ export default class Singpage extends Component {
                             <View style={styles.button}>
                                 <Image source={require('./images/上一首.png')} style={{ width: 30, height: 30}} />     
                             </View>
-                            <Text style={styles.buttontext}>未定义</Text>
+                            <Text style={styles.buttontext}>上一句</Text>
                         </TouchableOpacity>
 
                         {/* 切换原唱 */}

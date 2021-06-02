@@ -1,3 +1,5 @@
+global.IP = '45.253.64.55:11452'
+
 global.SONGS = [
     {
         picture: "https://bkimg.cdn.bcebos.com/pic/72f082025aafa40f4bfb30fea62d144f78f0f736b3f5?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto",
@@ -238,3 +240,5 @@ global.ACC = [
 global.TOTALSCORE = 0
 
 global.RECORDING = false; 
+
+global.WORKS =[];

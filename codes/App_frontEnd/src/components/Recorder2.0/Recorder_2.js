@@ -99,7 +99,7 @@ export default class App extends Component {
         await saveAudio(path,this.data[line],0); //保存句子到本地
         global.ACC[line+6] = path;
         console.log("frag"+startTime+" "+endTime);
-        DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":startTime,"end":this.endTime});
+        DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":startTime,"end":endTime});
           
       });
 

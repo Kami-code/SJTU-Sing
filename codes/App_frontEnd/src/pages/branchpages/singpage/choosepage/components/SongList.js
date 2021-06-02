@@ -64,7 +64,7 @@ class SongList extends Component{
     //-------------------------------------------------------------
     //以下为音频(伴奏)下载方法：
         const id = this.state.song.id;
-        const url = `http://121.4.86.24:8080/download/${id}`;
+        const url = `http://${global.IP}/download/${id}`;
         console.log(url);
         RNFetchBlob
         .config({
@@ -135,8 +135,8 @@ class SongList extends Component{
 
     getAcc = ()=>{
         const id = this.state.song.id;
-        console.log("download start",`http://121.4.86.24:8080/flask/${id}`);
-        fetch(`http://121.4.86.24:8080/flask/${id}`, {
+        console.log("download start",`http://${global.IP}/flask/${id}`);
+        fetch(`http://${global.IP}/flask/${id}`, {
             method: 'GET',
             timeout: 10000,
         })
@@ -160,8 +160,8 @@ class SongList extends Component{
         // this.context.navigate("SingPage");
         //搜索该歌曲完整信息
         const id = this.state.song.id;
-        console.log(`http://121.4.86.24:8080/songs/${id}`)
-            fetch(`http://121.4.86.24:8080/songs/${id}`, 
+        console.log(`http://${global.IP}/songs/${id}`)
+            fetch(`http://${global.IP}/songs/${id}`, 
             {
                 method: 'GET',
                 headers: {
