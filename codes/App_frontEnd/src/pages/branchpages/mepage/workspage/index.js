@@ -15,7 +15,7 @@ class Index extends Component {
     constructor(props) {
         super(props);
         this.state={
-            songs: SONGS,
+            songs: global.SONGS,
             pic_big: '', 
         }
     }
@@ -31,7 +31,7 @@ class Index extends Component {
                 </View>
                 {/* 内容 */}
                 <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={{ uri: this.state.songs[0].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
+                    <Image source={{ uri: this.state.songs[0].picture }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
                     <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
                         <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[0].title } </Text>
                         <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.3.23 </Text>
@@ -50,7 +50,7 @@ class Index extends Component {
                     <Text style={{color:"#666"}}>作品列表</Text>
 
                 </View>
-                <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
+                {/* <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
                     <Image source={{ uri: this.state.songs[1].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
                     <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
                         <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[1].title } </Text>
@@ -83,7 +83,7 @@ class Index extends Component {
                         <Text >2.1k</Text>
                     </View>
                 
-                </TouchableOpacity>
+                </TouchableOpacity> */}
             </View>
         );
         

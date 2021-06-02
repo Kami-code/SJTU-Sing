@@ -49,8 +49,8 @@ class Index extends Component {
     onSearch= () =>{
         Loading.show();
         const txt = this.state.txt;
-        console.log(`http://121.4.86.24:8080/search/${txt}`)
-        fetch(`http://121.4.86.24:8080/search/${txt}`, 
+        console.log(`http://${global.IP}/search/${txt}`)
+        fetch(`http://${global.IP}/search/${txt}`, 
         {
             method: 'GET',
             headers: {
