@@ -46,7 +46,7 @@ JNIEXPORT jint JNICALL Java_com_kgeapp_sox_jni_sox_nativeAddEchoEffects
       sprintf(delay,"%d",Delay);
       char* gainIn = "0.8";
       char* gainOut = "0.88";
-      char* decay = "0.4";
+      char* decay = "0.2";
       char* args[] = {gainIn, gainOut, delay, decay} ;
       if(sox_effect_options(e, 4, args) != SOX_SUCCESS){return 1;}
       /* Add the effect to the end of the effects processing chain: */

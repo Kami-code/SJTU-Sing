@@ -63,8 +63,8 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
                     // }
                     String in = "";
                     String out = "";
-                    RNNoise suppressor = new RNNoise(in,out);
-                    audio = suppressor.flowRNNoise(audio);
+                    // RNNoise suppressor = new RNNoise(in,out);
+                    // audio = suppressor.flowRNNoise(audio);
                     boolean result = SaveFile(path, audio,isWav,offset);
                     if(result){promise.resolve("Save failed");}
                     else{promise.resolve("Save success");}
@@ -91,14 +91,16 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
             if(isWav){
                 addWavHeader(output,data.length,36 + data.length);
             }
-            int numByte = (int)(offset * 48000 * 2);
+            int numByte = (int)(offset * 48000 * 2 *2);
             for(int i = 0;i<data.length-numByte;++i){
                 dataArray[i]=data[i+numByte];
             }
             for(int i = data.length-numByte;i<data.length;++i){
                 dataArray[i]=0x00;
             }
-            output.write(dataArray);
+            byte[] dataArray1 = new byte[dataArray.length];
+            amplifyPCMData(dataArray,dataArray.length,dataArray1,4);
+            output.write(dataArray1);
 
         } catch (Exception err) {
             return ret;
@@ -110,12 +112,30 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
             return ret;
         }
     }
+    private short getShort(byte[] data, int start)
+    {
+        return (short)((data[start] & 0xFF) | (data[start+1] << 8));
+    }
+    public int amplifyPCMData(byte[] pData, int nLen, byte[] data2, float multiple)
+    {
+        int nCur = 0;
+            while (nCur < nLen)
+            {
+                short volum = getShort(pData, nCur);
 
+                volum = (short)(volum * multiple);
+
+                data2[nCur]   = (byte)( volum       & 0xFF);
+                data2[nCur+1] = (byte)((volum >> 8) & 0xFF);
+                nCur += 2;
+            }
+        return 0;
+    }
     private void addWavHeader(FileOutputStream out, long totalAudioLen, long totalDataLen)
             throws Exception {
 
         long sampleRate = 48000;
-        int channels = 1;
+        int channels = 2;
         int bitsPerSample = 16;
         long byteRate =  sampleRate * channels * bitsPerSample / 8;
         int blockAlign = channels * bitsPerSample / 8;

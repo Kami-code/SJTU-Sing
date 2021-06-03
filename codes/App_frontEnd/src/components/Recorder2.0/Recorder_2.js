@@ -15,7 +15,7 @@ export default class App extends Component {
     this.data = new Array();
     this.fragTable = new Array();
     this.data[0]=0;
-    this.offset = 0.27;//这个需要调
+    this.offset = 0.4;//这个需要调
   }
   state = {
     audioFile: '',
@@ -31,7 +31,7 @@ export default class App extends Component {
     await this.checkPermission();
     const options = {
       sampleRate: 48000,
-      channels: 1,
+      channels: 2,
       bitsPerSample: 16,
       wavFile: 'test.wav'
     };
@@ -80,6 +80,7 @@ export default class App extends Component {
         
         global.ACC[2] = this.state.savePath;
         await saveAudio(this.state.savePath,song,this.offset);
+        console.log(song);
         console.log(`save finish${this.data.length} at ${this.state.savePath}`);
         DeviceEventEmitter.emit('RecordStopped',this.state.savePath);
 
@@ -99,7 +100,7 @@ export default class App extends Component {
         await saveAudio(path,this.data[line],0); //保存句子到本地
         global.ACC[line+6] = path;
         console.log("frag"+startTime+" "+endTime);
-        DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":startTime,"end":this.endTime});
+        DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":startTime,"end":endTime});
           
       });
 

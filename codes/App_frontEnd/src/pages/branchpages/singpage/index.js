@@ -322,8 +322,7 @@ export default class Singpage extends Component {
             }else{
                 global.ACC[3] = this.state.proc_audio_wav;
                 global.ACC[4] = this.state.merge_audio_wav;
-                await default_sox(global.ACC[2],global.ACC[3]);
-                await mergeAudio(global.ACC[1],global.ACC[3],global.ACC[4]);
+                await default_sox(global.ACC[2],global.ACC[3],0,0);
                 Loading.hide();
                 global.SCORE = this.state.myScore;
                 
