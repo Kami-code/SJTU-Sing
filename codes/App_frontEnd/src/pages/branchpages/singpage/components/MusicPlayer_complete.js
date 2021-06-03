@@ -11,15 +11,14 @@ import {
     ActivityIndicator,
     DeviceEventEmitter
 } from 'react-native'
-import Recorder_2 from '../components/Recorder2.0/Recorder_2'
 import Slider from '@react-native-community/slider';
+import PropTypes from 'prop-types';
 let { width, height } = Dimensions.get('window');
 import Video from 'react-native-video';
 let lyrObj = []   // 存放歌词
-import SONGS from '../images/song';
+import SONGS from '../../../../images/song';
 import Svg from 'react-native-svg-uri';
-import {origin,adjust,restart,finish} from '../res/fonts/iconSvg';
-import {pxToDp} from '../utils/stylesKits';
+import {pxToDp} from '../../../../utils/stylesKits';
 
 import {NavigationContext} from "@react-navigation/native";
 //  http://rapapi.org/mockjsdata/16978/rn_songList
@@ -27,7 +26,10 @@ import {NavigationContext} from "@react-navigation/native";
 
 export default class MusicPlayer extends Component {
     static contextType = NavigationContext;
-
+    static propTypes = {
+        audioVolumn: PropTypes.int,
+        musicVolumn: PropTypes.int,
+    };
     constructor(props) {
         super(props);
         this._timer=null;
@@ -42,12 +44,13 @@ export default class MusicPlayer extends Component {
             song_id: '',     //歌曲id
             title: '',       //歌曲名字
             author: '',      //歌曲作者
-            file_link: '',   //歌曲播放链接
+            file_link: `file:///${global.ACC[3]}`,   //歌曲播放链接
             songLyr: [],     //当前歌词
             sliderValue: 0,    //Slide的value
             pause: false,       //歌曲播放/暂停
             currentTime: 0.0,   //当前时间
             duration: 0.0,     //歌曲时间
+            duration2: 0.0,
             currentIndex: 0,    //当前第几首
             isplayBtn: require('./image/播放.png'),  //播放/暂停按钮背景图
             currentLine: 0, //当前第几行
@@ -109,6 +112,13 @@ export default class MusicPlayer extends Component {
         }
         
     }
+    onProgress2 = (data) => {
+        let val = parseInt(data.currentTime)
+        if(val != this.state.currentTime){
+            this.refs.audio.seek(this.state.currentTime);
+        }
+        
+    }
     //把秒数转换为时间类型
     formatTime(time) {
         // 71s -> 01:11
@@ -125,15 +135,15 @@ export default class MusicPlayer extends Component {
         for (let i = 0; i < lyrObj.length; i++) {
             let item = lyrObj[i].txt
 
-            if (i < 2){
-                itemAry.push(
-                    <View key={i} style={styles.itemStyle}>
+            // if (i < 2){
+            //     itemAry.push(
+            //         <View key={i} style={styles.itemStyle}>
 
-                        <Text style={{ color: 'blue' }}>  </Text>
-                    </View>
-                );
+            //             <Text style={{ color: 'blue' }}>  </Text>
+            //         </View>
+            //     );
 
-            }
+            // }
             if (i==this.state.currentLine) {
                 //正在唱的歌词
                 itemAry.push(
@@ -145,14 +155,14 @@ export default class MusicPlayer extends Component {
                 if(this.state.currentTime > 0){this.scrollView.scrollTo({ x: 0, y: (40 * i), animated: true })};
                 
             }
-            else {
-                //所有歌词
-                itemAry.push(
-                    <View key={i + 2} style={styles.itemStyle}>
-                        <Text style={{ color: '#ff55559a',fontSize:16 }}> {item} </Text>
-                    </View>
-                )
-            }
+            // else {
+            //     //所有歌词
+            //     itemAry.push(
+            //         <View key={i + 2} style={styles.itemStyle}>
+            //             <Text style={{ color: '#ff55559a',fontSize:16 }}> {item} </Text>
+            //         </View>
+            //     )
+            // }
         }
 
         return itemAry;
@@ -160,6 +170,9 @@ export default class MusicPlayer extends Component {
     // 播放器加载好时调用,其中有一些信息带过来
     onLoad = (data) => {
         this.setState({ duration: data.duration });
+    }
+    onLoad2 = (data) => {
+        this.setState({ duration2: data.duration });
     }
 
     loadSongInfo = (index) => {
@@ -170,7 +183,7 @@ export default class MusicPlayer extends Component {
             pic_big: local_song.picture,  //大图
             title: local_song.name,     //歌曲名
             author: local_song.singer,   //歌手
-            file_link: local_song.mp3,   //播放链接
+            //file_link: local_song.mp3,   //播放链接
             file_duration: local_song.file_duration //歌曲长度
         })
         let lry = local_song.lyric
@@ -212,7 +225,22 @@ export default class MusicPlayer extends Component {
     }
     async componentDidMount() {
         //录音器保存完成后，跳转到下一个界面
-
+        this.resetListener = DeviceEventEmitter.addListener('resetAudio',()=>{
+            let timer = setTimeout(() => {
+                this.setState({
+                    file_link: local_song.mp3,   //播放链接
+                });
+                this.setState({
+                    file_link: `file:///${global.ACC[3]}`,   //播放链接
+                });
+                //this.refs.audio.setProps({source:{uri:`file:///${global.ACC[3]}`}});
+                this.refs.audio.seek(this.state.currentTime);
+                timer&&clearTimeout(timer);
+            },1000);         
+        });
+        this.stopListener = DeviceEventEmitter.addListener('stop',()=>{
+            this.playAction();
+        });
     }
 
 
@@ -231,7 +259,7 @@ export default class MusicPlayer extends Component {
                 <View style={styles.container}>
                     {/* <Recorder_2></Recorder_2> */}
                     {/* <Image source={{ uri: this.state.pic_big }} style={{ width: width, height: 200 }} /> */}
-                    <View>
+                    {/* <View>
                         <Video
                                 // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
                                 source = {{uri:`file:///${global.ACC[4]}`}}
@@ -242,6 +270,34 @@ export default class MusicPlayer extends Component {
                                 paused={this.state.pause}                 // Pauses playback entirely.
                                 onProgress={(e) => this.onProgress(e)}
                                 onLoad={(e) => this.onLoad(e)}
+                                onEnd={() => {}}
+                            />
+                    </View> */}
+                    <View>
+                        <Video
+                                // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
+                                source = {{uri:`file:///${global.ACC[1]}`}}
+                                ref='music'                           // Store reference
+                                rate={1.0}                     // 0 is paused, 1 is normal.
+                                volume={this.props.musicVolumn/100}                   // 0 is muted, 1 is normal.
+                                muted={false}                  // Mutes the audio entirely.
+                                paused={this.state.pause}                 // Pauses playback entirely.
+                                onProgress={(e) => this.onProgress(e)}
+                                onLoad={(e) => this.onLoad(e)}
+                                onEnd={() => {}}
+                            />
+                    </View>
+                    <View>
+                        <Video
+                                // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
+                                source = {{ uri: this.state.file_link }}
+                                ref='audio'                           // Store reference
+                                rate={1.0}                     // 0 is paused, 1 is normal.
+                                volume={this.props.audioVolumn/200}                   // 0 is muted, 1 is normal.
+                                muted={false}                  // Mutes the audio entirely.
+                                paused={this.state.currentTime<this.state.duration2?this.state.pause:true}                 // Pauses playback entirely.
+                                onProgress={(e) => this.onProgress2(e)}
+                                onLoad={(e) => this.onLoad2(e)}
                                 onEnd={() => {}}
                             />
                     </View>
@@ -259,7 +315,7 @@ export default class MusicPlayer extends Component {
 
                         <Slider
                         ref='slider'
-                        style={{ marginLeft: 10, marginRight: 10 ,flex:1}}
+                        style={{ marginLeft: 10, marginRight: 20 ,flex:1}}
                         value={this.state.sliderValue}
                         maximumValue={this.state.file_duration}
                         step={1}
@@ -270,8 +326,15 @@ export default class MusicPlayer extends Component {
                             })
                         }
                         }
-                        onSlidingComplete={(value) => {                                
-                            this.refs.video.seek(value)
+                        onSlidingComplete={(value) => {
+                            this.setState({
+                                file_link: this.state.songs[this.state.songs.length-1].mp3,   //播放链接
+                            });
+                            this.setState({
+                                file_link: `file:///${global.ACC[3]}`,   //播放链接
+                            });                                
+                            this.refs.music.seek(value);
+                            this.refs.audio.seek(value);
                         }}
                     />
                     </View>
@@ -280,7 +343,7 @@ export default class MusicPlayer extends Component {
                     <View style={{ height: 120,alignItems: 'center' ,marginTop:0}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
-                                    snapToInterval = {15}
+                                    snapToInterval = {0}
                         >
                             {this.renderItem()}
                         </ScrollView>

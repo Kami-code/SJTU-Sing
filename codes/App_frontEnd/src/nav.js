@@ -8,7 +8,7 @@ import SingPage from "./pages/branchpages/singpage";
 import CompletePage from "./pages/branchpages/singpage/completepage";
 import ChoosePage from "./pages/branchpages/singpage/choosepage";
 import InfoPage from "./pages/branchpages/infopage";
-import PlayPage from "./pages/branchpages/playpage";
+import PlayPage from "./pages/branchpages/singpage/playpage";
 import SelectPage from "./pages/branchpages/selectpage";
 import NewsPage from "./pages/branchpages/newspage";
 import NewsDetailPage from "./pages/branchpages/newspage/detailpage";

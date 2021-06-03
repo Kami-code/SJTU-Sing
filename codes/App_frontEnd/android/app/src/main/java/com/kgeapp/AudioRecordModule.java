@@ -50,23 +50,23 @@ public class AudioRecordModule extends ReactContextBaseJavaModule {
     @ReactMethod
     public void init(ReadableMap options) {
         sampleRateInHz = 48000;
-        if (options.hasKey("sampleRate")) {
-            sampleRateInHz = options.getInt("sampleRate");
-        }
+        // if (options.hasKey("sampleRate")) {
+        //     sampleRateInHz = options.getInt("sampleRate");
+        // }
 
-        channelConfig = AudioFormat.CHANNEL_IN_MONO;
-        if (options.hasKey("channels")) {
-            if (options.getInt("channels") == 2) {
-                channelConfig = AudioFormat.CHANNEL_IN_STEREO;
-            }
-        }
+        channelConfig = AudioFormat.CHANNEL_IN_STEREO;
+        // if (options.hasKey("channels")) {
+        //     if (options.getInt("channels") == 1) {
+        //         channelConfig = AudioFormat.CHANNEL_IN_MONO;
+        //     }
+        // }
 
         audioFormat = AudioFormat.ENCODING_PCM_16BIT;
-        if (options.hasKey("bitsPerSample")) {
-            if (options.getInt("bitsPerSample") == 8) {
-                audioFormat = AudioFormat.ENCODING_PCM_8BIT;
-            }
-        }
+        // if (options.hasKey("bitsPerSample")) {
+        //     if (options.getInt("bitsPerSample") == 8) {
+        //         audioFormat = AudioFormat.ENCODING_PCM_8BIT;
+        //     }
+        // }
 
         audioSource = AudioSource.VOICE_RECOGNITION;
         if (options.hasKey("audioSource")) {
