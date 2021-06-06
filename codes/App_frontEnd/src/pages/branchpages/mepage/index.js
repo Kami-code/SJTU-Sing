@@ -6,16 +6,43 @@ import { Image } from 'react-native';
 import Button from '../../../components/Button';
 import {NavigationContext} from "@react-navigation/native";
 
-import SONGS from '../../../images/song';
+import Info_Form from '../../../components/Info_Form';
+import Topbar from '../../../components/Topbar';
 
 // Inside of a component's render() method:
 class Index extends Component {
     static contextType = NavigationContext;
-    state = {  }
+    state = { 
+        showEdit: false
+    }
     goWorksPage = ()=>{
         this.context.navigate("WorksPage");
     }
-    render() {
+
+    goEditPage =()=>{
+        console.log("pressed");
+        this.setState({
+            showEdit: true
+        })
+    }
+
+    goBack =()=>{
+        // alert("放弃当前编辑内容");
+        this.setState({
+            showEdit: false
+        })
+    }
+
+    renderEditPage =()=>{
+        return(
+            <View>
+                <Topbar title ={"编辑个人信息"} goBack={this.goBack}/>
+                <Info_Form goBack = {this.goBack}></Info_Form>
+            </View>
+        )
+    }
+
+    renderMePage =()=>{
         return (
             <View style={styles.container}>
                 {/* <Text>我的信息</Text> */}
@@ -57,12 +84,14 @@ class Index extends Component {
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={{height:"5%",paddingTop:pxToDp(10),paddingLeft:pxToDp(20),flexDirection:"column",backgroundColor:"#aabbffa9"}}>
-                        <Text> 点击设置个性签名</Text>
+                        <Text> 点击设置个性签名 </Text>
                     </TouchableOpacity>
                     <View style={{height:"16%",paddingTop:pxToDp(12),flexDirection:"row",alignItems:'center',justifyContent:'space-around',backgroundColor:"#aabbffa9"}}>
                         <Button onPress={this.goWorksPage} style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>我的作品</Button>
                     </View>
-
+                    <View style={{height:"16%",paddingTop:pxToDp(4),flexDirection:"row",alignItems:'center',justifyContent:'space-around',backgroundColor:"#aabbffa9"}}>
+                        <Button onPress={this.goEditPage} style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>编辑信息</Button>
+                    </View>
             </View>
             
             // <HeaderImageScrollView
@@ -82,6 +111,14 @@ class Index extends Component {
             //     </TriggeringView> */}
             // </View>
             // </HeaderImageScrollView>
+        );        
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                {this.state.showEdit? this.renderEditPage() : this.renderMePage()}
+            </View>    
         );
     }
 

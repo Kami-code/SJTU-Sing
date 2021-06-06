@@ -5,14 +5,14 @@ import {
     Text,
     Image,
     View,
-    Slider,
+    // Slider,
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
     DeviceEventEmitter
 } from 'react-native'
 import Recorder_2 from '../components/Recorder2.0/Recorder_2'
-
+import Slider from '@react-native-community/slider';
 let { width, height } = Dimensions.get('window');
 import Video from 'react-native-video';
 let lyrObj = []   // 存放歌词
@@ -56,23 +56,23 @@ export default class MusicPlayer extends Component {
             recordShift:0.75
         }
     }
-    //重唱上一句话
-    prevAction = (index) => {
+    // //重唱上一句话
+    // prevAction = (index) => {
 
-    }
+    // }
 
 
-    //下一曲
-    nextAction = (index) => {
-        lyrObj = [];
-        if (index === this.state.songs.length) {
-            index = 0 //如果是最后一首就回到第一首
-        }
-        this.setState({
-            currentIndex: index  //更新数据
-        })
-        this.loadSongInfo(index)   //加载数据
-    }
+    // //下一曲
+    // nextAction = (index) => {
+    //     lyrObj = [];
+    //     if (index === this.state.songs.length) {
+    //         index = 0 //如果是最后一首就回到第一首
+    //     }
+    //     this.setState({
+    //         currentIndex: index  //更新数据
+    //     })
+    //     this.loadSongInfo(index)   //加载数据
+    // }
     //播放/暂停
     playAction = () => {
         this.setState({
@@ -142,7 +142,7 @@ export default class MusicPlayer extends Component {
                         <Text style={{ color: '#5555ff',fontSize:16 }}> {item} </Text>
                     </View>
                 );
-                if(this.state.currentTime > 0){this.scrollView.scrollTo({ x: 0, y: (32 * i), animated: true })};
+                if(this.state.currentTime > 0){this.scrollView.scrollTo({ x: 0, y: (40 * i), animated: true })};
                 
             }
             else {
@@ -206,7 +206,7 @@ export default class MusicPlayer extends Component {
     }
 
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.loadSongInfo(this.state.songs.length-1)   //预先加载第一首
         
     }
@@ -250,9 +250,16 @@ export default class MusicPlayer extends Component {
                         <Text>{this.formatTime(Math.floor(this.state.currentTime))} - {this.formatTime(Math.floor(this.state.duration))}</Text>
                     </View>
 
-                    <Slider
+                    
+                    <View style={{ flexDirection: 'row', justifyContent: 'space-around',marginTop: pxToDp(12) }}>
+                        <View style={{ marginLeft: 10, marginRight: 10}}></View>
+                        <TouchableOpacity onPress={() => this.playAction()}>
+                            <Image source={this.state.isplayBtn} style={{ width: 20, height: 20 }} />
+                        </TouchableOpacity>
+
+                        <Slider
                         ref='slider'
-                        style={{ marginLeft: 10, marginRight: 10 }}
+                        style={{ marginLeft: 10, marginRight: 10 ,flex:1}}
                         value={this.state.sliderValue}
                         maximumValue={this.state.file_duration}
                         step={1}
@@ -267,16 +274,10 @@ export default class MusicPlayer extends Component {
                             this.refs.video.seek(value)
                         }}
                     />
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-around',marginTop: pxToDp(12) }}>
-
-                        <TouchableOpacity onPress={() => this.playAction()}>
-                            <Image source={this.state.isplayBtn} style={{ width: 30, height: 30 }} />
-                        </TouchableOpacity>
-
                     </View>
 
                         {/* 歌词界面设置 */}
-                    <View style={{ height: 270,alignItems: 'center' ,marginTop:20}}>
+                    <View style={{ height: 120,alignItems: 'center' ,marginTop:0}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
                                     snapToInterval = {15}
