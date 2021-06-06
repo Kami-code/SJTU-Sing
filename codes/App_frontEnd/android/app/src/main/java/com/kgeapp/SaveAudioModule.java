@@ -41,7 +41,7 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void save(String path, String base64audio, Promise promise){
+    public void save(String path, String base64audio, double offset, Promise promise){
          Thread saveThread = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -63,9 +63,9 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
                     // }
                     String in = "";
                     String out = "";
-                    RNNoise suppressor = new RNNoise(in,out);
-                    audio = suppressor.flowRNNoise(audio);
-                    boolean result = SaveFile(path, audio,isWav);
+                    // RNNoise suppressor = new RNNoise(in,out);
+                    // audio = suppressor.flowRNNoise(audio);
+                    boolean result = SaveFile(path, audio,isWav,offset);
                     if(result){promise.resolve("Save failed");}
                     else{promise.resolve("Save success");}
                     promise.resolve("Save success");
@@ -79,19 +79,28 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
     }
 
 
-    private boolean SaveFile(String path, byte[] data, boolean isWav) throws Exception{
+    private boolean SaveFile(String path, byte[] data, boolean isWav, double offset) throws Exception{
 
         FileOutputStream output = null;
         boolean ret = true;
         try {
+            byte[] dataArray=new byte[data.length];
             output = new FileOutputStream(path);
             // WAVE header
             // see http://ccrma.stanford.edu/courses/422/projects/WaveFormat/
             if(isWav){
                 addWavHeader(output,data.length,36 + data.length);
             }
-
-            output.write(data);
+            int numByte = (int)(offset * 48000 * 2 *2);
+            for(int i = 0;i<data.length-numByte;++i){
+                dataArray[i]=data[i+numByte];
+            }
+            for(int i = data.length-numByte;i<data.length;++i){
+                dataArray[i]=0x00;
+            }
+            byte[] dataArray1 = new byte[dataArray.length];
+            amplifyPCMData(dataArray,dataArray.length,dataArray1,4);
+            output.write(dataArray1);
 
         } catch (Exception err) {
             return ret;
@@ -103,12 +112,30 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
             return ret;
         }
     }
+    private short getShort(byte[] data, int start)
+    {
+        return (short)((data[start] & 0xFF) | (data[start+1] << 8));
+    }
+    public int amplifyPCMData(byte[] pData, int nLen, byte[] data2, float multiple)
+    {
+        int nCur = 0;
+            while (nCur < nLen)
+            {
+                short volum = getShort(pData, nCur);
 
+                volum = (short)(volum * multiple);
+
+                data2[nCur]   = (byte)( volum       & 0xFF);
+                data2[nCur+1] = (byte)((volum >> 8) & 0xFF);
+                nCur += 2;
+            }
+        return 0;
+    }
     private void addWavHeader(FileOutputStream out, long totalAudioLen, long totalDataLen)
             throws Exception {
 
         long sampleRate = 48000;
-        int channels = 1;
+        int channels = 2;
         int bitsPerSample = 16;
         long byteRate =  sampleRate * channels * bitsPerSample / 8;
         int blockAlign = channels * bitsPerSample / 8;

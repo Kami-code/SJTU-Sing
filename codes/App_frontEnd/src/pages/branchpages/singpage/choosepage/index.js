@@ -24,6 +24,8 @@ import SingPage from '../index';
 import Loading from '../../../../components/common/Loading';
 import "../../../../components/common/RootView";
 
+import TopNav from './components/TopNav';
+
 class Index extends Component {
     static contextType = NavigationContext;
     constructor(props) {
@@ -47,8 +49,8 @@ class Index extends Component {
     onSearch= () =>{
         Loading.show();
         const txt = this.state.txt;
-        console.log(`http://121.4.86.24:8080/search/${txt}`)
-        fetch(`http://121.4.86.24:8080/search/${txt}`, 
+        console.log(`http://${global.IP}/search/${txt}`)
+        fetch(`http://${global.IP}/search/${txt}`, 
         {
             method: 'GET',
             headers: {
@@ -105,6 +107,7 @@ class Index extends Component {
     renderChoosePage=()=>{
         return(
 			<View style={styles.container}>
+
                 <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                 
 				<SearchInput onChangeText={txt=>this.setState({txt})} onSearch={this.onSearch} value={this.state.txt} style={{marginTop:pxToDp(50)}}/>
@@ -128,6 +131,13 @@ class Index extends Component {
 		);
     }
 
+    switchPage = ()=>{
+        console.log("go back");
+        this.setState({
+            showSearchResult : false,
+        })
+    }
+
     renderSearchResult=()=>{
         if (this.state.ret == 404) alert("没有相关资源，换一个试试吧");
         // if (this.state.ret == 404) return(<View><Text>空列表</Text></View>)
@@ -137,6 +147,7 @@ class Index extends Component {
         else{
             return(
             <View>
+                <TopNav title = "搜索结果" switchPage = {this.switchPage}/>
                 {/* <Text> {list}</Text> */}
                 <ScrollView>
                     {list.map((item)=>{

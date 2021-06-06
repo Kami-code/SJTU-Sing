@@ -172,7 +172,7 @@ class Index extends Component{
         formData.append("mode",0);
         console.log(formData);
 
-        const url = 'http://121.4.86.24:8080/login';
+        const url = `http://${global.IP}/login`;
         fetch(url,{
         method:'POST',
         headers: {},

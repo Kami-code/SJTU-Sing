@@ -15,6 +15,7 @@ export default class App extends Component {
     this.data = new Array();
     this.fragTable = new Array();
     this.data[0]=0;
+    this.offset = 0.4;//这个需要调
   }
   state = {
     audioFile: '',
@@ -30,7 +31,7 @@ export default class App extends Component {
     await this.checkPermission();
     const options = {
       sampleRate: 48000,
-      channels: 1,
+      channels: 2,
       bitsPerSample: 16,
       wavFile: 'test.wav'
     };
@@ -44,14 +45,12 @@ export default class App extends Component {
         if(flag==2){
           this.data = new Array();
         }
+
     });
 
 
     this.startListener =DeviceEventEmitter.addListener('RecordStart',()=>{
-      if(this.state.recording){return;}
-      if(!this.state.start){
-        this.start();
-      }
+      this.start();
       this.resume();
     });
 
@@ -69,18 +68,19 @@ export default class App extends Component {
         this.data[line]=this.state.chunk; //把缓存保存入句子组
         this.state.frag = false;
         let path = `${RNFS.CachesDirectoryPath }/record${line}.wav`
-        await saveAudio(path,this.data[line]); //保存句子到本地
+        await saveAudio(path,this.data[line],0); //保存句子到本地
         global.ACC[line+6] = path;
         console.log("frag"+line);
         
         let song = '';
-        for(let i = 0;i<this.data.length;++i){
+        for(let i = 0;i<=line;++i){
           song = song + this.data[i];
         }
         this.data = new Array();
         
         global.ACC[2] = this.state.savePath;
-        await saveAudio(this.state.savePath,song);
+        await saveAudio(this.state.savePath,song,this.offset);
+        console.log(song);
         console.log(`save finish${this.data.length} at ${this.state.savePath}`);
         DeviceEventEmitter.emit('RecordStopped',this.state.savePath);
 
@@ -91,15 +91,16 @@ export default class App extends Component {
       this.fetchListener =DeviceEventEmitter.addListener('fetchChunk',async (param)=>{
         this.fragTable[0]= 0;
         let line = param.fragNum;
-        let time = param.fragTime;
-        this.fragTable[line+1] = time; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
+        let startTime = param.startTime;
+        let endTime = param.fragTime;
+        this.fragTable[line] = [startTime,endTime]; //第i句话从fragtable[i]开始，到fragtable[i+1]结束
         this.data[line]=this.state.chunk; //把缓存保存入句子组
         this.state.frag = false;
         let path = `${RNFS.CachesDirectoryPath }/record${line}.wav`
-        await saveAudio(path,this.data[line]); //保存句子到本地
+        await saveAudio(path,this.data[line],0); //保存句子到本地
         global.ACC[line+6] = path;
-        console.log("frag"+line);
-        DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":this.fragTable[line],"end":this.fragTable[line+1]});
+        console.log("frag"+startTime+" "+endTime);
+        DeviceEventEmitter.emit("RecordUpload",{"index":line,"start":startTime,"end":endTime});
           
       });
 
@@ -118,12 +119,12 @@ export default class App extends Component {
           this.state.chunk = this.state.chunk + data;
         }
       }
-      this.initListener = DeviceEventEmitter.addListener('RecordInit',()=>{
-        if(!this.state.start){
-          this.state.start = true;
-          this.start();
-        }
-      });
+      // this.initListener = DeviceEventEmitter.addListener('RecordInit',()=>{
+      //   if(!this.state.start){
+      //     this.state.start = true;
+      //     this.start();
+      //   }
+      // });
       
     });
 
@@ -134,6 +135,7 @@ export default class App extends Component {
     this.finishListener && this.finishListener.remove();
     this.fetchListener && this.fetchListener.remove();
     this.dataListener && this.dataListener.remove();
+    this.Timer && clearTimeout(this.Timer);
   }
 
   checkPermission = async () => {
@@ -149,9 +151,11 @@ export default class App extends Component {
   };
 
   start = () => {
-    console.log('start record');
-    this.setState({ audioFile: '', start: true});
-    AudioRecord.start();
+    if(this.state.start==false){
+      console.log('start record');
+      this.setState({ audioFile: '', start: true});
+      AudioRecord.start();
+    }
   };
 
   stop = async () => {
@@ -175,8 +179,6 @@ export default class App extends Component {
   };
 
   resume = () => {
-    if (this.state.recording) return;
-    console.log('record resume');
     this.setState({recording: true });
     // AudioRecord.stop();
   };
