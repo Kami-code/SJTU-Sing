@@ -27,7 +27,7 @@ import { cos } from 'react-native-reanimated';
 import Loading from "../../../components/common/Loading";
 import Ready from "../../../components/common/Ready"
 import "../../../components/common/RootView";
-import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, toSingleChannel} from '../../../utils/audio-api';
+import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, toSingleChannel, amplify} from '../../../utils/audio-api';
 import RNFS, { stat } from 'react-native-fs';
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
@@ -70,7 +70,8 @@ export default class Singpage extends Component {
             lastFragTime: 0,
 
             accPath:"",
-            proc_audio_wav: `${RNFS.CachesDirectoryPath }/proc_audio.wav`,
+            //proc_audio_wav: `${RNFS.CachesDirectoryPath }/proc_audio.wav`,
+            proc_audio_wav: `${RNFS.ExternalStorageDirectoryPath }/proc_audio.wav`,
             merge_audio_wav: `${RNFS.CachesDirectoryPath }/merge_audio.wav`,
             playACC:false,
             showSpectrum: 'none',
@@ -324,9 +325,14 @@ export default class Singpage extends Component {
             if(param===0){
                 this.context.navigate("Tabbar");
             }else{
+                global.ACC[8]=`${RNFS.CachesDirectoryPath}/audio_tmp.wav`;
+                global.ACC[7]=`${RNFS.CachesDirectoryPath}/music_tmp.wav`;
                 global.ACC[3] = this.state.proc_audio_wav;
                 global.ACC[4] = this.state.merge_audio_wav;
                 await default_sox(global.ACC[2],global.ACC[3],0,0);
+                await amplify(global.ACC[3],global.ACC[8],0);
+                await amplify(global.ACC[1],global.ACC[7],0);
+                await mergeAudio(global.ACC[7],global.ACC[8],global.ACC[4]);
                 Loading.hide();
                 global.SCORE = this.state.myScore;
                 
