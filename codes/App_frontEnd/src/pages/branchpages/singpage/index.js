@@ -128,7 +128,7 @@ export default class Singpage extends Component {
             isplayBtn: require('./images/暂停.png'),
             firstPlay: true,
         })
-        this.loadSongInfo(this.state.songs.length-1);
+        this.loadSongInfo(0);
         if(!this.state.scrolling){
             this.scrollView.scrollTo({ x: 0, y: 0, animated: false });
         }
@@ -316,7 +316,7 @@ export default class Singpage extends Component {
 
 
     UNSAFE_componentWillMount() {
-        this.loadSongInfo(this.state.songs.length-1);   //预先加载第一首
+        this.loadSongInfo(0);   //预先加载第一首
     }
     async componentDidMount() {
         DeviceEventEmitter.emit('RecordInit');
@@ -342,7 +342,7 @@ export default class Singpage extends Component {
             
         });
         this.routerEvent = this.props.navigation.addListener("focus", payload => {
-            this.loadSongInfo(this.state.songs.length-1);
+            this.loadSongInfo(0);
             DeviceEventEmitter.emit('RecordInit');
         });
 

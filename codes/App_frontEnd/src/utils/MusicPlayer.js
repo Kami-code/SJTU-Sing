@@ -207,7 +207,7 @@ export default class MusicPlayer extends Component {
 
 
     UNSAFE_componentWillMount() {
-        this.loadSongInfo(this.state.songs.length-1)   //预先加载第一首
+        this.loadSongInfo(0)   //预先加载第一首
         
     }
     async componentDidMount() {

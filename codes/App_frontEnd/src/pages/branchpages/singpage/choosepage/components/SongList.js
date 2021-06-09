@@ -203,10 +203,10 @@ class SongList extends Component{
                     lyric: json.lyric,
                     file_duration: json.length, //时长已完成
                 };
-                global.SONGS.push(newSong);
+                global.SONGS[0]=newSong;
                 console.log("here here");
                 console.log(global.SONGS[0].name);
-                console.log(global.SONGS[1].name);
+                //console.log(global.SONGS[1].name);
                 //切换页面操作
                 this.getAcc();
                 // this.props.onChosen();
