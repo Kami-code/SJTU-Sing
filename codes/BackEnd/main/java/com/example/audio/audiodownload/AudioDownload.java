@@ -26,7 +26,7 @@ public class AudioDownload {
     public ResponseEntity<InputStreamResource> downloadFile(@PathVariable("str") String song_id)throws IOException{
         download.info("***download begin!!!\n");
 
-        String filePath = "./audioData/flask/"+song_id+".mp3";
+        String filePath = "/home/waaa/jwc/audioData/flask/"+song_id+".mp3";
         download.info(filePath);
         FileSystemResource file = new FileSystemResource(filePath);
         HttpHeaders headers = new HttpHeaders();
@@ -42,6 +42,27 @@ public class AudioDownload {
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
                 .body(new InputStreamResource(file.getInputStream()));
     }
+
+//    @RequestMapping(value = "/downloaduser")
+//    public ResponseEntity<InputStreamResource> downloadUser(@RequestParam("songid") int songid@PathVariable("str") String song_id)throws IOException{
+//        download.info("***download begin!!!\n");
+//
+//        String filePath = "./audioData/flask/"+song_id+".mp3";
+//        download.info(filePath);
+//        FileSystemResource file = new FileSystemResource(filePath);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+//        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getFilename()));
+//        headers.add("Pragma", "no-cache");
+//        headers.add("Expires", "0");
+//
+//        download.info("*** finish download "+filePath);
+//
+//        return ResponseEntity.ok().headers(headers)
+//                .contentLength(file.contentLength())
+//                .contentType(MediaType.parseMediaType("application/octet-stream"))
+//                .body(new InputStreamResource(file.getInputStream()));
+//    }
 
 }
 
