@@ -19,7 +19,7 @@ import Video from 'react-native-video';
 let lyrObj = []   // 存放歌词
 import SONGS from '../../../images/song';
 import Svg from 'react-native-svg-uri';
-import {origin,adjust,restart,finish,svg_huatong} from '../../../res/fonts/iconSvg';
+import {origin,adjust,restart,finish,svg_huatong,goback} from '../../../res/fonts/iconSvg';
 import {pxToDp} from '../../../utils/stylesKits';
 
 import {NavigationContext} from "@react-navigation/native";
@@ -547,14 +547,19 @@ export default class Singpage extends Component {
                     <View style={styles.playingInfo}>
                         {/* 返回键 */}
                         <TouchableOpacity onPress={() => this.returnToMainPage()}>
-                            <Image source={require('./images/上一首.png')} style={{ width: 25, height: 25}} />
+                            {/* <Image source={require('./images/上一首.png')} style={{ width: 25, height: 25}} /> */}
+                            <Svg width="25" height = "25"  fill ="#77a" svgXmlData={goback} />
                         </TouchableOpacity>
                         {/* 歌曲名称 */}
-                        <Text style={{fontSize:20}}> {this.state.title}</Text>
+                        <View style={{paddingRight:pxToDp(40)}}>
+                            <Text style={{fontSize:20}}> {this.state.title}</Text>
+                        </View>
+                        <View></View>
+                        
                         {/* 切换下一首歌（以后可以换成菜单键） */}
-                        <TouchableOpacity   onPress={() => this.nextAction(this.state.currentIndex + 1)}>
+                        {/* <TouchableOpacity   onPress={() => this.nextAction(this.state.currentIndex + 1)}>
                             <Image source={require('./images/下一首.png')} style={{ width: 25, height: 25 }} />
-                        </TouchableOpacity>             
+                        </TouchableOpacity>              */}
                     </View>
                     {/* 图片，可以换成五线谱 */}
                     <TouchableOpacity onPress={()=> this.switchBackground()}>
@@ -623,7 +628,7 @@ export default class Singpage extends Component {
 
                     {/* 歌词界面设置 */}
                     <View style={{ height: 320,alignItems: 'center' ,marginTop:20, flex:1}}>
-                        <ScrollView style={{ position: 'relative' ,width:"80%"}}
+                        <ScrollView style={{ position: 'relative' ,width:"100%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
                                     showsVerticalScrollIndicator = {false}
                                     snapToInterval = {15}

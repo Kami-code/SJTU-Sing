@@ -36,18 +36,15 @@ class Index extends Component {
                             <NewsPage />
                         </View>
                     </TabNavigator.Item>
-                    <TabNavigator.Item
+                    {/* <TabNavigator.Item
                         selected={this.state.selectedTab === 'search'}
                         title="发现"
                         renderIcon={() => <Svg width="20" height = "20" fill ="#77a"  svgXmlData={svg_search} />}
-                        // renderSelectedIcon={() => <Svg width="20" height = "20" svgXmlData={svg_shezhi} />}
-                        // renderBadge={() => <CustomBadgeView />}
                         onPress={() => this.setState({ selectedTab: 'search' })}>
-                        {/* {profileView} */}
                         <View style={{flex:1,flexDirection:'column'}} >
                             <FindPage/>
                         </View>
-                    </TabNavigator.Item>
+                    </TabNavigator.Item> */}
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'home'}
                         // title="Home"
@@ -63,18 +60,15 @@ class Index extends Component {
                         
                         {/* <Text> 1111</Text> */}
                     </TabNavigator.Item>
-                    <TabNavigator.Item
+                    {/* <TabNavigator.Item
                         selected={this.state.selectedTab === 'message'}
                         title="消息"
                         renderIcon={() => <Svg width="25" height = "25" fill ="#77a"  svgXmlData={svg_letter} />}
-                        // renderSelectedIcon={() => <Svg width="20" height = "20" svgXmlData={svg_shezhi} />}
-                        // renderBadge={() => <CustomBadgeView />}
                         onPress={() => this.setState({ selectedTab: 'message' })}>
-                        {/* {profileView} */}
                         <View style={{flex:1,flexDirection:'column'}} >
                             <MessagePage/>
                         </View>
-                    </TabNavigator.Item>
+                    </TabNavigator.Item> */}
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'myinfo'}
                         title="我的"

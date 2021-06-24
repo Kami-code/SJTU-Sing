@@ -57,13 +57,18 @@ class Loading extends Component {
                 <View style={styles.LoadingPage}>
                     <View style={{flex:1}}>
                     </View>
-                    <Animated.Image
-                    style={{
-                        transform: [{rotate: spin}],
-                        height: 50,
-                        width:50
-                    }}
-                    source={require('../../images/icon_play.png')}/>
+                    {/* <View style={{backgroundColor:"#00000060",height:80,width:70,alignItems:"center",borderRadius:15}}> */}
+                        <Animated.Image
+                        style={{
+                            transform: [{rotate: spin}],
+                            height: 50,
+                            width:50,
+                            margin: 10
+                        }}
+                        source={require('../../images/icon_play.png')}/>
+                        <Text> Loading... </Text>
+                    {/* </View> */}
+                    
                     {/* <Animated.Text 
                     style={{
                         textAlign: 'center',

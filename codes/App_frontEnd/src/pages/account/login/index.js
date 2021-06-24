@@ -316,7 +316,7 @@ class Index extends Component{
                     // })
                     // this.props.navigation.dispatch(resetAction) 
                     this.getInfo();
-                    this.getWorkList();
+                    // this.getWorkList();
                     
                     break;
                 }

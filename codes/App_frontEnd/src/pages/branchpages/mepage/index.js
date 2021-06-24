@@ -26,16 +26,16 @@ class Index extends Component {
         console.log("request sent");
 
         // const url = `http://${global.IP}/production`;
-        const url = `http://${global.IP_NEW}/song/${global.account}`;
+        const url = `http://${global.IP_NEW}/user/${global.account}`;
         fetch(url,{
-        method:'POST',
-        headers: {},
-        // body: formData,
+            method:'GET',
+            headers: {},
+            // body: formData,
         }).then(response =>response.json()
         ).then(data => {
             console.log("In mePage in goWorkPage, receive response")
             console.log(data)
-            global.userinfo.mysongs =  data;
+            global.userinfo.mysongs =  data.recordList;
             Loading.hide()
             this.context.navigate("WorksPage");
         })
@@ -43,8 +43,6 @@ class Index extends Component {
             alert(error)
             Loading.hide()
         })
-    
-        
     }
 
     goEditPage =()=>{
@@ -59,11 +57,13 @@ class Index extends Component {
         formData.append("username",global.account);
         console.log(formData);
 
-        const url = `http://${global.IP}/downloadinfo`;
+        // const url = `http://${global.IP}/downloadinfo`;
+        const url = `http://${global.IP_NEW}/user/${global.account}`;
         fetch(url,{
-        method:'POST',
+        // method:'POST',
+        method:'GET',
         headers: {},
-        body: formData,
+        // body: formData,
         }).then(response =>response.json()
         ).then(data => {
             console.log(data)
@@ -130,7 +130,7 @@ class Index extends Component {
                             <Text>+ 添加账号 </Text>
                         </TouchableOpacity>
                     </View>
-                    <View style={{height:"16%",paddingTop:pxToDp(12),flexDirection:"row",alignItems:'center',justifyContent:'space-around',backgroundColor:"#aabbffa9"}}>
+                    {/* <View style={{height:"16%",paddingTop:pxToDp(12),flexDirection:"row",alignItems:'center',justifyContent:'space-around',backgroundColor:"#aabbffa9"}}>
                         <TouchableOpacity style={{height:"100%",paddingTop:pxToDp(20),flexDirection:"column"}}>
                             <Text style={styles.text1}>20.1k</Text>
                             <Text style={styles.text1}>粉丝</Text>
@@ -143,7 +143,7 @@ class Index extends Component {
                             <Text style={styles.text1}>0</Text>
                             <Text style={styles.text1}>好友</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                     <TouchableOpacity style={{height:"5%",paddingTop:pxToDp(10),paddingLeft:pxToDp(20),flexDirection:"column",backgroundColor:"#aabbffa9"}}>
                         <Text style={{fontSize:pxToDp(18)}}> {global.userinfo.description}</Text>
                     </TouchableOpacity>

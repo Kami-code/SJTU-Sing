@@ -44,7 +44,7 @@ class Index extends Component {
       console.log(formData);
       
       // fetch(`http://${global.IP}/uploadproduct`, 
-      fetch(`http://${global.IP_NEW}/song/upload`, 
+      fetch(`http://${global.IP_NEW}/record/upload`, 
       {
           method: 'POST',
           body:formData,
@@ -55,14 +55,13 @@ class Index extends Component {
         // console.log(response.info.result);
         // console.log(response.info.song);
         // console.log("Finalupload get response");
-        // this.context.navigate("Tabbar");
+        
 
         response.json()
       )
       .then(data => {
           console.log(data)
-          if (data.info.result == "success" ) console.log(data.info.song)
-          else console.log(data.info.message)
+          this.context.navigate("Tabbar");
       })
       .catch(error => {
          alert(error)
