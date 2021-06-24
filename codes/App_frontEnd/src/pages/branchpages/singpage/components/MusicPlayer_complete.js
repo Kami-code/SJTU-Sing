@@ -233,12 +233,15 @@ export default class MusicPlayer extends Component {
             this.setState({
                 file_link: `file:///${global.ACC[4]}`,   //播放链接
             });
+            timer = setTimeout(()=>{            
+                this.refs.audio.seek(time);
+                this.setState({
+                    currentTime:time,  
+                });
+                timer && clearTimeout(timer);
+            },200);
 
-            this.refs.audio.seek(time);
-            this.setState({
-                currentTime:time,  
-            });
-            this.refs.audio.seek(time);
+
 
         });
         this.stopListener = DeviceEventEmitter.addListener('stop',()=>{
