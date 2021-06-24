@@ -10,10 +10,13 @@ import { pxToDp } from '../../../../utils/stylesKits';
 import Slider from '@react-native-community/slider';
 import SONGS from '../../../../images/song';
 import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, amplify,encodeFromWav} from '../../../../utils/audio-api'
-import RNFS, { stat } from 'react-native-fs';
 import MusicPlayer from "../components/MusicPlayer_complete";
 import SelectButton from "../components/selectButton";
 import { EventEmitter } from 'react-native';
+import RNFS, { stat } from 'react-native-fs';
+import Loading from "../../../../components/common/Loading";
+import Ready from "../../../../components/common/Ready"
+import "../../../../components/common/RootView";
 class Index extends Component {
     static contextType =NavigationContext;
     constructor(props) {
@@ -30,14 +33,22 @@ class Index extends Component {
           audioVol:100
       }
     }
-    resetAudio=(r,e)=>{
-      if(r==-1){
-       default_sox(global.ACC[2],global.ACC[3],this.state.reverbId,e);
-       DeviceEventEmitter.emit('RecordInit');
+    resetAudio= async(r,e)=>{
+      Loading.show();
+      if(r=="audioVol"){
+        await amplify(global.ACC[3],global.ACC[8],this.state.audioVol);
+      }else if(r=="musicVol"){
+        await amplify(global.ACC[1],global.ACC[7],this.state.musicVol);
+      }else if(r==-1){
+        await default_sox(global.ACC[2],global.ACC[3],this.state.reverbId,e);
+        await amplify(global.ACC[3],global.ACC[8],this.state.audioVol);     
       }else{
-        default_sox(global.ACC[2],global.ACC[3],r,this.state.equalizerId);
-        DeviceEventEmitter.emit('RecordInit');
+        await default_sox(global.ACC[2],global.ACC[3],r,this.state.equalizerId);
+        await amplify(global.ACC[3],global.ACC[8],this.state.audioVol);
       }
+      await mergeAudio(global.ACC[7],global.ACC[8],global.ACC[4]);
+      DeviceEventEmitter.emit('resetAudio');
+      Loading.hide();
     }
 
     goPage = async ()=>{
@@ -57,11 +68,6 @@ class Index extends Component {
         return(
             <View style={styles.container}>
                 <TopNav title ={"得分："+Number(this.state.finScore)}/>
-                {/* <View style={{backgroundColor:"blue",height:100}}></View> */}
-                 {/* <Image source={{ uri: global.SONGS[global.SONGS.length-1].picture }} style={{ width: "100%", height: pxToDp(200),borderRadius:pxToDp(20),marginTop:pxToDp(30) }} /> */}
-                {/* <View>
-                  <Text style={{fontSize:pxToDp(60),color:"#6699ffa9",paddingLeft:pxToDp(48)}}> 得分：{Number(this.state.finScore)}</Text>
-                </View> */}
                 <View style={{height:150,marginBottom:40}}>
                   <MusicPlayer
                       audioVolumn={this.state.audioVol}
@@ -76,17 +82,18 @@ class Index extends Component {
                   <View style={{ flex:1}}>
                       <Slider
                           ref='audioVol'
-                          value={100}
-                          maximumValue={100}
+                          value={5}
+                          maximumValue={10}
                           disabled = {false}
                           step={1}
                           minimumTrackTintColor='#FFDB42'
                           onValueChange={(value) => {
                             this.setState({
-                              audioVol: value
+                              audioVol: value-5
                           });
                           }}
-                          onSlidingComplete={(value) => {                                
+                          onSlidingComplete={(value) => {
+                            this.resetAudio("audioVol",value-5);                                
                           }}
                       />
                   </View>  
@@ -96,17 +103,18 @@ class Index extends Component {
                   <View style={{ flex:1}}>
                       <Slider
                           ref='musicVol'
-                          value={100}
-                          maximumValue={100}
+                          value={5}
+                          maximumValue={10}
                           disabled = {false}
                           step={1}
                           minimumTrackTintColor='#FFDB42'
                           onValueChange={(value) => {
                             this.setState({
-                              musicVol: value
+                              musicVol: value-5
                           });
                           }}
-                          onSlidingComplete={(value) => {                                
+                          onSlidingComplete={(value) => {
+                            this.resetAudio("musicVol",value-5);                                 
                           }}
                       />
                   </View>  

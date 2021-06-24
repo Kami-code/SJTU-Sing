@@ -15,7 +15,7 @@ export default class App extends Component {
     this.data = new Array();
     this.fragTable = new Array();
     this.data[0]=0;
-    this.offset = 0.4;//这个需要调
+    this.offset = 0.27;//这个需要调
   }
   state = {
     audioFile: '',

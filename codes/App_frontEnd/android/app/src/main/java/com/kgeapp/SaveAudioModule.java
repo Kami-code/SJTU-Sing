@@ -99,7 +99,7 @@ public class SaveAudioModule extends ReactContextBaseJavaModule {
                 dataArray[i]=0x00;
             }
             byte[] dataArray1 = new byte[dataArray.length];
-            amplifyPCMData(dataArray,dataArray.length,dataArray1,4);
+            amplifyPCMData(dataArray,dataArray.length,dataArray1,2);
             output.write(dataArray1);
 
         } catch (Exception err) {

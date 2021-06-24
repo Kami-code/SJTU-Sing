@@ -26,10 +26,10 @@ import {NavigationContext} from "@react-navigation/native";
 
 export default class MusicPlayer extends Component {
     static contextType = NavigationContext;
-    static propTypes = {
-        audioVolumn: PropTypes.int,
-        musicVolumn: PropTypes.int,
-    };
+    // static propTypes = {
+    //     audioVolumn: PropTypes.int,
+    //     musicVolumn: PropTypes.int,
+    // };
     constructor(props) {
         super(props);
         this._timer=null;
@@ -44,7 +44,7 @@ export default class MusicPlayer extends Component {
             song_id: '',     //歌曲id
             title: '',       //歌曲名字
             author: '',      //歌曲作者
-            file_link: `file:///${global.ACC[3]}`,   //歌曲播放链接
+            file_link: `file:///${global.ACC[4]}`,   //歌曲播放链接
             songLyr: [],     //当前歌词
             sliderValue: 0,    //Slide的value
             pause: false,       //歌曲播放/暂停
@@ -112,13 +112,13 @@ export default class MusicPlayer extends Component {
         }
         
     }
-    onProgress2 = (data) => {
-        let val = parseInt(data.currentTime)
-        if(val != this.state.currentTime){
-            this.refs.audio.seek(this.state.currentTime);
-        }
+    // onProgress2 = (data) => {
+    //     let val = parseInt(data.currentTime)
+    //     if(val != this.state.currentTime){
+    //         this.refs.audio.seek(this.state.currentTime);
+    //     }
         
-    }
+    // }
     //把秒数转换为时间类型
     formatTime(time) {
         // 71s -> 01:11
@@ -171,9 +171,9 @@ export default class MusicPlayer extends Component {
     onLoad = (data) => {
         this.setState({ duration: data.duration });
     }
-    onLoad2 = (data) => {
-        this.setState({ duration2: data.duration });
-    }
+    // onLoad2 = (data) => {
+    //     this.setState({ duration2: data.duration });
+    // }
 
     loadSongInfo = (index) => {
         //加载歌曲
@@ -220,26 +220,31 @@ export default class MusicPlayer extends Component {
 
 
     UNSAFE_componentWillMount() {
-        this.loadSongInfo(this.state.songs.length-1)   //预先加载第一首
+        this.loadSongInfo(0)   //预先加载第一首
         
     }
     async componentDidMount() {
         //录音器保存完成后，跳转到下一个界面
         this.resetListener = DeviceEventEmitter.addListener('resetAudio',()=>{
-            let timer = setTimeout(() => {
-                this.setState({
-                    file_link: local_song.mp3,   //播放链接
-                });
-                this.setState({
-                    file_link: `file:///${global.ACC[3]}`,   //播放链接
-                });
-                //this.refs.audio.setProps({source:{uri:`file:///${global.ACC[3]}`}});
-                this.refs.audio.seek(this.state.currentTime);
-                timer&&clearTimeout(timer);
-            },1000);         
+            let time = this.state.currentTime;
+            this.setState({
+                file_link: `file:///${global.ACC[1]}`,   //播放链接
+            });
+            this.setState({
+                file_link: `file:///${global.ACC[4]}`,   //播放链接
+            });
+
+            this.refs.audio.seek(time);
+            this.setState({
+                currentTime:time,  
+            });
+            this.refs.audio.seek(time);
+
         });
         this.stopListener = DeviceEventEmitter.addListener('stop',()=>{
-            this.playAction();
+            this.setState({
+                pause:true
+            })
         });
     }
 
@@ -276,10 +281,10 @@ export default class MusicPlayer extends Component {
                     <View>
                         <Video
                                 // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
-                                source = {{uri:`file:///${global.ACC[1]}`}}
-                                ref='music'                           // Store reference
+                                source = {{uri: this.state.file_link}}
+                                ref='audio'                           // Store reference
                                 rate={1.0}                     // 0 is paused, 1 is normal.
-                                volume={this.props.musicVolumn/100}                   // 0 is muted, 1 is normal.
+                                volume={1.0}                   // 0 is muted, 1 is normal.
                                 muted={false}                  // Mutes the audio entirely.
                                 paused={this.state.pause}                 // Pauses playback entirely.
                                 onProgress={(e) => this.onProgress(e)}
@@ -287,20 +292,20 @@ export default class MusicPlayer extends Component {
                                 onEnd={() => {}}
                             />
                     </View>
-                    <View>
+                    {/* <View>
                         <Video
                                 // source={{ uri: this.state.file_link }}   // Can be a URL or a local file.
                                 source = {{ uri: this.state.file_link }}
                                 ref='audio'                           // Store reference
                                 rate={1.0}                     // 0 is paused, 1 is normal.
-                                volume={this.props.audioVolumn/200}                   // 0 is muted, 1 is normal.
+                                volume={this.props.audioVolumn/100}                   // 0 is muted, 1 is normal.
                                 muted={false}                  // Mutes the audio entirely.
                                 paused={this.state.currentTime<this.state.duration2?this.state.pause:true}                 // Pauses playback entirely.
                                 onProgress={(e) => this.onProgress2(e)}
                                 onLoad={(e) => this.onLoad2(e)}
                                 onEnd={() => {}}
                             />
-                    </View>
+                    </View> */}
                     <View style={styles.playingInfo}>
                         <Text>{this.state.author} - {this.state.title}</Text>
                         <Text>{this.formatTime(Math.floor(this.state.currentTime))} - {this.formatTime(Math.floor(this.state.duration))}</Text>
@@ -324,17 +329,11 @@ export default class MusicPlayer extends Component {
                             this.setState({
                                 currentTime: value
                             })
+                            this.refs.audio.seek(value);
                         }
                         }
                         onSlidingComplete={(value) => {
-                            this.setState({
-                                file_link: this.state.songs[this.state.songs.length-1].mp3,   //播放链接
-                            });
-                            this.setState({
-                                file_link: `file:///${global.ACC[3]}`,   //播放链接
-                            });                                
-                            this.refs.music.seek(value);
-                            this.refs.audio.seek(value);
+
                         }}
                     />
                     </View>
