@@ -129,7 +129,9 @@ def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-
+    buildFeatures {
+        prefab true
+    }
     sourceSets{
         main{
             jniLibs.srcDirs = ['libs']
@@ -152,6 +154,11 @@ android {
         ndk{
             abiFilters "arm64-v8a", "armeabi-v7a", "x86", "x86_64"
             ldLibs "log"
+        }
+        externalNativeBuild {
+            cmake {
+                arguments "-DANDROID_STL=c++_shared"
+            }
         }
     }
     splits {
@@ -207,6 +214,8 @@ android {
 }
 
 dependencies {
+    implementation 'com.google.oboe:oboe:1.5.0'
+
     implementation fileTree(dir: "libs", include: ["*.jar"])
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
