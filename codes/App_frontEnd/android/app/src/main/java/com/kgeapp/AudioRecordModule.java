@@ -120,8 +120,8 @@ public class AudioRecordModule extends ReactContextBaseJavaModule {
 
                         // skip first 2 buffers to eliminate "click sound"
                         if (bytesRead > 0) {
-                            audioTrack.play();
-                            audioTrack.write(buffer, 0, bytesRead);
+                            // audioTrack.play();
+                            // audioTrack.write(buffer, 0, bytesRead);
                             base64Data = Base64.encodeToString(buffer, Base64.NO_WRAP);
                             eventEmitter.emit("data", base64Data);
                             //os.write(buffer, 0, bytesRead);
@@ -130,14 +130,14 @@ public class AudioRecordModule extends ReactContextBaseJavaModule {
                     }
 
                     recorder.stop();
-                    if (audioTrack != null) {
-                        if (audioTrack.getState() == AudioRecord.STATE_INITIALIZED) {//初始化成功
-                            audioTrack.stop();//停止播放
-                        }
-                        if (audioTrack != null) {
-                            audioTrack.release();//释放audioTrack资源
-                        }
-                    }
+                    // if (audioTrack != null) {
+                    //     if (audioTrack.getState() == AudioRecord.STATE_INITIALIZED) {//初始化成功
+                    //         audioTrack.stop();//停止播放
+                    //     }
+                    //     if (audioTrack != null) {
+                    //         audioTrack.release();//释放audioTrack资源
+                    //     }
+                    // }
                     stopRecordingPromise.resolve(outFile);
                 } catch (Exception e) {
                     e.printStackTrace();
