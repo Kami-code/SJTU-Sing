@@ -10,6 +10,9 @@ import {heart,svg_bubble} from '../../../res/fonts/iconSvg'
 
 import SONGS from '../../../images/song';
 import Loading from '../../../components/common/Loading';
+import {NavigationActions} from 'react-navigation';
+import RNFetchBlob from 'react-native-fetch-blob';
+import MusicPlayer from './component/MusicPlayer';
 class Index extends Component {
     static contextType = NavigationContext;
     constructor(props) {
@@ -19,6 +22,9 @@ class Index extends Component {
             pic_big: '', 
             cards:[],
             count:0,
+            liked: false,
+            showDetail: -1,
+            downloadPath: '/storage/emulated/0/listen.mp3',
         }
     }
     goPage = ()=>{
@@ -29,12 +35,9 @@ class Index extends Component {
     }
 
     songChosen=(id)=>{
-        const song = this.state.song
+        Loading.show();
         console.log("fetching_--")
-        console.log(JSON.stringify(formData))
-        // /record/{recordid}/download
-        // const url = `http://${global.IP}/downloadproduct/${song.productid}`;
-        const url = `http://${global.IP_NEW}/record/${song.id}/download`;
+        const url = `http://${global.IP_NEW}/record/${id}/download`;
         console.log(url);
         RNFetchBlob
         .config({
@@ -54,8 +57,9 @@ class Index extends Component {
             global.listen =  this.state.downloadPath;
             Loading.hide();
             this.setState({
-                showPlayer: true
+                showDetail: id
             })
+            
         }).catch((error) =>{
             // console.log(error)
             alert(error)
@@ -91,37 +95,45 @@ class Index extends Component {
         })
     }
 
-    songLike=()=>{
-        const url = `http://${global.IP_NEW}/record/${this.state.song.id}/like`;
+    songLike=(id)=>{
+        // console.log(id);
+        const url = `http://${global.IP_NEW}/record/${id}/like`;
+        // console.log(url);
         fetch(url,{
             method:'GET',
             headers: {},
         }).then(response =>response.json()
         ).then(data => {
-            // console.log(data)
+            console.log(data)
             console.log("点赞成功")
-            let SONG = this.state.song
-            SONG.likes = data.likes
+            // let SONG = this.state.song
+            // SONG.likes = data.likes
             this.setState({
-                song:SONG
+                // song:SONG,
+                liked: true
             })
+            this.forceUpdate()
         })
         .catch((error) =>{
             alert(error)
         })
     }
+    
+    resetLike=()=>{
+        console.log("reset like")
+        this.setState({
+            liked: false
+        })
+    }
 
-    render () {
-        if (this.state.songs == null){
-            // alert("empty!")
-            this.getRandom()
-            return (
-                <View>
-                    <Text> Loading ...</Text>
-                </View>
-            )
-        }
-        else return(
+    goDetail =(id)=>{
+        console.log("goDetail?")
+        // this.props.navigation.navigate("NewsDetailPage");
+        this.songChosen(id);
+    }
+
+    renderNews = ()=>{
+        return(
             <View style={styles.container}>
                 <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
                 <Swiper
@@ -132,28 +144,36 @@ class Index extends Component {
                                 <ImageBackground 
                                     style={{flex:1}}
                                     imageStyle={{borderRadius:pxToDp(14)}}
-                                    source={require('../../../images/background3.jpg')}>
-                                    
-                                    <Text>{card.song.name}</Text>
-                                    <View style={{flex:1,backgroundColor:"#00000020"}}>
-                                        <Image
-                                            source={{url: card.song.picture}}
-                                            style={{height:pxToDp(90),width:pxToDp(90),borderRadius:50}}
-                                        />
-                                    </View>
-                                    <View style={{flex:1,backgroundColor:"transparent",borderRadius:pxToDp(14),marginTop:pxToDp(400),flexDirection:"row"}}>
-                                        <TouchableOpacity style={{flex:1,backgroundColor:"#ccccff40",borderBottomLeftRadius:pxToDp(14),alignItems:"center",justifyContent:"center"}}>
-                                            <Svg width="40" height = "40"  fill ="#fff" svgXmlData={heart}/>
+                                    // source={require('../../../images/background3.jpg')}
+                                    source={{uri: card.song.picture}}
+                                    >
+                                    <TouchableOpacity style={{flex:1,backgroundColor:"transparent",height:pxToDp(200)}} onPress={()=>this.goDetail(card.id)}>
+                                        <Text style ={{fontSize:pxToDp(60),color:"#ffffff",padding:pxToDp(30)}}>{card.song.name}</Text>
+                                        {/* <Text style ={{fontSize:pxToDp(24),color:"#ffffffda",padding:pxToDp(10)}}>原唱：{card.song.singer}</Text> */}
+                                        {/* <Text style ={{fontSize:pxToDp(24),color:"#ffffffda",padding:pxToDp(10)}}>专辑：{card.song.album}</Text> */}
+                                        {/* <Text style ={{fontSize:pxToDp(24),color:"#ffffffda",padding:pxToDp(10)}}>翻唱：{card.nickname}</Text> */}
+                                    </TouchableOpacity>
+                                    {/* <View style ={{flex:1,backgroundColor: "black"}}></View> */}
+
+                                    {/* <Image source={{uri: card.song.picture}} style={{flex:1}}/> */}
+                                    <View style={{backgroundColor:"transparent",borderRadius:pxToDp(14),height:pxToDp(120),flexDirection:"row"}}>
+                                        <TouchableOpacity onPress={()=>this.songLike(card.id)} style={{flex:1,backgroundColor:"#ccccffee",borderBottomLeftRadius:pxToDp(14),alignItems:"center",justifyContent:"center"}}>
+                                            {this.state.liked ? <Svg width="40" height = "40"  fill ="#f00" svgXmlData={heart}/>:<Svg width="40" height = "40"  fill ="#fff" svgXmlData={heart}/>}
+                                            <Text style ={{fontSize:pxToDp(24),color:"#ffffff"}}>{card.likes}</Text>
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{flex:1,backgroundColor:"#ccccff40",borderBottomRightRadius:pxToDp(14),alignItems:"center",justifyContent:"center"}}>
+                                        <TouchableOpacity style={{flex:1,backgroundColor:"#ccccffee",borderBottomRightRadius:pxToDp(14),alignItems:"center",justifyContent:"center"}}>
                                             <Svg width="50" height = "50"  fill ="#fff" svgXmlData={svg_bubble}/>
+                                            <Text style ={{fontSize:pxToDp(24),color:"#ffffff"}}>{card.remark_items.length}</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </ImageBackground>
                             </View>
                         )
                     }}
-                    onSwiped={(cardIndex) => {console.log(cardIndex)}}
+                    onSwiped={(cardIndex) => {
+                        console.log(cardIndex)
+                        this.resetLike()
+                    }}
                     onSwipedAll={() => {console.log('onSwipedAll')}}
                     infinite={true}
                     cardIndex={0}
@@ -171,6 +191,36 @@ class Index extends Component {
                 </View>
             </View>
         );
+    }
+
+    renderDetail =()=>{
+        return(
+            <View style={{flex:1}}>
+                <MusicPlayer/>
+            </View>
+        )
+    }
+
+
+    render () {
+        if (this.state.songs == null){
+            // alert("empty!")
+            this.getRandom()
+            return (
+                <View>
+                    <Text> Loading ...</Text>
+                </View>
+            )
+        }
+        else if(this.state.showDetail == -1){
+            return(
+                this.renderNews()
+            )
+        }else {
+            return(
+                this.renderDetail()
+            )
+        }
         
     }
 }
@@ -198,7 +248,6 @@ const styles = StyleSheet.create({
     },
     card: {
       flex: 1,
-      flexDirection: 'column',
       borderRadius: 14,
       borderWidth: 2,
       borderColor: "#E8E8E8",

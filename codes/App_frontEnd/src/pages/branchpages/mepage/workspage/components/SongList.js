@@ -76,6 +76,7 @@ class SongList extends Component{
     songChosen=()=>{
 
         // this.mutePlay()
+        Loading.show();
 
         const song = this.state.song
         console.log("fetching_--")
@@ -110,6 +111,7 @@ class SongList extends Component{
             })
         }).catch((error) =>{
             // console.log(error)
+            Loading.hide();
             alert(error)
             console.log(error)
         })
