@@ -12,6 +12,7 @@ import MessagePage from './pages/branchpages/messagepage';
 import FindPage from './pages/branchpages/findpage';
 import MainPage from './pages/mainpage';
 import MusicPlayer from './utils/MusicPlayer'
+import "./components/common/RootView"
 class Index extends Component {
     state = {  
         selectedTab:"home"
@@ -36,18 +37,7 @@ class Index extends Component {
                             <NewsPage />
                         </View>
                     </TabNavigator.Item>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'search'}
-                        title="发现"
-                        renderIcon={() => <Svg width="20" height = "20" fill ="#77a"  svgXmlData={svg_search} />}
-                        // renderSelectedIcon={() => <Svg width="20" height = "20" svgXmlData={svg_shezhi} />}
-                        // renderBadge={() => <CustomBadgeView />}
-                        onPress={() => this.setState({ selectedTab: 'search' })}>
-                        {/* {profileView} */}
-                        <View style={{flex:1,flexDirection:'column'}} >
-                            <FindPage/>
-                        </View>
-                    </TabNavigator.Item>
+
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'home'}
                         // title="Home"
@@ -56,25 +46,12 @@ class Index extends Component {
                         // badgeText="1"
                         onPress={() => this.setState({ selectedTab: 'home' })}>
                         <View style={{flex:1,flexDirection:'column'}} >
-                            {/* <Text> 111</Text> */}
-                            {/* < MusicPlayer></MusicPlayer> */}
+
                             <ChoosePage/>
                         </View>
                         
-                        {/* <Text> 1111</Text> */}
                     </TabNavigator.Item>
-                    <TabNavigator.Item
-                        selected={this.state.selectedTab === 'message'}
-                        title="消息"
-                        renderIcon={() => <Svg width="25" height = "25" fill ="#77a"  svgXmlData={svg_letter} />}
-                        // renderSelectedIcon={() => <Svg width="20" height = "20" svgXmlData={svg_shezhi} />}
-                        // renderBadge={() => <CustomBadgeView />}
-                        onPress={() => this.setState({ selectedTab: 'message' })}>
-                        {/* {profileView} */}
-                        <View style={{flex:1,flexDirection:'column'}} >
-                            <MessagePage/>
-                        </View>
-                    </TabNavigator.Item>
+
                     <TabNavigator.Item
                         selected={this.state.selectedTab === 'myinfo'}
                         title="我的"

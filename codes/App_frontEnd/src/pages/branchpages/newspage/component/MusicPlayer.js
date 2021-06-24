@@ -16,10 +16,12 @@ let { width, height } = Dimensions.get('window');
 import Video from 'react-native-video';
 let lyrObj = []   // 存放歌词
 import Svg from 'react-native-svg-uri';
-import {origin,adjust,restart,finish} from '../../../../../res/fonts/iconSvg';
-import {pxToDp} from '../../../../../utils/stylesKits';
+import {origin,adjust,restart,finish} from '../../../../res/fonts/iconSvg';
+import {pxToDp} from '../../../../utils/stylesKits';
 
 import {NavigationContext} from "@react-navigation/native";
+//  http://rapapi.org/mockjsdata/16978/rn_songList
+//  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
 
 export default class MusicPlayer extends Component {
     static contextType = NavigationContext;
@@ -52,6 +54,9 @@ export default class MusicPlayer extends Component {
             recordShift:0.75
         }
     }
+    // //重唱上一句话
+    // prevAction =
+    //播放/暂停
     playAction = () => {
         this.setState({
             pause: !this.state.pause
@@ -144,12 +149,12 @@ export default class MusicPlayer extends Component {
         //加载歌曲
         let local_song = this.state.songs[index];
         this.setState({
-            // pic_small: local_song.picture, //小图
-            // pic_big: local_song.picture,  //大图
-            // title: local_song.name,     //歌曲名
-            // author: local_song.singer,   //歌手
-            // file_link: local_song.mp3,   //播放链接
-            // file_duration: local_song.file_duration //歌曲长度
+            pic_small: local_song.picture, //小图
+            pic_big: local_song.picture,  //大图
+            title: local_song.name,     //歌曲名
+            author: local_song.singer,   //歌手
+            file_link: local_song.mp3,   //播放链接
+            file_duration: local_song.file_duration //歌曲长度
         })
         let lry = local_song.lyric
         let lryAry = lry.split('\n')   //按照换行符切数组
@@ -185,7 +190,7 @@ export default class MusicPlayer extends Component {
 
 
     UNSAFE_componentWillMount() {
-        // this.loadSongInfo(this.props.song)   //预先加载第一首
+        // this.loadSongInfo(0)   //预先加载第一首
         
     }
     async componentDidMount() {
@@ -224,7 +229,7 @@ export default class MusicPlayer extends Component {
                             />
                     </View>
                     <View style={styles.playingInfo}>
-                        <Text>{this.props.song.id} - {this.props.song.id}</Text>
+                        <Text>{this.state.author} - {this.state.title}</Text>
                         <Text>{this.formatTime(Math.floor(this.state.currentTime))} - {this.formatTime(Math.floor(this.state.duration))}</Text>
                     </View>
 
@@ -255,14 +260,14 @@ export default class MusicPlayer extends Component {
                     </View>
 
                         {/* 歌词界面设置 */}
-                    {/* <View style={{ height: 120,alignItems: 'center' ,marginTop:0}}>
+                    <View style={{ height: 120,alignItems: 'center' ,marginTop:0}}>
                         <ScrollView style={{ position: 'relative' ,width:"80%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
                                     snapToInterval = {15}
                         >
                             {this.renderItem()}
                         </ScrollView>
-                    </View> */}
+                    </View>
 
                 </View>
             )

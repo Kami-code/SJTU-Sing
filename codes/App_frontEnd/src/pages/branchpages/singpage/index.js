@@ -690,7 +690,7 @@ export default class Singpage extends Component {
 
                     {/* 歌词界面设置 */}
                     <View style={{ height: 320,alignItems: 'center' ,marginTop:20, flex:1}}>
-                        <ScrollView style={{ position: 'relative' ,width:"80%"}}
+                        <ScrollView style={{ position: 'relative' ,width:"100%"}}
                                     ref={(scrollView) => { this.scrollView = scrollView }}
                                     showsVerticalScrollIndicator = {false}
                                     snapToInterval = {15}

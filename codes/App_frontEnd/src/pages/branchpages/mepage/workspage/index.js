@@ -10,7 +10,7 @@ import {heart,origin} from '../../../../res/fonts/iconSvg';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import SongList from './components/SongList';
-
+import Loading from '../../../../components/common/Loading';
 import SONGS from '../../../../images/song';
 class Index extends Component {
     static contextType =NavigationContext;
@@ -22,7 +22,38 @@ class Index extends Component {
         }
     }
 
+    refresh =()=>{  
+        Loading.show()
+        console.log("refreshing");
+
+        const url = `http://${global.IP_NEW}/user/${global.account}`;
+        fetch(url,{
+            method:'GET',
+            headers: {},
+        }).then(response =>response.json()
+        ).then(data => {
+            console.log("In mePage in goWorkPage, receive response")
+            console.log(data)
+            global.userinfo.mysongs =  data.recordList;
+            this.setState({
+                refresh :true
+            })
+            Loading.hide()
+        })
+        .catch((error) =>{
+            alert(error)
+            Loading.hide()
+        })
+    }
+
     render () {
+        if (this.state.songs == null){
+            return(
+                <View>
+                    <Text> 暂无作品</Text>
+                </View>
+            )
+        }
         return(
             <View style={styles.container}>
                 <TopNav title ="我的作品"/>
@@ -54,7 +85,7 @@ class Index extends Component {
                 <ScrollView>
                     {this.state.songs.map((item,index)=>{
                         return (
-                            <SongList key = {item.name} song = {item} onChosen={this.onChosen}/>
+                            <SongList key = {index} song = {item} />
                         );
                         })
                     }

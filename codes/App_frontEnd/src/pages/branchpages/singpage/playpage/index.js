@@ -55,12 +55,13 @@ class Index extends Component {
         // console.log(response.info.result);
         // console.log(response.info.song);
         // console.log("Finalupload get response");
-        // this.context.navigate("Tabbar");
+        
 
         response.json()
       )
       .then(data => {
           console.log(data)
+          this.context.navigate("Tabbar");
       })
       .catch(error => {
          alert(error)

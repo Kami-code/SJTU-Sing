@@ -57,8 +57,7 @@ class Index extends Component {
             },
             // body: "1111",
             timeout: 5000 // 5s超时
-        }
-        )
+        })
             .then(response =>{ 
                 // response.json;
                 console.log("get response");

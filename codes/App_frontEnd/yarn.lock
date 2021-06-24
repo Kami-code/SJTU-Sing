@@ -6028,8 +6028,13 @@ react-native-picker@^4.3.7:
 
 react-native-popup-menu@^0.15.11:
   version "0.15.11"
+<<<<<<< HEAD
   resolved "https://registry.nlark.com/react-native-popup-menu/download/react-native-popup-menu-0.15.11.tgz#df96b1a909ecbba84487821061ce6e29e7c7bb20"
   integrity sha1-35axqQnsu6hEh4IQYc5uKefHuyA=
+=======
+  resolved "https://registry.yarnpkg.com/react-native-popup-menu/-/react-native-popup-menu-0.15.11.tgz#df96b1a909ecbba84487821061ce6e29e7c7bb20"
+  integrity sha512-f5q2GoDN99bkA24wHiwasaErcdQEgyqYZ8IYuZPOrZNFr66E4rg6f4LElSVBA3EZJTSq5OddVeaOcU340bSTEg==
+>>>>>>> 5bf17202b92de37a7d616fd4b25182cab2e5a52d
 
 react-native-ratings@^7.3.0:
   version "7.4.0"

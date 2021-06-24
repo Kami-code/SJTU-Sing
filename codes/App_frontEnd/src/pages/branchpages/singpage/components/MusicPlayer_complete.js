@@ -227,30 +227,19 @@ export default class MusicPlayer extends Component {
         //录音器保存完成后，跳转到下一个界面
         this.resetListener = DeviceEventEmitter.addListener('resetAudio',()=>{
             let time = this.state.currentTime;
-            let isPlay = false;
-            if(this.state.pause==false){
-                this.setState({pause:true});
-                isPlay = true;
-            };
             this.setState({
                 file_link: `file:///${global.ACC[1]}`,   //播放链接
             });
             this.setState({
                 file_link: `file:///${global.ACC[4]}`,   //播放链接
             });
-            timer = setTimeout(() => {
-                this.refs.audio.seek(time);
-                this.setState({
+
+            this.refs.audio.seek(time);
+            this.setState({
                 currentTime:time,  
             });
-            if(isPlay){
-                this.setState({pause:false});
-            }
-            timer && clearTimeout(timer);
-            },500)
+            this.refs.audio.seek(time);
 
-            console.log(time);
-            
         });
         this.stopListener = DeviceEventEmitter.addListener('stop',()=>{
             this.setState({
