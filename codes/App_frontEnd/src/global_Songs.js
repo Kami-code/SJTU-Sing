@@ -1,5 +1,17 @@
 global.IP = '45.253.64.55:11452'
 
+global.IP_NEW = '45.253.64.55:11454'
+
+global.userinfo={
+    nickname:'',
+    gender:'',
+    birthday:'',
+    description:'',
+    mysongs:[]
+}
+
+global.listen = ""
+
 global.SONGS = [
     {
         picture: "https://bkimg.cdn.bcebos.com/pic/72f082025aafa40f4bfb30fea62d144f78f0f736b3f5?x-bce-process=image/watermark,image_d2F0ZXIvYmFpa2UyMjA=,g_7,xp_5,yp_5/format,f_auto",

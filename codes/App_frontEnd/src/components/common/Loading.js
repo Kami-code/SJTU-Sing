@@ -7,12 +7,14 @@ class Loading extends Component {
         super(props);
         _this = this;
         this.state = {
+            spin: new Animated.Value(0),
             show:false,
             rotateVal: new Animated.Value(0), 
         };
     }
 
     componentDidMount(){ // 组件加载完成后启动动画
+        this._spin();
         _this.animationLoading = Animated.timing(
             this.state.rotateVal, // 初始值
             {
@@ -30,13 +32,39 @@ class Loading extends Component {
     static hide = () => {
         _this.setState({show: false})
     };
+
+    _spin() {
+        this.state.spin.setValue(0);
+        Animated.timing(
+            this.state.spin,
+            {
+                toValue: 1,
+                duration: 4000,
+                easing: Easing.linear,
+                useNativeDriver:true
+            }
+        ).start(() => this._spin());
+    }
+
     render() {
+        const spin = this.state.spin.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '360deg']
+        });
+
         if (this.state.show) {
             return (
                 <View style={styles.LoadingPage}>
                     <View style={{flex:1}}>
                     </View>
-                    <Animated.Text 
+                    <Animated.Image
+                    style={{
+                        transform: [{rotate: spin}],
+                        height: 50,
+                        width:50
+                    }}
+                    source={require('../../images/icon_play.png')}/>
+                    {/* <Animated.Text 
                     style={{
                         textAlign: 'center',
                         fontSize: 34,
@@ -47,9 +75,9 @@ class Loading extends Component {
                                 outputRange: ['0deg', '360deg'],
                             })
                         }]
-                    }}>
-                    {'\ue6ae'}
-                    </Animated.Text>
+                    }}> */}
+                    {/* {'\ue6ae'} */}
+                    {/* </Animated.Text> */}
                     <View style={{flex:1}}>
                     </View>
                 

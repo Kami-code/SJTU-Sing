@@ -72,7 +72,6 @@ class SongList extends Component{
             fileCache : true,
             path: this.state.downloadPath
         }).fetch('GET',url,{
-
         }).then(async(res) =>{
             console.log(res);
             // alert("Download");
@@ -157,9 +156,11 @@ class SongList extends Component{
     songChosen=()=>{
         Loading.show();
         console.log("songChosen");
+        
         // this.context.navigate("SingPage");
         //搜索该歌曲完整信息
         const id = this.state.song.id;
+        global.song_id_underprocess = id;
         console.log(`http://${global.IP}/songs/${id}`)
             fetch(`http://${global.IP}/songs/${id}`, 
             {

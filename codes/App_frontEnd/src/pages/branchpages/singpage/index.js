@@ -561,7 +561,7 @@ export default class Singpage extends Component {
                     
                     <View>
                         <Text> 当前得分： {this.state.myScore}</Text>
-                        <Text> 当前平均得分： {this.state.totalScore/this.state.numOfScore}</Text>
+                        <Text> 当前平均得分： {this.state.numOfScore?this.state.totalScore/this.state.numOfScore:0}</Text>
                     {/* {(this.state.playACC)?  */}
                         <Video
                             // source={{uri: this.state.file_link }}   //原唱

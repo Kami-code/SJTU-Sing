@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {View, Text, ImageBackground,StyleSheet,Button ,StatusBar,Image} from 'react-native';
+import {View, Text, ImageBackground,StyleSheet,Button ,StatusBar,Image,ScrollView} from 'react-native';
 import Swiper from 'react-native-deck-swiper';
 import TopNav from '../../../../components/Topnav';
 import {NavigationContext} from "@react-navigation/native";
@@ -9,28 +9,29 @@ import Svg from "react-native-svg-uri";
 import {heart,origin} from '../../../../res/fonts/iconSvg';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import SongList from './components/SongList';
+
 import SONGS from '../../../../images/song';
 class Index extends Component {
     static contextType =NavigationContext;
     constructor(props) {
         super(props);
         this.state={
-            songs: global.SONGS,
+            songs: global.userinfo.mysongs,
             pic_big: '', 
         }
     }
+
     render () {
         return(
             <View style={styles.container}>
                 <TopNav title ="我的作品"/>
                 {/* 标题 */}
-                <View style={{height:pxToDp(40),backgroundColor:"#ccd",flexDirection:'row',justifyContent:"space-between",paddingLeft:pxToDp(10),alignItems:"center"}} >
-                    {/* <VideoScreen/>
-                     */}
+                {/* <View style={{height:pxToDp(40),backgroundColor:"#ccd",flexDirection:'row',justifyContent:"space-between",paddingLeft:pxToDp(10),alignItems:"center"}} >
                     <Text style={{color:"#666"}}>高赞作品</Text>
-                </View>
+                </View> */}
                 {/* 内容 */}
-                <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
+                {/* <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
                     <Image source={{ uri: this.state.songs[0].picture }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
                     <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
                         <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[0].title } </Text>
@@ -40,7 +41,7 @@ class Index extends Component {
                         <Svg width="40" height="40" fill ="#fff"  svgXmlData={heart} />
                         <Text >9.1k</Text>
                     </View>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 {/* 标题 */}
                 {/* 标题 */}
@@ -48,42 +49,16 @@ class Index extends Component {
                     {/* <VideoScreen/>
                      */}
                     <Text style={{color:"#666"}}>作品列表</Text>
-
+                    
                 </View>
-                {/* <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={{ uri: this.state.songs[1].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[1].title } </Text>
-                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.3.23 </Text>
-                    </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center",width:pxToDp(60)}}>
-                        <Svg width="40" height="40" fill ="#fff"  svgXmlData={heart} />
-                        <Text >9.1k</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={{ uri: this.state.songs[2].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[2].title } </Text>
-                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.9.10 </Text>
-                    </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center",width:pxToDp(60)}}>
-                        <Svg width="40" height="40" fill ="#fff"  svgXmlData={heart} />
-                        <Text >0.1k</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={{height:pxToDp(120),backgroundColor:"#eef",flexDirection:'row',justifyContent:'space-between'}}>
-                    <Image source={{ uri: this.state.songs[3].pic_big }} style={{height:pxToDp(120),width:pxToDp(120)}}></Image>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),flex:1}}>
-                        <Text style={{color:'#222',fontSize:pxToDp(20)}}> {this.state.songs[3].title } </Text>
-                        <Text style={{color:'#ccc',fontSize:pxToDp(16)}}> 2022.7.3 </Text>
-                    </View>
-                    <View style={{backgroundColor:"transparent",flexDirection:'column',paddingTop:pxToDp(30),paddingRight:pxToDp(30),alignItems:"center",width:pxToDp(60)}}>
-                        <Svg width="40" height="40" fill ="#fff"  svgXmlData={heart} />
-                        <Text >2.1k</Text>
-                    </View>
-                
-                </TouchableOpacity> */}
+                <ScrollView>
+                    {this.state.songs.map((item,index)=>{
+                        return (
+                            <SongList key = {item.name} song = {item} onChosen={this.onChosen}/>
+                        );
+                        })
+                    }
+                </ScrollView>
             </View>
         );
         

@@ -23,9 +23,58 @@ class Index extends Component {
           finScore: global.SCORE,
       }
     }
+    uploadFinalWork = async()=>{
+      console.log("start uploading")
+      //本函数上传id+user.wav文件
+        //调用一次上次传一个，流程中需要调用两次，一次原唱一次用户（原唱应该只需要一次）
+      let params = {
+          path: global.ACC[5] // 根据自己项目修改参数哈
+      }
+      let {path} = params;
+      let formData = new FormData();
+      let soundPath = `file://${path}` ;  // 注意需要增加前缀 `file://`
+      console.log(soundPath);
+      let fileName = `${global.song_id_underprocess}user.wav`// 文件名，应后端要求进行修改
+      console.log("Filename: "+ fileName);
+      let file = { uri: soundPath , type: "multipart/form-data", name: fileName} // 注意 `uri` 表示文件地址，`type` 表示接口接收的类型，一般为这个，跟后端确认一下
+      formData.append('file',file);
+      formData.append('username',global.account);
+      formData.append('songid',global.song_id_underprocess);
+      formData.append('score',this.state.finScore);
+      console.log(formData);
+      
+      // fetch(`http://${global.IP}/uploadproduct`, 
+      fetch(`http://${global.IP_NEW}/song/upload`, 
+      {
+          method: 'POST',
+          body:formData,
+      })
+      .then(response =>
+        // response.json();
+        // console.log(response);
+        // console.log(response.info.result);
+        // console.log(response.info.song);
+        // console.log("Finalupload get response");
+        // this.context.navigate("Tabbar");
+
+        response.json()
+      )
+      .then(data => {
+          console.log(data)
+          if (data.info.result == "success" ) console.log(data.info.song)
+          else console.log(data.info.message)
+      })
+      .catch(error => {
+         alert(error)
+          console.log("failed");
+          return {error_code: -3, error_msg:'请求异常，请重试'}
+      })
+      console.log("fetch end");
+    }
+
     goPage = ()=>{
       // this.context = this.props.navigation
-      this.context.navigate("Tabbar");
+      this.uploadFinalWork();
     }
     render () {
         return(
