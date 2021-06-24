@@ -86,7 +86,7 @@ export async function decodeToWav(f_in,f_out,channel,sampleRate){//channel = 1 o
 
 // input.wav output.xxx
 export async function encodeFromWav(f_in,f_out,channel){//channel = 1 or 2
-    ffmpegCommand = `-y -ac ${channel} -ar 48000 -acodec pcm_s16le -i ${f_in} ${f_out}`;
+    ffmpegCommand = `-y -i ${f_in} -f mp3 -acodec libmp3lame -y ${f_out}`;
     return await RNFFmpeg.execute(ffmpegCommand);
 }
 

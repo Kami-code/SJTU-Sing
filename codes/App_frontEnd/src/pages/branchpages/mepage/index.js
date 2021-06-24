@@ -8,15 +8,43 @@ import {NavigationContext} from "@react-navigation/native";
 
 import Info_Form from '../../../components/Info_Form';
 import Topbar from '../../../components/Topbar';
-
+import Loading from '../../../components/common/Loading';
 // Inside of a component's render() method:
 class Index extends Component {
     static contextType = NavigationContext;
     state = { 
-        showEdit: false
+        showEdit: false,
+        nickname: global.userinfo.nickname,
+        gender: global.userinfo.gender,
+        birthday: global.userinfo.birthday,
+        description: global.userinfo.description
     }
     goWorksPage = ()=>{
-        this.context.navigate("WorksPage");
+        Loading.show()
+        let formData = new FormData();
+        formData.append("username",global.account);
+        console.log("request sent");
+
+        // const url = `http://${global.IP}/production`;
+        const url = `http://${global.IP_NEW}/song/${global.account}`;
+        fetch(url,{
+        method:'POST',
+        headers: {},
+        // body: formData,
+        }).then(response =>response.json()
+        ).then(data => {
+            console.log("In mePage in goWorkPage, receive response")
+            console.log(data)
+            global.userinfo.mysongs =  data;
+            Loading.hide()
+            this.context.navigate("WorksPage");
+        })
+        .catch((error) =>{
+            alert(error)
+            Loading.hide()
+        })
+    
+        
     }
 
     goEditPage =()=>{
@@ -26,11 +54,44 @@ class Index extends Component {
         })
     }
 
+    getInfo =()=>{
+        let formData = new FormData();
+        formData.append("username",global.account);
+        console.log(formData);
+
+        const url = `http://${global.IP}/downloadinfo`;
+        fetch(url,{
+        method:'POST',
+        headers: {},
+        body: formData,
+        }).then(response =>response.json()
+        ).then(data => {
+            console.log(data)
+            global.userinfo.nickname = data.nickname
+            // console.log(global.userinfo.nickname);
+            global.userinfo.birthday = data.birthday
+            global.userinfo.gender = data.gender
+            global.userinfo.description = data.description
+            this.setState({
+                nickname: global.userinfo.nickname,
+                gender: global.userinfo.gender,
+                birthday: global.userinfo.birthday,
+                description: global.userinfo.description
+            })
+            this.setState({
+                showEdit: false
+            })
+
+        })
+        .catch((error) =>{
+            alert(error)
+        })
+    }
+
     goBack =()=>{
         // alert("放弃当前编辑内容");
-        this.setState({
-            showEdit: false
-        })
+        this.getInfo();
+
     }
 
     renderEditPage =()=>{
@@ -60,8 +121,8 @@ class Index extends Component {
                             style={{height:pxToDp(90),width:pxToDp(90),borderRadius:50}}
                         ></Image>
                         <View style={{height:"100%",paddingTop:pxToDp(20),flexDirection:"column"}}>
-                            <Text style={{color:"#fff",fontSize:pxToDp(24),fontWeight:'bold'}}> 张三 </Text>
-                            <Text style={{color:"#fff",fontSize:pxToDp(16)}}> 男 广东 22岁</Text>
+                            <Text style={{color:"#fff",fontSize:pxToDp(24),fontWeight:'bold'}}> {this.state.nickname} </Text>
+                            <Text style={{color:"#fff",fontSize:pxToDp(16)}}> {this.state.gender} {this.state.birthday}</Text>
                             <Text style={{color:"#fff",fontSize:pxToDp(16)}}> 手机号: {global.account}</Text>
                             <Text style={{color:"#fff",fontSize:pxToDp(16)}}> </Text>
                         </View>
@@ -84,7 +145,7 @@ class Index extends Component {
                         </TouchableOpacity>
                     </View>
                     <TouchableOpacity style={{height:"5%",paddingTop:pxToDp(10),paddingLeft:pxToDp(20),flexDirection:"column",backgroundColor:"#aabbffa9"}}>
-                        <Text> 点击设置个性签名 </Text>
+                        <Text style={{fontSize:pxToDp(18)}}> {global.userinfo.description}</Text>
                     </TouchableOpacity>
                     <View style={{height:"16%",paddingTop:pxToDp(12),flexDirection:"row",alignItems:'center',justifyContent:'space-around',backgroundColor:"#aabbffa9"}}>
                         <Button onPress={this.goWorksPage} style={{width:"80%",alignSelf:"center",height:pxToDp(40),borderRadius:pxToDp(20)}}>我的作品</Button>

@@ -4,6 +4,8 @@ import { View, Text, Dimensions } from 'react-native';
 import { pxToDp } from '../../utils/stylesKits';
 import { Button } from 'react-native';
 
+import {DatePicker} from "react-native-common-date-picker";
+
 export let DEVICE_WIDTH = Dimensions.get('window').width;
 export let DEVICE_HEIGHT = Dimensions.get('window').height;
 
@@ -123,6 +125,12 @@ export default class Spectrum extends Component{
                         </Group>
                     </Surface>
                     <Button title="暂停" onPress={this.fetchTest}> </Button>
+                    <DatePicker
+                        confirm={date => {
+                            console.warn(date)
+                        }}
+                        minDate="1950-1-1"
+                    />
                 </View>
             
         );

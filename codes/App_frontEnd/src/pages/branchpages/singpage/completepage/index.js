@@ -9,7 +9,8 @@ import Button from '../../../../components/Button';
 import { pxToDp } from '../../../../utils/stylesKits';
 import Slider from '@react-native-community/slider';
 import SONGS from '../../../../images/song';
-import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, amplify} from '../../../../utils/audio-api'
+import {encode,decode,mergeAudio,noiseSuppress,aecm, default_sox, amplify,encodeFromWav} from '../../../../utils/audio-api'
+import RNFS, { stat } from 'react-native-fs';
 import MusicPlayer from "../components/MusicPlayer_complete";
 import SelectButton from "../components/selectButton";
 import { EventEmitter } from 'react-native';
@@ -38,11 +39,18 @@ class Index extends Component {
         DeviceEventEmitter.emit('RecordInit');
       }
     }
+
     goPage = async ()=>{
+      console.log("goPage pressed")
       // this.context = this.props.navigation  
       DeviceEventEmitter.emit("stop");
       await amplify(global.ACC[1],global.ACC[1],-2-Math.round((this.state.audioVol-this.state.musicVol)/10));   
       await mergeAudio(global.ACC[1],global.ACC[3],global.ACC[4]);
+
+      global.ACC[5] = `${RNFS.CachesDirectoryPath}/merge_audio.mp3`;
+      // global.ACC[5] = `${RNFS.ExternalStorageDirectoryPath}/merge_audio.mp3`;
+      await encodeFromWav(global.ACC[4],global.ACC[5],2);
+
       this.context.navigate("PlayPage");
     }
     render () {

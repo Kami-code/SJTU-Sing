@@ -1,6 +1,6 @@
 import React,{Component} from 'react';
 
-import {View,Text,Image,StatusBar,StyleSheet} from 'react-native';
+import {View,Text,Image,StatusBar,StyleSheet,TextInput} from 'react-native';
 import { color } from 'react-native-reanimated';
 import {pxToDp} from "../../../utils/stylesKits";
 import validator from "../../../utils/validator";
@@ -12,13 +12,15 @@ import Button  from "../../../components/Button";
 import Toast from "../../../utils/Toast";
 import {CodeField,Cursor} from 'react-native-confirmation-code-field';
 
+import {NavigationActions} from 'react-navigation';
+
 
 // console.log("调试");
 class Index extends Component{
 
     state ={
         //手机号
-        phoneNumber:"15600000000",
+        phoneNumber:"18100000000",
         code: "111111",
         code_r: "",
         //是否合法
@@ -213,17 +215,66 @@ class Index extends Component{
         })
     }
 
+    getWorkList =()=>{
+        let formData = new FormData();
+        formData.append("username",global.account);
+        console.log("request sent");
+
+        const url = `http://${global.IP}/production`;
+        fetch(url,{
+        method:'POST',
+        headers: {},
+        body: formData,
+        }).then(response =>response.json()
+        ).then(data => {
+            console.log(data)
+            Toast.hideLoading();
+        })
+        .catch((error) =>{
+            alert(error)
+        })
+    }
+
+    getInfo =()=>{
+        let formData = new FormData();
+        formData.append("username",global.account);
+        console.log(formData);
+
+        const url = `http://${global.IP}/downloadinfo`;
+        fetch(url,{
+        method:'POST',
+        headers: {},
+        body: formData,
+        }).then(response =>response.json()
+        ).then(data => {
+            console.log(data)
+            global.userinfo.nickname = data.nickname
+            // console.log(global.userinfo.nickname);
+            global.userinfo.birthday = data.birthday
+            global.userinfo.gender = data.gender
+            global.userinfo.description = data.description
+            Toast.hideLoading();
+        })
+        .catch((error) =>{
+            alert(error)
+        })
+    }
+
     loginFetch=()=>{
+        Toast.showLoading("请求中");
+
         //先行确认手机号合法
         const {phoneNumber,code} =this.state;
         const phoneValid = validator.validatePhone(phoneNumber);
         if(!phoneValid){
             this.setState({phoneValid});
             alert("不是有效的手机号")
+            Toast.hideLoading();
             return;
         }
         //确认密码非空
         if(code == ""){
+            Toast.hideLoading();
             alert("密码不能为空")
             return;
         }
@@ -235,7 +286,7 @@ class Index extends Component{
         formData.append("mode",1);
         console.log(formData);
 
-        const url = 'http://121.4.86.24:8080/login';
+        const url = `http://${global.IP}/login`;
         fetch(url,{
         method:'POST',
         headers: {
@@ -255,7 +306,18 @@ class Index extends Component{
                     console.log("登陆成功")
                     //将登入信息挂入全局变量
                     global.account = this.state.phoneNumber;
+                    
                     this.props.navigation.navigate("Tabbar");
+                    // const resetAction = NavigationActions.reset({
+                    //     index: 0,
+                    //     actions: [
+                    //       NavigationActions.navigate({ routeName: 'Tabbar'}),
+                    //     ]
+                    // })
+                    // this.props.navigation.dispatch(resetAction) 
+                    this.getInfo();
+                    this.getWorkList();
+                    
                     break;
                 }
                 case 2:{
@@ -265,11 +327,13 @@ class Index extends Component{
                 case 3:{
                     console.log("账户或密码错误")
                     alert("账户或密码错误")
+                    Toast.hideLoading();
                     break;
                 }
                 case 4:{
                     console.log("用户名已存在")
                     alert("用户名已存在")
+                    Toast.hideLoading();
                     break;
                 }
                 case 5:{
@@ -279,6 +343,7 @@ class Index extends Component{
             }
         })
         .catch((error) =>{
+            Toast.hideLoading();
         alert(error)
         })
     }
@@ -312,6 +377,7 @@ class Index extends Component{
         <View >
             <Input
                 placeholder ='请输入密码'
+                secureTextEntry={true}
                 // maxLenth 用于限制输入长度
                 maxLength= {11}
                 // keyboardType 默认数字键盘，优化体验
@@ -322,14 +388,15 @@ class Index extends Component{
                 // onChangeText 响应输入
                 onChangeText = {this.codeChangeText}
                 // errorMessage 错误提示
-                errorMessage={ (code=="")?"无效的密码":""}
+                // errorMessage={ (code=="")?"无效的密码":""}
                 //onSubmitEditing 用户输入完毕点击完成时触发
                 // onSubmitEditing={this.phoneNumberSubmitEditing}
-                keyboardType="phone-pad"
+                // keyboardType="phone-pad"
                 leftIcon={{type:'font-awesome', name:'lock',color:"#888", size:pxToDp(20)}}>
             </Input>
             <Input
                 placeholder ='请重复密码'
+                secureTextEntry={true}
                 // maxLenth 用于限制输入长度
                 maxLength= {11}
                 // keyboardType 默认数字键盘，优化体验
@@ -340,10 +407,10 @@ class Index extends Component{
                 // onChangeText 响应输入
                 onChangeText = {this.RcodeChangeText}
                 // errorMessage 错误提示
-                errorMessage={ (code=="")?"无效的密码":""}
+                // errorMessage={ (code=="")?"无效的密码":""}
                 //onSubmitEditing 用户输入完毕点击完成时触发
                 // onSubmitEditing={this.phoneNumberSubmitEditing}
-                keyboardType="phone-pad"
+                // keyboardType="phone-pad"
                 leftIcon={{type:'font-awesome', name:'lock',color:"#888", size:pxToDp(20)}}>
             </Input>
         </View>
@@ -388,21 +455,22 @@ class Index extends Component{
         </View>
         <View >
             <Input
-                placeholder ='请输入密码'
+                placeholder="请输入密码"
+                secureTextEntry={true}
                 // maxLenth 用于限制输入长度
                 maxLength= {11}
                 // keyboardType 默认数字键盘，优化体验
                 // value 可以设置默认值
                 value ={code}
                 // inputStyle 设置打出的字体
-                inputStyle={{color:"#444"}}
+                inputStyle={{color:"#444",paddingLeft:pxToDp(15)}}
                 // onChangeText 响应输入
                 onChangeText = {this.codeChangeText}
                 // errorMessage 错误提示
                 errorMessage={ (code=="")?"无效的密码":""}
                 //onSubmitEditing 用户输入完毕点击完成时触发
                 // onSubmitEditing={this.phoneNumberSubmitEditing}
-                keyboardType="phone-pad"
+                // keyboardType="phone-pad"
                 leftIcon={{type:'font-awesome', name:'lock',color:"#888", size:pxToDp(20)}}>
             </Input>
         </View>
