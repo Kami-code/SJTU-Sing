@@ -3,22 +3,18 @@ import {View,Text} from 'react-native';
 import Nav from "./src/nav";
 import Layout from "./src/components/Layout";
 import global_Songs from "./src/global_Songs";//该操作引入全局变量，不可删去
+import { MenuProvider } from 'react-native-popup-menu';
 
 // console.disableYellowBox = true;//该操作隐藏warning
 
 class App extends Component{
     render(){
         return(
+          <MenuProvider>
           <View style ={{flex:1}}>
-            {/* <View style ={{height:"100%", width:"100%" ,position: 'absolute', zIndex: 1}}> */}
-              {/* <Layout> */}
                 <Nav></Nav>
-              {/* </Layout> */}
-            {/* </View> */}
-            {/* <View style ={{position: 'absolute', zIndex: 2}}> */}
-              
-            {/* </View> */}
           </View>
+          </MenuProvider>
         );
     }
 } 

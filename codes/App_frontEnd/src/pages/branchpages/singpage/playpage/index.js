@@ -44,7 +44,7 @@ class Index extends Component {
       console.log(formData);
       
       // fetch(`http://${global.IP}/uploadproduct`, 
-      fetch(`http://${global.IP_NEW}/song/upload`, 
+      fetch(`http://${global.IP_NEW}/record/upload`, 
       {
           method: 'POST',
           body:formData,
@@ -61,8 +61,6 @@ class Index extends Component {
       )
       .then(data => {
           console.log(data)
-          if (data.info.result == "success" ) console.log(data.info.song)
-          else console.log(data.info.message)
       })
       .catch(error => {
          alert(error)

@@ -134,7 +134,7 @@ export async function default_sox(infile,outfile,reverbStyle,equalStyle){
     let echo = [10,20,100,1000];
     let stereoDepth = [10,20,100,80];
     let roomScale = [10,10,100,90];
-    let vol = [5,15,10,15];
+    let vol = [5,15,10,20];
     let equal = [[0,0,0,0,0,0,0,0,0,0],
             [12,8,-8,12,-4,0,8,16,20,20],
             [8,12,16,8,-4,0,8,12,16,20],

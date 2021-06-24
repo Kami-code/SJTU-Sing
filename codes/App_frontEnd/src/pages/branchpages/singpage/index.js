@@ -10,8 +10,17 @@ import {
     ScrollView,
     ActivityIndicator,
     DeviceEventEmitter,
-    Alert
-} from 'react-native'
+    Alert,
+    LogBox
+} from 'react-native';
+import {
+    Menu,
+    MenuOptions,
+    MenuOption,
+    MenuTrigger,
+  } from 'react-native-popup-menu';
+import RNBottomActionSheet from 'react-native-bottom-action-sheet';
+import Icon from 'react-native-vector-icons'
 import Slider from '@react-native-community/slider';
 import Recorder_2 from '../../../components/Recorder2.0/Recorder_2';
 let { width, height } = Dimensions.get('window');
@@ -19,7 +28,7 @@ import Video from 'react-native-video';
 let lyrObj = []   // 存放歌词
 import SONGS from '../../../images/song';
 import Svg from 'react-native-svg-uri';
-import {origin,adjust,restart,finish,svg_huatong} from '../../../res/fonts/iconSvg';
+import {origin,adjust,restart,finish,svg_huatong,svg_shezhi} from '../../../res/fonts/iconSvg';
 import {pxToDp} from '../../../utils/stylesKits';
 
 import {NavigationContext} from "@react-navigation/native";
@@ -78,6 +87,7 @@ export default class Singpage extends Component {
             myScore: 0,
             totalScore: 0,
             numOfScore: 0,
+            effect: 0,
             
         }
     }
@@ -108,11 +118,67 @@ export default class Singpage extends Component {
             this.state.sliderValue = this.state.currentTime;
             this.state.currentLine = index;
     }
+    share = () =>{
+            let facebook = <Icon name={'facebook'} color={'#3C5A9A'} size={6} family={'FontAwesome'} />
+            let instagram = <Icon name={"instagram"} color={"#DD2E73"} size={6} family={"FontAwesome"} />;
+            let skype = <Icon name={"skype"} color={"#10AEF3"} size={6} family={"FontAwesome"} />;
+            let twitter = <Icon name={"twitter"} color={"#0000aa"} size={6} family={"FontAwesome"} />;
+            let whatsapp = <Icon name={"whatsapp"} color={"#00ac00"} size={6} family={"FontAwesome"} />;
+            let youtube = <Icon name={"youtube"} color={"#FE0000"} size={6} family={"FontAwesome"} />;
+            let google = <Icon name={'google'} color={'#ff0000'} size={6} family={'FontAwesome'} />
+            let linkedin = <Icon name={"linkedin"} color={"#0000ff"} size={6} family={"FontAwesome"} />;
+        
+        
+            let GridView = RNBottomActionSheet.GridView
+            GridView.Show({
+              title: "Awesome!",
+              items: [
+                { title: "Facebook", icon: facebook },
+                { title: "Instagram" ,icon:instagram},
+                { title: "Skype", icon: skype },
+                { title: "Twitter", icon: twitter },
+                { title: "WhatsApp", icon: whatsapp },
+                { title: "YouTube", icon: youtube },
+                { title: "Google", icon: google },
+                { title: "LinkedIn", icon: linkedin }
+              ],
+              theme: 'light',
+              onSelection: (selection) => {
+                console.log('selection: ' + selection)
+              }
+            });
+    }
+
+
+
     //重唱上一句话
-    prevAction = () => {
-        for(let i =0;i<lyrObj.length-1;++i){
-            console.log(lyrObj[i].total+" "+lyrObj[i].min+" "+lyrObj[i].sec+" "+lyrObj[i].txt+" "+lyrObj[i].ms);
-        }
+    setEffect = () => {
+        let i0 = <Icon family={'FontAwesome'} name={'instagram'} color={'#000000'} size={30} />
+        let i1 = <Icon family={'FontAwesome'} name={'instagram'} color={'#000000'} size={30} />
+        let i2 = <Icon family={'FontAwesome'} name={'instagram'} color={'#000000'} size={30} />
+        let i3 = <Icon family={'FontAwesome'} name={'instagram'} color={'#000000'} size={30} />
+        if(this.state.effect==0){i0 = <Icon family={'FontAwesome'} name={'instagram'} color={'#ff0000'} size={30} />}
+        else if (this.state.effect==1){i1 = <Icon family={'FontAwesome'} name={'instagram'} color={'#ff0000'} size={30} />}
+        else if (this.state.effect==2){i2 = <Icon family={'FontAwesome'} name={'instagram'} color={'#ff0000'} size={30} />}
+        else if (this.state.effect==3){i3 = <Icon family={'FontAwesome'} name={'instagram'} color={'#ff0000'} size={30} />}
+
+        let SheetView = RNBottomActionSheet.SheetView;
+
+        SheetView.Show({
+        title: "效果",
+        items: [
+            { title: "录音室", value: 0, icon: i0 },
+            { title: "KTV", value: 1, icon: i1 },
+            { title: "音乐厅", value: 2, icon: i2 },
+            { title: "空灵", value: 3, icon: i3 },
+        ],
+        theme: "light",
+        selection: 3,
+        onSelection: (index, value) => {
+            this.setState({effect:index});
+        },
+        onCancel: () => console.log('Closing the bottom SheetView!!!')
+        });
     }
     //全部初始化
     restart = () => {
@@ -319,6 +385,7 @@ export default class Singpage extends Component {
         this.loadSongInfo(0);   //预先加载第一首
     }
     async componentDidMount() {
+        LogBox.ignoreAllLogs(true)//关闭全部黄色警告
         DeviceEventEmitter.emit('RecordInit');
         //录音器保存完成后，跳转到下一个界面
         this.finishListener = DeviceEventEmitter.addListener('RecordStopped',async(param)=>{
@@ -329,7 +396,7 @@ export default class Singpage extends Component {
                 global.ACC[7]=`${RNFS.CachesDirectoryPath}/music_tmp.wav`;
                 global.ACC[3] = this.state.proc_audio_wav;
                 global.ACC[4] = this.state.merge_audio_wav;
-                await default_sox(global.ACC[2],global.ACC[3],0,0);
+                await default_sox(global.ACC[2],global.ACC[3],this.state.effect,0);
                 await amplify(global.ACC[3],global.ACC[8],0);
                 await amplify(global.ACC[1],global.ACC[7],0);
                 await mergeAudio(global.ACC[7],global.ACC[8],global.ACC[4]);
@@ -547,13 +614,13 @@ export default class Singpage extends Component {
                     <View style={styles.playingInfo}>
                         {/* 返回键 */}
                         <TouchableOpacity onPress={() => this.returnToMainPage()}>
-                            <Image source={require('./images/上一首.png')} style={{ width: 25, height: 25}} />
+                            <Image source={require('./images/上一首.png')} style={{ width: 25, height: 25,marginTop:10}} />
                         </TouchableOpacity>
                         {/* 歌曲名称 */}
-                        <Text style={{fontSize:20}}> {this.state.title}</Text>
+                        <Text style={{fontSize:20,marginTop:10}}> {this.state.title}</Text>
                         {/* 切换下一首歌（以后可以换成菜单键） */}
-                        <TouchableOpacity   onPress={() => this.nextAction(this.state.currentIndex + 1)}>
-                            <Image source={require('./images/下一首.png')} style={{ width: 25, height: 25 }} />
+                        <TouchableOpacity  style={{ width: 25, height: 25 }} onPress={() => {}}>
+                
                         </TouchableOpacity>             
                     </View>
                     {/* 图片，可以换成五线谱 */}
@@ -649,13 +716,7 @@ export default class Singpage extends Component {
                     </View>
                     {/* 添加底部按钮 */}
                     <View style={{ flexDirection: 'row',marginTop:pxToDp(20),marginBottom:pxToDp(20), justifyContent: 'space-around' }}>
-                         {/* 重唱上一句 */}
-                        <TouchableOpacity onPress={()=>{this.prevAction();}}>
-                            <View style={styles.button}>
-                                <Image source={require('./images/上一首.png')} style={{ width: 30, height: 30}} />     
-                            </View>
-                            <Text style={styles.buttontext}>上一句</Text>
-                        </TouchableOpacity>
+
 
                         {/* 切换原唱 */}
                         <TouchableOpacity style={{alignItems:"center"}}onPress ={()=>this.switchSource()}>
@@ -668,6 +729,16 @@ export default class Singpage extends Component {
                             }
                             
                         </TouchableOpacity>
+
+                                                 {/* 重唱上一句 */}
+                                                 <TouchableOpacity onPress={()=>{this.setEffect();}}>
+                            <View style={styles.button}>
+                            <Svg width="40" height="40" fill ="#fff"  svgXmlData={svg_shezhi} />
+                                {/* <Image source={require('./images/上一首.png')} style={{ width: 30, height: 30}} />      */}
+                            </View>
+                            <Text style={styles.buttontext}>  调音</Text>
+                        </TouchableOpacity>
+                        
 
                         {/* 开始暂停 */}
                         <TouchableOpacity onPress={() => this.playAction()}>
@@ -739,14 +810,16 @@ const styles = StyleSheet.create({
         paddingBottom: 20
     },
     playingInfo: {
+        backgroundColor: '#c2ccd0',
         flexDirection: 'row',
         alignItems: 'stretch',
         justifyContent: 'space-between',
         paddingTop: 20,
         paddingLeft: 20,
         paddingRight: 20,
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 0,
+        marginBottom: 0,
+        height:60
     },
     text: {
         color: "black",
