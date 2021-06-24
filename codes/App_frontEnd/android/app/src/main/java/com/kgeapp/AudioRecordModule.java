@@ -154,5 +154,4 @@ public class AudioRecordModule extends ReactContextBaseJavaModule {
         stopRecordingPromise = promise;
     }
 
-
 }
