@@ -7,10 +7,19 @@ import VideoScreen from '../../../../utils/VideoPlayer';
 import { TouchableOpacity } from 'react-native';
 import Button from '../../../../components/Button';
 import { pxToDp } from '../../../../utils/stylesKits';
+import Svg from 'react-native-svg-uri';
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
 
 import SONGS from '../../../../images/song';
 import {encode,decode,mergeAudio,noiseSuppress,aecm, sox_test, toSingleChannel} from '../../../../utils/audio-api'
-import MusicPlayer from "../../../../utils/MusicPlayer"
+import MusicPlayer from "./components/MusicPlayer2";
+import "../../../../components/common/RootView";
+import Loading from '../../../../components/common/Loading';
 class Index extends Component {
     static contextType =NavigationContext;
     constructor(props) {
@@ -61,6 +70,7 @@ class Index extends Component {
       )
       .then(data => {
           console.log(data)
+          Loading.hide();
           this.context.navigate("Tabbar");
       })
       .catch(error => {
@@ -72,13 +82,44 @@ class Index extends Component {
     }
 
     goPage = ()=>{
-      // this.context = this.props.navigation
+      Loading.show();
       this.uploadFinalWork();
+
     }
     render () {
         return(
             <View style={styles.container}>
-                <TopNav title ="结算页面"/>
+                <View >
+                <StatusBar backgroundColor="transparent" translucent={true} ></StatusBar>
+                <ImageBackground 
+                    source={require("../../../../images/background_blue.jpg")}
+                    style={{height:pxToDp(80),paddingTop:pxToDp(12),flexDirection:"row",alignItems:'center',justifyContent:"space-between"}}
+                >
+                {/* <TouchableOpacity 
+                    style={{flexDirection:"row",alignItems:'center',width:pxToDp(80)}}
+                    onPress = {this.context.goBack}
+                >
+                    <Text style={{color:"#fff",fontSize:pxToDp(16),marginLeft:pxToDp(5)}}>返回</Text>
+                </TouchableOpacity> */}
+                <Menu onSelect={value => alert(`Selected number: ${value}`)}>
+                  <MenuTrigger>
+                  <Text style={{color:"#fff",fontSize:pxToDp(20),marginLeft:pxToDp(20)}}>返回</Text>
+                  </MenuTrigger>
+                  <MenuOptions>
+                  <MenuOption value={1} onSelect={()=>{this.context.goBack()}}>
+                      <Text style={{marginLeft:pxToDp(20),fontSize:pxToDp(20)}}>返回到调音台</Text>
+                    </MenuOption>
+                    <MenuOption value={2} onSelect={()=>{this.context.navigate("Tabbar");}}>
+                      <Text style={{marginLeft:pxToDp(20),fontSize:pxToDp(20),color:"red"}}>舍弃并退出</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+                <Text style={{color:"#fff",fontSize:pxToDp(20),fontWeight:'bold'}}></Text>
+                <Text style={{width:pxToDp(80)}}></Text>
+
+                </ImageBackground>
+                {/* <Text>自己的导航</Text> */}
+            </View>
                 {/* <View style={{backgroundColor:"blue",height:100}}></View> */}
                 <View>
                   {/* <Image source={{ uri: global.SONGS[global.SONGS.length-1].picture }} style={{ width: "100%", height: pxToDp(200),borderRadius:pxToDp(20),marginTop:pxToDp(30) }} /> */}
@@ -89,14 +130,12 @@ class Index extends Component {
                 </View>
                 
                 <View style={styles.BottomBar}>
-                  <Text style={{color:"#fff",fontSize:pxToDp(16),paddingTop:pxToDp(20)}}>重录</Text>
                   <TouchableOpacity 
                       style={{flexDirection:"row",alignItems:'center',justifyContent:'center',width:pxToDp(120),height:pxToDp(40),backgroundColor:"#335577",borderRadius:pxToDp(14)}}
                       onPress ={()=>this.goPage("NewsPage")}
                   >
-                      <Text style={{color:"#fff",fontSize:pxToDp(16)}}>生成作品</Text>
+                      <Text style={{color:"#fff",fontSize:pxToDp(16)}}>上传作品</Text>
                   </TouchableOpacity>
-                  <Text style={{color:"#fff",fontSize:pxToDp(16),paddingTop:pxToDp(20)}}>保存</Text>
                 </View>
             </View>
         );

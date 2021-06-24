@@ -121,10 +121,20 @@ class Index extends Component{
             return;
         }
         if (!isNew){
-            this.props.navigation.navigate("Tabbar");
+            // this.props.navigation.navigate("Tabbar");
+            const resetAction = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'Tabbar' })],
+            });
+            this.props.navigation.dispatch(resetAction);
         }
         else{
-            this.props.navigation.navigate("Tabbar");
+            // this.props.navigation.navigate("Tabbar");
+            const resetAction = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'Tabbar' })],
+            });
+            this.props.navigation.dispatch(resetAction);
         }
     }
 

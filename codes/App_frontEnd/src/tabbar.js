@@ -13,9 +13,14 @@ import FindPage from './pages/branchpages/findpage';
 import MainPage from './pages/mainpage';
 import MusicPlayer from './utils/MusicPlayer'
 import "./components/common/RootView"
+import { NavigationActions, StackActions } from 'react-navigation';
 class Index extends Component {
+
     state = {  
         selectedTab:"home"
+    }
+    componentDidMount(){
+
     }
     render() { 
         return ( 
