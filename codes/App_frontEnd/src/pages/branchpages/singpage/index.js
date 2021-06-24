@@ -481,7 +481,7 @@ export default class Singpage extends Component {
             method: 'POST',
             body:formData,
             // body: "1111",
-            timeout: 5000 // 5s超时
+            timeout: 4000 // 5s超时
         }
         )
             .then(response =>{ 
@@ -493,7 +493,7 @@ export default class Singpage extends Component {
             })
             .then(formData => formData)
             .catch(error => {
-            console.log("failed");
+            console.log("upload phase failed");
                 return {error_code: -3, error_msg:'请求异常，请重试'}
         }).catch((error) =>{
             console.log(error)

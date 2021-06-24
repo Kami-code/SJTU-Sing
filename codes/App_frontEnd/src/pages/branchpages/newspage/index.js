@@ -129,21 +129,27 @@ class Index extends Component {
                     renderCard={(card) => {
                         return (
                             <View style={styles.card}  onPress ={()=>this.goPage("NewsDetailPage")}>
-                                    <ImageBackground 
-                                        style={{flex:1}}
-                                        imageStyle={{borderRadius:pxToDp(14)}}
-                                        source={require('../../../images/background3.jpg')}>
-                                        
-                                        <Text>{card.id}</Text>
-                                        <View style={{flex:1,backgroundColor:"transparent",borderRadius:pxToDp(14),marginTop:pxToDp(400),flexDirection:"row"}}>
-                                            <TouchableOpacity style={{flex:1,backgroundColor:"#ccccff40",borderBottomLeftRadius:pxToDp(14),alignItems:"center",justifyContent:"center"}}>
-                                                <Svg width="40" height = "40"  fill ="#fff" svgXmlData={heart}/>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={{flex:1,backgroundColor:"#ccccff40",borderBottomRightRadius:pxToDp(14),alignItems:"center",justifyContent:"center"}}>
-                                                <Svg width="50" height = "50"  fill ="#fff" svgXmlData={svg_bubble}/>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </ImageBackground>
+                                <ImageBackground 
+                                    style={{flex:1}}
+                                    imageStyle={{borderRadius:pxToDp(14)}}
+                                    source={require('../../../images/background3.jpg')}>
+                                    
+                                    <Text>{card.song.name}</Text>
+                                    <View style={{flex:1,backgroundColor:"#00000020"}}>
+                                        <Image
+                                            source={{url: card.song.picture}}
+                                            style={{height:pxToDp(90),width:pxToDp(90),borderRadius:50}}
+                                        />
+                                    </View>
+                                    <View style={{flex:1,backgroundColor:"transparent",borderRadius:pxToDp(14),marginTop:pxToDp(400),flexDirection:"row"}}>
+                                        <TouchableOpacity style={{flex:1,backgroundColor:"#ccccff40",borderBottomLeftRadius:pxToDp(14),alignItems:"center",justifyContent:"center"}}>
+                                            <Svg width="40" height = "40"  fill ="#fff" svgXmlData={heart}/>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={{flex:1,backgroundColor:"#ccccff40",borderBottomRightRadius:pxToDp(14),alignItems:"center",justifyContent:"center"}}>
+                                            <Svg width="50" height = "50"  fill ="#fff" svgXmlData={svg_bubble}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                </ImageBackground>
                             </View>
                         )
                     }}
@@ -192,6 +198,7 @@ const styles = StyleSheet.create({
     },
     card: {
       flex: 1,
+      flexDirection: 'column',
       borderRadius: 14,
       borderWidth: 2,
       borderColor: "#E8E8E8",

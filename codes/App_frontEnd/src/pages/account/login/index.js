@@ -317,7 +317,7 @@ class Index extends Component{
                     // this.props.navigation.dispatch(resetAction) 
                     this.getInfo();
                     // this.getWorkList();
-                    
+                    Toast.hideLoading();
                     break;
                 }
                 case 2:{
