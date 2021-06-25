@@ -35,7 +35,7 @@ class RecordControllerTest {
             FileInputStream fileInputStream = new FileInputStream(file);
             MultipartFile multipartFile = new MockMultipartFile("copy"+file.getName(),file.getName(), ContentType.APPLICATION_OCTET_STREAM.toString(),fileInputStream);
             try {
-                Record record= recordcon.upload(multipartFile,Long.valueOf(1839262209),"tom", BigDecimal.valueOf(0));
+                Record record= recordcon.upload(multipartFile,Long.valueOf(7),"tom", BigDecimal.valueOf(0));
                 assertNotNull(record);
 
             } catch (Exception e) {
