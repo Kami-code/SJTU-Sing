@@ -48,7 +48,7 @@ class Index extends Component {
       }
       await mergeAudio(global.ACC[7],global.ACC[8],global.ACC[4]);
       DeviceEventEmitter.emit('resetAudio');
-      Loading.hide();
+
     }
 
     goPage = async ()=>{

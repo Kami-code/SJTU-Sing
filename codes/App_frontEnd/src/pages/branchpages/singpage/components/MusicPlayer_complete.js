@@ -9,7 +9,8 @@ import {
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
-    DeviceEventEmitter
+    DeviceEventEmitter,
+    LogBox
 } from 'react-native'
 import Slider from '@react-native-community/slider';
 import PropTypes from 'prop-types';
@@ -19,7 +20,8 @@ let lyrObj = []   // 存放歌词
 import SONGS from '../../../../images/song';
 import Svg from 'react-native-svg-uri';
 import {pxToDp} from '../../../../utils/stylesKits';
-
+import "../../../../components/common/RootView";
+import Loading from '../../../../components/common/Loading';
 import {NavigationContext} from "@react-navigation/native";
 //  http://rapapi.org/mockjsdata/16978/rn_songList
 //  http://tingapi.ting.baidu.com/v1/restserver/ting?method=baidu.ting.song.lry&songid=213508
@@ -143,7 +145,7 @@ export default class MusicPlayer extends Component {
             pic_big: local_song.picture,  //大图
             title: local_song.name,     //歌曲名
             author: local_song.singer,   //歌手
-            file_link: local_song.mp3,   //播放链接
+            //file_link: local_song.mp3,   //播放链接
             file_duration: local_song.file_duration //歌曲长度
         })
         let lry = local_song.lyric
@@ -184,6 +186,9 @@ export default class MusicPlayer extends Component {
         
     }
     async componentDidMount() {
+        console.reportErrorsAsExceptions = false;
+        LogBox.ignoreAllLogs();
+        console.error = (error) => error.apply;
         //录音器保存完成后，跳转到下一个界面
         this.resetListener = DeviceEventEmitter.addListener('resetAudio',()=>{
             let time = this.state.currentTime;
@@ -192,22 +197,23 @@ export default class MusicPlayer extends Component {
                 play = true;
                 this.setState({pause:true});
             }
-            this.setState({
-                file_link: `file:///${global.ACC[1]}`,   //播放链接
-            });
+            // this.setState({
+            //     file_link: `file:///${global.ACC[1]}`,   //播放链接
+            // });
             this.setState({
                 file_link: `file:///${global.ACC[4]}`,   //播放链接
             });
             timer = setTimeout(()=>{            
-                this.refs.audio.seek(time+0.1);
+                this.refs.audio.seek(time+1);
                 this.setState({
-                    currentTime:time+0.1,  
+                    currentTime:time+1,  
                 });
                 if(play == true){
                     this.setState({pause:false});
-                }
+                }       
                 timer && clearTimeout(timer);
-            },100);
+                Loading.hide();
+            },1000);
 
 
 
