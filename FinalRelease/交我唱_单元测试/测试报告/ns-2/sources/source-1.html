@@ -1,0 +1,198 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > RecordController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+    @import "../../.css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../.js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.audio.controller</a>
+</div>
+
+<h1>Coverage Summary for Class: RecordController (com.example.audio.controller)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">RecordController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (18/18)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package com.example.audio.controller;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import com.example.audio.entity.Record;
+<i class="no-highlight">4</i>&nbsp;import com.example.audio.entity.User;
+<i class="no-highlight">5</i>&nbsp;import com.example.audio.repository.RecordRepository;
+<i class="no-highlight">6</i>&nbsp;import com.example.audio.response.UploadResponse;
+<i class="no-highlight">7</i>&nbsp;import com.example.audio.service.RecordService;
+<i class="no-highlight">8</i>&nbsp;import com.example.audio.service.UserService;
+<i class="no-highlight">9</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i class="no-highlight">10</i>&nbsp;import org.springframework.core.io.FileSystemResource;
+<i class="no-highlight">11</i>&nbsp;import org.springframework.core.io.InputStreamResource;
+<i class="no-highlight">12</i>&nbsp;import org.springframework.http.HttpHeaders;
+<i class="no-highlight">13</i>&nbsp;import org.springframework.http.MediaType;
+<i class="no-highlight">14</i>&nbsp;import org.springframework.http.ResponseEntity;
+<i class="no-highlight">15</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i class="no-highlight">16</i>&nbsp;import org.springframework.web.multipart.MultipartFile;
+<i class="no-highlight">17</i>&nbsp;
+<i class="no-highlight">18</i>&nbsp;import java.io.IOException;
+<i class="no-highlight">19</i>&nbsp;import java.math.BigDecimal;
+<i class="no-highlight">20</i>&nbsp;import java.util.List;
+<i class="no-highlight">21</i>&nbsp;
+<i class="no-highlight">22</i>&nbsp;@CrossOrigin
+<i class="no-highlight">23</i>&nbsp;@RestController
+<b class="fc"><i class="no-highlight">24</i>&nbsp;public class RecordController {</b>
+<i class="no-highlight">25</i>&nbsp;    @Autowired
+<i class="no-highlight">26</i>&nbsp;    RecordService recordService;
+<i class="no-highlight">27</i>&nbsp;
+<i class="no-highlight">28</i>&nbsp;    /**
+<i class="no-highlight">29</i>&nbsp;     * 用户上传录音
+<i class="no-highlight">30</i>&nbsp;     */
+<i class="no-highlight">31</i>&nbsp;    @RequestMapping(value = &quot;/record/upload&quot;,method = RequestMethod.POST)
+<i class="no-highlight">32</i>&nbsp;    @ResponseBody
+<i class="no-highlight">33</i>&nbsp;    public Record upload(@RequestParam(&quot;file&quot;) MultipartFile audioData, @RequestParam(&quot;songid&quot;) Long songid, @RequestParam(&quot;username&quot;) String username, @RequestParam(&quot;score&quot;)BigDecimal score) throws Exception {
+<b class="fc"><i class="no-highlight">34</i>&nbsp;        return recordService.save(audioData, songid, username, score);</b>
+<i class="no-highlight">35</i>&nbsp;    }
+<i class="no-highlight">36</i>&nbsp;
+<i class="no-highlight">37</i>&nbsp;    /**
+<i class="no-highlight">38</i>&nbsp;     * 用户下载录音
+<i class="no-highlight">39</i>&nbsp;     */
+<i class="no-highlight">40</i>&nbsp;    @RequestMapping(value = &quot;/record/{record_id}/download&quot;, method = RequestMethod.GET)
+<i class="no-highlight">41</i>&nbsp;    public ResponseEntity&lt;InputStreamResource&gt; download(@PathVariable(&quot;record_id&quot;) Long record_id)throws IOException {
+<i class="no-highlight">42</i>&nbsp;//        String filePath = &quot;/home/waaa/jwc/audioData/user/&quot;+ record_id +&quot;.mp3&quot;;
+<b class="fc"><i class="no-highlight">43</i>&nbsp;        String filePath = &quot;D:/Data/kAPP/audioData/user/&quot;+ record_id +&quot;.mp3&quot;;</b>
+<b class="fc"><i class="no-highlight">44</i>&nbsp;        FileSystemResource file = new FileSystemResource(filePath);</b>
+<b class="fc"><i class="no-highlight">45</i>&nbsp;        HttpHeaders headers = new HttpHeaders();</b>
+<b class="fc"><i class="no-highlight">46</i>&nbsp;        headers.add(&quot;Cache-Control&quot;, &quot;no-cache, no-store, must-revalidate&quot;);</b>
+<b class="fc"><i class="no-highlight">47</i>&nbsp;        headers.add(&quot;Content-Disposition&quot;, String.format(&quot;attachment; filename=\&quot;%s\&quot;&quot;, file.getFilename()));</b>
+<b class="fc"><i class="no-highlight">48</i>&nbsp;        headers.add(&quot;Pragma&quot;, &quot;no-cache&quot;);</b>
+<b class="fc"><i class="no-highlight">49</i>&nbsp;        headers.add(&quot;Expires&quot;, &quot;0&quot;);</b>
+<b class="fc"><i class="no-highlight">50</i>&nbsp;        return ResponseEntity.ok().headers(headers)</b>
+<b class="fc"><i class="no-highlight">51</i>&nbsp;                .contentLength(file.contentLength())</b>
+<b class="fc"><i class="no-highlight">52</i>&nbsp;                .contentType(MediaType.parseMediaType(&quot;application/octet-stream&quot;))</b>
+<b class="fc"><i class="no-highlight">53</i>&nbsp;                .body(new InputStreamResource(file.getInputStream()));</b>
+<i class="no-highlight">54</i>&nbsp;    }
+<i class="no-highlight">55</i>&nbsp;
+<i class="no-highlight">56</i>&nbsp;    /**
+<i class="no-highlight">57</i>&nbsp;     * 用户得到录音详细信息
+<i class="no-highlight">58</i>&nbsp;     */
+<i class="no-highlight">59</i>&nbsp;    @RequestMapping(value = &quot;/record/{record_id}/info&quot;, method = RequestMethod.GET)
+<i class="no-highlight">60</i>&nbsp;    public Record getInfo(@PathVariable(&quot;record_id&quot;) Long record_id)throws IOException {
+<b class="fc"><i class="no-highlight">61</i>&nbsp;        return recordService.getRecordById(record_id);</b>
+<i class="no-highlight">62</i>&nbsp;    }
+<i class="no-highlight">63</i>&nbsp;
+<i class="no-highlight">64</i>&nbsp;    /**
+<i class="no-highlight">65</i>&nbsp;     * 录音点赞
+<i class="no-highlight">66</i>&nbsp;     */
+<i class="no-highlight">67</i>&nbsp;    @RequestMapping(value = &quot;/record/{record_id}/like&quot;, method = RequestMethod.GET)
+<i class="no-highlight">68</i>&nbsp;    public Record addLike(@PathVariable(&quot;record_id&quot;) Long record_id)throws IOException {
+<b class="fc"><i class="no-highlight">69</i>&nbsp;        return recordService.addLikeById(record_id);</b>
+<i class="no-highlight">70</i>&nbsp;    }
+<i class="no-highlight">71</i>&nbsp;
+<i class="no-highlight">72</i>&nbsp;    /**
+<i class="no-highlight">73</i>&nbsp;     * 录音评论
+<i class="no-highlight">74</i>&nbsp;     */
+<i class="no-highlight">75</i>&nbsp;    @RequestMapping(value = &quot;/record/{record_id}/remark&quot;, method = RequestMethod.POST)
+<i class="no-highlight">76</i>&nbsp;    public Record addRemark(@PathVariable(&quot;record_id&quot;) Long record_id, @RequestParam(&quot;remarker_name&quot;) String remarker_name, @RequestParam(&quot;remark&quot;) String remark)throws IOException {
+<b class="fc"><i class="no-highlight">77</i>&nbsp;        return recordService.addRemarkById(record_id, remarker_name, remark);</b>
+<i class="no-highlight">78</i>&nbsp;    }
+<i class="no-highlight">79</i>&nbsp;
+<i class="no-highlight">80</i>&nbsp;    /**
+<i class="no-highlight">81</i>&nbsp;     * 录音评论(使用pathvariable+get，便于debug)
+<i class="no-highlight">82</i>&nbsp;     */
+<i class="no-highlight">83</i>&nbsp;    @RequestMapping(value = &quot;/record/{record_id}/remark/{r}&quot;, method = RequestMethod.GET)
+<i class="no-highlight">84</i>&nbsp;    public Record addRemark(@PathVariable(&quot;record_id&quot;) Long record_id, @PathVariable(&quot;r&quot;) String remark)throws IOException {
+<b class="fc"><i class="no-highlight">85</i>&nbsp;        return recordService.addRemarkById(record_id, &quot;admin&quot;, remark);</b>
+<i class="no-highlight">86</i>&nbsp;    }
+<i class="no-highlight">87</i>&nbsp;
+<i class="no-highlight">88</i>&nbsp;    @RequestMapping(value = &quot;/record/random&quot;, method = RequestMethod.GET)
+<i class="no-highlight">89</i>&nbsp;    public List&lt;Record&gt; getRandomRemarks()throws IOException {
+<b class="fc"><i class="no-highlight">90</i>&nbsp;        return recordService.getRandomRemarks();</b>
+<i class="no-highlight">91</i>&nbsp;    }
+<i class="no-highlight">92</i>&nbsp;
+<i class="no-highlight">93</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-06-25 08:01</div>
+</div>
+</body>
+</html>

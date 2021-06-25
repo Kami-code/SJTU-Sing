@@ -1,0 +1,253 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <title>Coverage Report > LoginController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+    @import "../../.css/highlight-idea.css";
+  </style>
+  <script type="text/javascript" src="../../.js/highlight.pack.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">com.example.audio.login</a>
+</div>
+
+<h1>Coverage Summary for Class: LoginController (com.example.audio.login)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">LoginController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (48/48)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<div class="sourceCode" id="sourceCode"><i class="no-highlight">1</i>&nbsp;package com.example.audio.login;
+<i class="no-highlight">2</i>&nbsp;
+<i class="no-highlight">3</i>&nbsp;import com.alibaba.fastjson.JSONArray;
+<i class="no-highlight">4</i>&nbsp;import com.alibaba.fastjson.JSONObject;
+<i class="no-highlight">5</i>&nbsp;import com.example.audio.entity.User;
+<i class="no-highlight">6</i>&nbsp;import com.example.audio.service.UserService;
+<i class="no-highlight">7</i>&nbsp;import org.slf4j.Logger;
+<i class="no-highlight">8</i>&nbsp;import org.slf4j.LoggerFactory;
+<i class="no-highlight">9</i>&nbsp;import org.springframework.beans.factory.annotation.Autowired;
+<i class="no-highlight">10</i>&nbsp;import org.springframework.jdbc.core.JdbcTemplate;
+<i class="no-highlight">11</i>&nbsp;import org.springframework.jdbc.core.RowMapper;
+<i class="no-highlight">12</i>&nbsp;import org.springframework.web.bind.annotation.*;
+<i class="no-highlight">13</i>&nbsp;
+<i class="no-highlight">14</i>&nbsp;import javax.annotation.Resource;
+<i class="no-highlight">15</i>&nbsp;import java.sql.ResultSet;
+<i class="no-highlight">16</i>&nbsp;import java.sql.SQLException;
+<i class="no-highlight">17</i>&nbsp;import java.util.List;
+<i class="no-highlight">18</i>&nbsp;
+<i class="no-highlight">19</i>&nbsp;/**
+<i class="no-highlight">20</i>&nbsp; *     mode=0是注册请求，1是登录请求，2是删除用户
+<i class="no-highlight">21</i>&nbsp; *
+<i class="no-highlight">22</i>&nbsp; *     返回值：
+<i class="no-highlight">23</i>&nbsp; *     0: 初始值
+<i class="no-highlight">24</i>&nbsp; *     1：登录成功
+<i class="no-highlight">25</i>&nbsp; *     2：注册成功
+<i class="no-highlight">26</i>&nbsp; *     3：账户或密码错误
+<i class="no-highlight">27</i>&nbsp; *     4：用户名已存在
+<i class="no-highlight">28</i>&nbsp; *     5：成功删除
+<i class="no-highlight">29</i>&nbsp; *     6：用户不存在
+<i class="no-highlight">30</i>&nbsp; *     7：模式错误
+<i class="no-highlight">31</i>&nbsp; */
+<i class="no-highlight">32</i>&nbsp;
+<i class="no-highlight">33</i>&nbsp;@CrossOrigin
+<i class="no-highlight">34</i>&nbsp;@RestController
+<b class="fc"><i class="no-highlight">35</i>&nbsp;public class LoginController {</b>
+<i class="no-highlight">36</i>&nbsp;//    @Autowired
+<i class="no-highlight">37</i>&nbsp;//    private UserService userSerivce;
+<i class="no-highlight">38</i>&nbsp;
+<b class="fc"><i class="no-highlight">39</i>&nbsp;    final Logger login = LoggerFactory.getLogger(LoginController.class);</b>
+<i class="no-highlight">40</i>&nbsp;    @Resource
+<i class="no-highlight">41</i>&nbsp;    JdbcTemplate jdbcTemplate;
+<i class="no-highlight">42</i>&nbsp;
+<i class="no-highlight">43</i>&nbsp;
+<i class="no-highlight">44</i>&nbsp;    /**
+<i class="no-highlight">45</i>&nbsp;     * 用户登录和注册
+<i class="no-highlight">46</i>&nbsp;     * @param name 用户名
+<i class="no-highlight">47</i>&nbsp;     * @param password 密码
+<i class="no-highlight">48</i>&nbsp;     * @param mode 请求模式选择
+<i class="no-highlight">49</i>&nbsp;     * @return int 返回操作结果
+<i class="no-highlight">50</i>&nbsp;     */
+<i class="no-highlight">51</i>&nbsp;    @RequestMapping(value = &quot;/login&quot;,method = RequestMethod.POST)
+<i class="no-highlight">52</i>&nbsp;    public int userLogin(@RequestParam String name, @RequestParam String password, @RequestParam int mode) {
+<b class="fc"><i class="no-highlight">53</i>&nbsp;        if (mode == 0) {</b>
+<b class="fc"><i class="no-highlight">54</i>&nbsp;            int exit = jdbcTemplate.queryForObject(&quot;select count(*) from user where name = \&quot;&quot;+name+&quot;\&quot;;&quot;, int.class);</b>
+<b class="fc"><i class="no-highlight">55</i>&nbsp;            if(exit&gt;0){</b>
+<b class="fc"><i class="no-highlight">56</i>&nbsp;                login.info(&quot;***account exit:&quot;+exit+&quot;\n&quot;);</b>
+<b class="fc"><i class="no-highlight">57</i>&nbsp;                return 4;</b>
+<i class="no-highlight">58</i>&nbsp;            }else{
+<b class="fc"><i class="no-highlight">59</i>&nbsp;                jdbcTemplate.execute(&quot;insert into user(name,password) values(\&quot;&quot;+name+&quot;\&quot;,\&quot;&quot;+password+&quot;\&quot;);&quot;);</b>
+<b class="fc"><i class="no-highlight">60</i>&nbsp;                login.info(&quot;***regist!name:&quot;+name+&quot;\n&quot;);</b>
+<b class="fc"><i class="no-highlight">61</i>&nbsp;                return 2;</b>
+<i class="no-highlight">62</i>&nbsp;            }
+<i class="no-highlight">63</i>&nbsp;        }
+<i class="no-highlight">64</i>&nbsp;
+<b class="fc"><i class="no-highlight">65</i>&nbsp;        if (mode == 1) {</b>
+<b class="fc"><i class="no-highlight">66</i>&nbsp;            int match = jdbcTemplate.queryForObject(&quot;select count(*) from user where name = \&quot;&quot;+name+&quot;\&quot; and password = \&quot;&quot;+password+&quot;\&quot;;&quot;, int.class);</b>
+<b class="fc"><i class="no-highlight">67</i>&nbsp;            if(match&gt;0){</b>
+<b class="fc"><i class="no-highlight">68</i>&nbsp;                login.info(&quot;***login successfully!\n&quot;);</b>
+<b class="fc"><i class="no-highlight">69</i>&nbsp;                return 1;</b>
+<i class="no-highlight">70</i>&nbsp;            }else {
+<b class="fc"><i class="no-highlight">71</i>&nbsp;                return 3;</b>
+<i class="no-highlight">72</i>&nbsp;            }
+<i class="no-highlight">73</i>&nbsp;        }
+<i class="no-highlight">74</i>&nbsp;
+<b class="fc"><i class="no-highlight">75</i>&nbsp;        if (mode==2){</b>
+<b class="fc"><i class="no-highlight">76</i>&nbsp;            int exist = jdbcTemplate.queryForObject(&quot;select count(*) from user where name = \&quot;&quot;+name+&quot;\&quot;;&quot;, int.class);</b>
+<b class="fc"><i class="no-highlight">77</i>&nbsp;            if(exist&gt;0){</b>
+<b class="fc"><i class="no-highlight">78</i>&nbsp;                jdbcTemplate.execute(&quot;delete from user where name = \&quot;&quot;+name+&quot;\&quot; and password = \&quot;&quot;+password+&quot;\&quot;;&quot;);</b>
+<b class="fc"><i class="no-highlight">79</i>&nbsp;                login.info(&quot;***delete!name:&quot;+name+&quot;\n&quot;);</b>
+<b class="fc"><i class="no-highlight">80</i>&nbsp;                return 5;</b>
+<i class="no-highlight">81</i>&nbsp;            }else{
+<b class="fc"><i class="no-highlight">82</i>&nbsp;                login.info(&quot;***account dont exist:&quot;+name+&quot;\n&quot;);</b>
+<b class="fc"><i class="no-highlight">83</i>&nbsp;                return 6;</b>
+<i class="no-highlight">84</i>&nbsp;            }
+<i class="no-highlight">85</i>&nbsp;        }
+<b class="fc"><i class="no-highlight">86</i>&nbsp;        login.info(&quot;***wrong mode!\n&quot;);</b>
+<b class="fc"><i class="no-highlight">87</i>&nbsp;        return 7;</b>
+<i class="no-highlight">88</i>&nbsp;    }
+<i class="no-highlight">89</i>&nbsp;
+<i class="no-highlight">90</i>&nbsp;
+<i class="no-highlight">91</i>&nbsp;
+<i class="no-highlight">92</i>&nbsp;    @RequestMapping(value = &quot;/uploadinfo&quot;,method = RequestMethod.POST)
+<i class="no-highlight">93</i>&nbsp;    public int uploadInfo(@RequestParam(&quot;username&quot;) String username,@RequestParam(&quot;gender&quot;) String gender,@RequestParam(&quot;nickname&quot;) String nickname,@RequestParam(&quot;birthday&quot;) String birthday,@RequestParam(&quot;description&quot;) String description){
+<b class="fc"><i class="no-highlight">94</i>&nbsp;        int exit = jdbcTemplate.queryForObject(&quot;select count(*) from user where name = \&quot;&quot;+username+&quot;\&quot;;&quot;, int.class);</b>
+<b class="fc"><i class="no-highlight">95</i>&nbsp;        if(exit&gt;0){</b>
+<b class="fc"><i class="no-highlight">96</i>&nbsp;            jdbcTemplate.execute(&quot;update user set nickname=\&quot;&quot;+nickname+&quot;\&quot;,description=\&quot;&quot;+description+&quot;\&quot;,gender=\&quot;&quot;+gender+&quot;\&quot;,birthday=\&quot;&quot;+birthday+&quot;\&quot; where name=\&quot;&quot;+username+&quot;\&quot;;&quot;);</b>
+<b class="fc"><i class="no-highlight">97</i>&nbsp;            login.info(&quot;***userinfo added:username=&quot;+username+&quot; nickname=&quot;+nickname+&quot; description=&quot;+description+&quot;\n&quot;);</b>
+<b class="fc"><i class="no-highlight">98</i>&nbsp;            return 1;</b>
+<i class="no-highlight">99</i>&nbsp;        }else{
+<b class="fc"><i class="no-highlight">100</i>&nbsp;            login.info(&quot;***no such username: &quot;+username+&quot;\n&quot;);</b>
+<b class="fc"><i class="no-highlight">101</i>&nbsp;            return 0;</b>
+<i class="no-highlight">102</i>&nbsp;        }
+<i class="no-highlight">103</i>&nbsp;    }
+<i class="no-highlight">104</i>&nbsp;
+<i class="no-highlight">105</i>&nbsp;    @RequestMapping(value = &quot;/downloadinfo&quot;)
+<i class="no-highlight">106</i>&nbsp;    public JSONObject downloadInfo(@RequestParam(&quot;username&quot;) String username){
+<b class="fc"><i class="no-highlight">107</i>&nbsp;        JSONObject jsonObject = new JSONObject();</b>
+<b class="fc"><i class="no-highlight">108</i>&nbsp;        int exit = jdbcTemplate.queryForObject(&quot;select count(*) from user where name = \&quot;&quot;+username+&quot;\&quot;;&quot;, int.class);</b>
+<b class="fc"><i class="no-highlight">109</i>&nbsp;        if(exit==0){</b>
+<b class="fc"><i class="no-highlight">110</i>&nbsp;            login.info(&quot;***downloadinfo no such username: &quot;+username+&quot;\n&quot;);</b>
+<b class="fc"><i class="no-highlight">111</i>&nbsp;            return jsonObject;</b>
+<i class="no-highlight">112</i>&nbsp;        }
+<i class="no-highlight">113</i>&nbsp;
+<b class="fc"><i class="no-highlight">114</i>&nbsp;        String gender=jdbcTemplate.queryForObject(&quot;select gender from user where name=\&quot;&quot;+username+&quot;\&quot;;&quot;,String.class);</b>
+<b class="fc"><i class="no-highlight">115</i>&nbsp;        String birthday=jdbcTemplate.queryForObject(&quot;select birthday from user where name=\&quot;&quot;+username+&quot;\&quot;;&quot;,String.class);</b>
+<b class="fc"><i class="no-highlight">116</i>&nbsp;        String nickname=jdbcTemplate.queryForObject(&quot;select nickname from user where name=\&quot;&quot;+username+&quot;\&quot;;&quot;,String.class);</b>
+<b class="fc"><i class="no-highlight">117</i>&nbsp;        String description=jdbcTemplate.queryForObject(&quot;select description from user where name=\&quot;&quot;+username+&quot;\&quot;;&quot;,String.class);</b>
+<b class="fc"><i class="no-highlight">118</i>&nbsp;        jsonObject.put(&quot;username&quot;,username);</b>
+<b class="fc"><i class="no-highlight">119</i>&nbsp;        jsonObject.put(&quot;gender&quot;,gender);</b>
+<b class="fc"><i class="no-highlight">120</i>&nbsp;        jsonObject.put(&quot;birthday&quot;,birthday);</b>
+<b class="fc"><i class="no-highlight">121</i>&nbsp;        jsonObject.put(&quot;nickname&quot;,nickname);</b>
+<b class="fc"><i class="no-highlight">122</i>&nbsp;        jsonObject.put(&quot;description&quot;,description);</b>
+<b class="fc"><i class="no-highlight">123</i>&nbsp;        return jsonObject;</b>
+<i class="no-highlight">124</i>&nbsp;    }
+<i class="no-highlight">125</i>&nbsp;//
+<i class="no-highlight">126</i>&nbsp;//    @RequestMapping(value = &quot;/production&quot;,method = RequestMethod.POST)
+<i class="no-highlight">127</i>&nbsp;//    public List&lt;Integer&gt; production(@RequestParam(&quot;username&quot;) String username){
+<i class="no-highlight">128</i>&nbsp;//        List&lt;Integer&gt; songlist=jdbcTemplate.query(&quot;select songid from song where username=\&quot;&quot; + username + &quot;\&quot;;&quot;, new RowMapper&lt;Integer&gt;() {
+<i class="no-highlight">129</i>&nbsp;//            @Override
+<i class="no-highlight">130</i>&nbsp;//            public Integer mapRow(ResultSet resultSet, int i) throws SQLException {
+<i class="no-highlight">131</i>&nbsp;//                return resultSet.getInt(1);
+<i class="no-highlight">132</i>&nbsp;//            }
+<i class="no-highlight">133</i>&nbsp;//        });
+<i class="no-highlight">134</i>&nbsp;//        return songlist;
+<i class="no-highlight">135</i>&nbsp;//        int exit = jdbcTemplate.queryForObject(&quot;select count(*) from song where username = \&quot;&quot;+username+&quot;\&quot;;&quot;, int.class);
+<i class="no-highlight">136</i>&nbsp;//        if(exit&gt;0){
+<i class="no-highlight">137</i>&nbsp;//            Integer songlist=jdbcTemplate.queryForObject(&quot;select songid from song where username=\&quot;&quot;+username+&quot;\&quot;;&quot;, int.class);
+<i class="no-highlight">138</i>&nbsp;////            jdbcTemplate.execute(&quot;update user set nickname=\&quot;&quot;+nickname+&quot;\&quot;,description=\&quot;&quot;+description+&quot;\&quot; where name=\&quot;&quot;+username+&quot;\&quot;;&quot;);
+<i class="no-highlight">139</i>&nbsp;//            login.info(&quot;***userinfo download:username=&quot;+username+&quot;\n&quot;);
+<i class="no-highlight">140</i>&nbsp;//            return songlist;
+<i class="no-highlight">141</i>&nbsp;//        }else{
+<i class="no-highlight">142</i>&nbsp;//            login.info(&quot;***no such username: &quot;+username+&quot;\n&quot;);
+<i class="no-highlight">143</i>&nbsp;//            return null;
+<i class="no-highlight">144</i>&nbsp;//        }
+<i class="no-highlight">145</i>&nbsp;//        return 1;
+<i class="no-highlight">146</i>&nbsp;//    }
+<i class="no-highlight">147</i>&nbsp;
+<i class="no-highlight">148</i>&nbsp;}
+</div>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+        var codeBlock = document.getElementById('sourceCode');
+
+        if (codeBlock) {
+            hljs.highlightBlock(codeBlock);
+        }
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2021-06-25 08:01</div>
+</div>
+</body>
+</html>
