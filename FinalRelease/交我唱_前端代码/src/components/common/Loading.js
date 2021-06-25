@@ -1,0 +1,109 @@
+import React, { Component } from 'react';
+import { StyleSheet, Text, View, ActivityIndicator, Dimensions,Animated, Easing, } from 'react-native';
+import { pxToDp } from '../../utils/stylesKits';
+const { width, height } = Dimensions.get('window')
+_this = null;
+class Loading extends Component {
+    constructor(props) {
+        super(props);
+        _this = this;
+        this.state = {
+            spin: new Animated.Value(0),
+            show:false,
+            rotateVal: new Animated.Value(0), 
+        };
+    }
+
+    componentDidMount(){ // 组件加载完成后启动动画
+        this._spin();
+        _this.animationLoading = Animated.timing(
+            this.state.rotateVal, // 初始值
+            {
+                toValue: 360, // 终点值
+                easing: Easing.linear, // 这里使用匀速曲线，详见RN-api-Easing
+                useNativeDriver: true,
+            },
+        );
+        }
+    static show = () => {
+        _this.setState({show: true})
+        Animated.loop(_this.animationLoading).start(); // 开始动画
+        setTimeout(Animated.loop(_this.animationLoading).stop, 60000); // 5秒后停止动画，可用于任意时刻停止动画
+    };
+    static hide = () => {
+        _this.setState({show: false})
+    };
+
+    _spin() {
+        this.state.spin.setValue(0);
+        Animated.timing(
+            this.state.spin,
+            {
+                toValue: 1,
+                duration: 4000,
+                easing: Easing.linear,
+                useNativeDriver:true
+            }
+        ).start(() => this._spin());
+    }
+
+    render() {
+        const spin = this.state.spin.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '360deg']
+        });
+
+        if (this.state.show) {
+            return (
+                <View style={styles.LoadingPage}>
+                    <View style={{flex:1}}>
+                    </View>
+                    {/* <View style={{backgroundColor:"#00000060",height:80,width:70,alignItems:"center",borderRadius:15}}> */}
+                        <Animated.Image
+                        style={{
+                            transform: [{rotate: spin}],
+                            height: 50,
+                            width:50,
+                            margin: 10
+                        }}
+                        source={require('../../images/icon_play.png')}/>
+                        <Text style={{fontWeight:'bold',fontSize:pxToDp(20)}}> Loading... </Text>
+                    {/* </View> */}
+                    
+                    {/* <Animated.Text 
+                    style={{
+                        textAlign: 'center',
+                        fontSize: 34,
+                        fontFamily: 'iconfont',
+                        transform: [{ // 动画属性
+                            rotate: this.state.rotateVal.interpolate({
+                                inputRange: [0, 360],
+                                outputRange: ['0deg', '360deg'],
+                            })
+                        }]
+                    }}> */}
+                    {/* {'\ue6ae'} */}
+                    {/* </Animated.Text> */}
+                    <View style={{flex:1}}>
+                    </View>
+                
+                </View>
+            );
+        } else {
+            return (<View></View>);
+        }
+    }
+}
+export default Loading;
+const styles = StyleSheet.create({
+    LoadingPage: {
+        position: "absolute",
+        left: 0,
+        top: 0,
+        backgroundColor: "rgba(0,0,0,0)",
+        width: width,
+        height: height,
+        justifyContent: "center",
+        alignItems: "center",
+    },
+});
