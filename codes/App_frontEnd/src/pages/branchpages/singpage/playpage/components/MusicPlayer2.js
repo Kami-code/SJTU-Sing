@@ -196,7 +196,7 @@ export default class MusicPlayer extends Component {
             obj.txt = val.substring(indeofLastTime + 1, val.length) //歌词文本: 留下唇印的嘴
             obj.txt = obj.txt.replace(/(^\s*)|(\s*$)/g, '')
             obj.dis = false
-            obj.total = obj.min * 60 + obj.sec + obj.ms / 100   //总时间
+            obj.total = obj.min * 60 + obj.sec + obj.ms / 1000   //总时间
             if (obj.txt.length > 0) {
                 lyrObj.push(obj)
             }

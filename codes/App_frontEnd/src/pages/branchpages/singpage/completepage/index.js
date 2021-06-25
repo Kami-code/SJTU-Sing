@@ -29,8 +29,8 @@ class Index extends Component {
           finScore: global.SCORE,
           reverbId:0,
           equalizerId:0,
-          musicVol:100,
-          audioVol:100
+          musicVol:5,
+          audioVol:5
       }
     }
     resetAudio= async(r,e)=>{
@@ -89,7 +89,7 @@ class Index extends Component {
                           minimumTrackTintColor='#FFDB42'
                           onValueChange={(value) => {
                             this.setState({
-                              audioVol: value-5
+                              audioVol: value
                           });
                           }}
                           onSlidingComplete={(value) => {
@@ -110,7 +110,7 @@ class Index extends Component {
                           minimumTrackTintColor='#FFDB42'
                           onValueChange={(value) => {
                             this.setState({
-                              musicVol: value-5
+                              musicVol: value
                           });
                           }}
                           onSlidingComplete={(value) => {
