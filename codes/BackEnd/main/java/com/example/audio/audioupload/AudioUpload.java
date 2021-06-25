@@ -44,11 +44,29 @@ public class AudioUpload {
         upload.info("*** 作品用户名:"+username+"\n");
         upload.info("*** File Written: "+fileName+"\n");
 
+//        int exit = jdbcTemplate.queryForObject("select count(*) from song where username = \""+username+"\"and songid=\""+songid+"\";", int.class);
+//        if(exit>0){
+//        }else{
+//            jdbcTemplate.execute("insert into song values(\""+username+"\",\""+songid+"\");");
+//        }
+        return "True";
+    }
+
+    @RequestMapping(value = "/uploadproduct", method = RequestMethod.POST)
+    public String postProduct(@RequestParam("file") MultipartFile videoData,@RequestParam("songid") int songid,@RequestParam("username") String username) throws IOException {
+        upload.info("*** POST Entered"+"\n");
+//        String fileName=videoData.getOriginalFilename();
         int exit = jdbcTemplate.queryForObject("select count(*) from song where username = \""+username+"\"and songid=\""+songid+"\";", int.class);
-        if(exit>0){
-        }else{
-            jdbcTemplate.execute("insert into song values(\""+username+"\",\""+songid+"\");");
-        }
+
+        exit++;
+        String fileName="/home/waaa/jwc/audioData/user/"+songid+"_"+username+"_"+exit+".wav";
+
+        InputStream in = videoData.getInputStream();
+        writeToLocal(fileName, in);
+        upload.info("*** 作品用户名:"+username+"\n");
+        upload.info("*** File Written: "+fileName+"\n");
+
+        jdbcTemplate.execute("insert into song values(\""+username+"\",\""+songid+"\");");
         return "True";
     }
 
