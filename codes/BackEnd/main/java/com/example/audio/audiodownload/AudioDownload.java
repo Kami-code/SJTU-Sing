@@ -43,6 +43,27 @@ public class AudioDownload {
                 .body(new InputStreamResource(file.getInputStream()));
     }
 
+    @RequestMapping(value = "/downloadproduct", method = RequestMethod.GET)
+    public ResponseEntity<InputStreamResource> downloadProduct(@RequestParam("username") String username,@RequestParam("songid") String songid,@RequestParam("number") int number)throws IOException{
+        download.info("***download product begin!!!\n");
+
+        String filePath = "/home/waaa/jwc/audioData/user/"+songid+"_"+username+"_"+number+".wav";
+        download.info(filePath);
+        FileSystemResource file = new FileSystemResource(filePath);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        headers.add("Content-Disposition", String.format("attachment; filename=\"%s\"", file.getFilename()));
+        headers.add("Pragma", "no-cache");
+        headers.add("Expires", "0");
+
+        download.info("*** finish download "+filePath);
+
+        return ResponseEntity.ok().headers(headers)
+                .contentLength(file.contentLength())
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .body(new InputStreamResource(file.getInputStream()));
+    }
+
 //    @RequestMapping(value = "/downloaduser")
 //    public ResponseEntity<InputStreamResource> downloadUser(@RequestParam("songid") int songid@PathVariable("str") String song_id)throws IOException{
 //        download.info("***download begin!!!\n");
