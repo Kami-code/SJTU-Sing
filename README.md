@@ -1,7 +1,7 @@
    # SJTU-Sing
 
 
-   This is a course project from SE123 of SJTU. In summary, the project realizes an online kararoke with React Native, Spring Boot, Flask, and MySQL.
+   This is a course project from SE123 of SJTU. In summary, the project realizes an online Kararoke APP with React Native, Spring Boot, Flask, and MySQL.
 
    The details will be updated soon.
 
